@@ -1,0 +1,10 @@
+{
+  "hello": "Xin chao {name}!!",
+  "@hello" : {
+    "placeholders": {
+      "name": {
+        "type" : "String"
+      }
+    }
+  }
+}
