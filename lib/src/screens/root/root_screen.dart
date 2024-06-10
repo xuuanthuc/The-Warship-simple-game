@@ -8,6 +8,8 @@ import 'package:template/src/components/blue_sea_component.dart';
 import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
 
+import '../../models/blue_sea.dart';
+
 class RootScreen extends StatelessWidget {
   const RootScreen({Key? key}) : super(key: key);
 
@@ -42,24 +44,14 @@ class BattleshipWorld extends World {
   @override
   FutureOr<void> onLoad() {
     final game = GameData.instance;
-    game.seaBlocks.asMap().forEach(
-      (yIndex, rowsOfBlocks) {
-        rowsOfBlocks.asMap().forEach(
-          (xIndex, block) {
-            add(
-              BlueSeaComponent(
-                vector2: Vector2(
-                  (xIndex.toDouble() * game.blockSize) -
-                      (game.blockSize * GameData.blockLength / 2) + (game.blockSize / 2),
-                  (yIndex.toDouble() * game.blockSize) -
-                      (game.blockSize * GameData.blockLength / 2) + (game.blockSize / 2),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
+    for (var block in game.setSeaBlocks()) {
+      add(
+        BlueSeaComponent(
+          vector2: block.vector2 ?? Vector2.zero(),
+        ),
+      );
+    }
+
     for (var ship in game.battleships) {
       add(
         BattleshipComponent(

@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
+import 'package:flame/game.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/models/battleship.dart';
+import 'package:template/src/models/blue_sea.dart';
 import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
 
 class BattleshipComponent extends SpriteComponent
@@ -29,7 +32,6 @@ class BattleshipComponent extends SpriteComponent
   @override
   void onDragUpdate(DragUpdateEvent event) {
     position += event.localDelta;
-    print(position);
     super.onDragUpdate(event);
   }
 
@@ -42,7 +44,50 @@ class BattleshipComponent extends SpriteComponent
   @override
   void onDragEnd(DragEndEvent event) {
     scale = Vector2(1, 1);
+    final v = findClosestVector(GameData.instance.seaBlocks, position);
+    position = adjustPositionToStayWithinBounds(
+        v, GameData.instance.getSeaBlocksBoundary(), size);
     super.onDragEnd(event);
+  }
+
+  Vector2 findClosestVector(List<BlueSea> vectors, Vector2 target) {
+    Vector2 closestVector = vectors.first.vector2!;
+    double minDistance = double.infinity;
+
+    for (BlueSea vector in vectors) {
+      double distance = (vector.vector2! - target).length;
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestVector = vector.vector2!;
+      }
+    }
+    return closestVector;
+  }
+
+  Vector2 adjustPositionToStayWithinBounds(
+      Vector2 position, Rect boundary, Vector2 size) {
+    double halfWidth = size.x / 2;
+    double halfHeight = size.y / 2;
+
+    // Calculate new position ensuring the entire component stays within the boundary
+    double newX = position.x;
+    double newY = position.y;
+
+    // Ensure the component doesn't go beyond the left or right boundaries
+    if (newX - halfWidth < boundary.left) {
+      newX = boundary.left + halfWidth;
+    } else if (newX + halfWidth > boundary.right) {
+      newX = boundary.right - halfWidth;
+    }
+
+    // Ensure the component doesn't go beyond the top or bottom boundaries
+    if (newY - halfHeight < boundary.top) {
+      newY = boundary.top + halfHeight;
+    } else if (newY + halfHeight > boundary.bottom) {
+      newY = boundary.bottom - halfHeight;
+    }
+
+    return Vector2(newX, newY);
   }
 
   @override
@@ -53,7 +98,8 @@ class BattleshipComponent extends SpriteComponent
             : BattleshipSymmetric.horizontal;
     size = setBattleshipSize();
     sprite = await setBattleshipSprite();
-
+    position = adjustPositionToStayWithinBounds(
+        position, GameData.instance.getSeaBlocksBoundary(), size);
     super.onTapUp(event);
   }
 

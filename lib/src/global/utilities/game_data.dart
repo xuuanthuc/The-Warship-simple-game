@@ -1,3 +1,4 @@
+import 'package:flame/components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:template/src/global/style/app_images.dart';
 import 'package:template/src/models/blue_sea.dart';
@@ -41,7 +42,7 @@ class GameData {
     ),
   ];
 
-  List<List<BlueSea>> seaBlocks = List.generate(
+  List<List<BlueSea>> blueBlocks = List.generate(
     blockLength,
     (index) => List.generate(
       blockLength,
@@ -50,4 +51,46 @@ class GameData {
       },
     ),
   );
+
+  List<BlueSea> seaBlocks = [];
+
+  List<BlueSea> setSeaBlocks() {
+    blueBlocks.asMap().forEach(
+      (yIndex, rowsOfBlocks) {
+        rowsOfBlocks.asMap().forEach(
+          (xIndex, block) {
+            block.vector2 = Vector2(
+              (xIndex.toDouble() * blockSize) -
+                  (blockSize * GameData.blockLength / 2) +
+                  (blockSize / 2),
+              (yIndex.toDouble() * blockSize) -
+                  (blockSize * GameData.blockLength / 2) +
+                  (blockSize / 2),
+            );
+            seaBlocks.add(block);
+          },
+        );
+      },
+    );
+    return seaBlocks;
+  }
+
+  // New method to get the boundaries
+  Rect getSeaBlocksBoundary() {
+    if (seaBlocks.isEmpty) return Rect.zero;
+
+    double minX = seaBlocks.first.vector2!.x;
+    double maxX = seaBlocks.first.vector2!.x;
+    double minY = seaBlocks.first.vector2!.y;
+    double maxY = seaBlocks.first.vector2!.y;
+
+    for (var block in seaBlocks) {
+      if (block.vector2!.x < minX) minX = block.vector2!.x;
+      if (block.vector2!.x > maxX) maxX = block.vector2!.x;
+      if (block.vector2!.y < minY) minY = block.vector2!.y;
+      if (block.vector2!.y > maxY) maxY = block.vector2!.y;
+    }
+
+    return Rect.fromLTRB(minX - blockSize / 2, minY - blockSize / 2, maxX + blockSize / 2, maxY + blockSize / 2);
+  }
 }
