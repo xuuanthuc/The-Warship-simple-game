@@ -1,14 +1,10 @@
 class Battleship {
-  final String horizontalSprite;
-  final String verticalSprite;
+  final String sprite;
   final int size;
-  BattleshipSymmetric symmetric;
 
   Battleship({
-    required this.horizontalSprite,
-    required this.verticalSprite,
+    required this.sprite,
     required this.size,
-    required this.symmetric,
   });
 }
 

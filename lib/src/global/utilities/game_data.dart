@@ -23,34 +23,24 @@ class GameData {
 
   List<Battleship> battleships = [
     Battleship(
-      horizontalSprite: AppImages.tinyHorizontalShip,
-      verticalSprite: AppImages.tinyVerticalShip,
+      sprite: AppImages.tinyShip,
       size: 2,
-      symmetric: BattleshipSymmetric.horizontal,
     ),
     Battleship(
-      horizontalSprite: AppImages.smallHorizontalShip,
-      verticalSprite: AppImages.smallVerticalShip,
+      sprite: AppImages.smallShip,
       size: 3,
-      symmetric: BattleshipSymmetric.horizontal,
     ),
     Battleship(
-      horizontalSprite: AppImages.smallHorizontalShip,
-      verticalSprite: AppImages.smallVerticalShip,
+      sprite: AppImages.smallShip,
       size: 3,
-      symmetric: BattleshipSymmetric.horizontal,
     ),
     Battleship(
-      horizontalSprite: AppImages.mediumHorizontalShip,
-      verticalSprite: AppImages.mediumVerticalShip,
+      sprite: AppImages.mediumShip,
       size: 4,
-      symmetric: BattleshipSymmetric.horizontal,
     ),
     Battleship(
-      horizontalSprite: AppImages.largeHorizontalShip,
-      verticalSprite: AppImages.largeVerticalShip,
+      sprite: AppImages.largeShip,
       size: 5,
-      symmetric: BattleshipSymmetric.horizontal,
     ),
   ];
 

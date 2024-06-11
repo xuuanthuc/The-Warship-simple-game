@@ -30,7 +30,7 @@ class BattleshipComponent extends SpriteComponent
 
   @override
   Future<void> onLoad() async {
-    sprite = await setBattleshipSprite();
+    sprite = await Sprite.load(battleship.sprite);
     anchor = Anchor.center;
     final paint = Paint()
       ..color = Colors.transparent
@@ -38,7 +38,10 @@ class BattleshipComponent extends SpriteComponent
     _hitBox = RectangleHitbox(position: Vector2(5, 5))
       ..paint = paint
       ..renderShape = true;
-    setBattleshipSize();
+    scale = Vector2(1, 1);
+    size = Vector2(GameData.instance.blockSize * battleship.size,
+        GameData.instance.blockSize);
+    _hitBox.size = size - Vector2.all(10);
     add(TextComponent(text: "$index"));
     add(_hitBox);
     return super.onLoad();
@@ -46,10 +49,10 @@ class BattleshipComponent extends SpriteComponent
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
-    // final localDelta = event.localDelta;
-    // final angleMatrix = Matrix2.rotation(angle);
-    // final localDeltaRotated = angleMatrix.transformed(localDelta);
-    position += event.localDelta;
+    final localDelta = event.localDelta;
+    final angleMatrix = Matrix2.rotation(angle);
+    final localDeltaRotated = angleMatrix.transformed(localDelta);
+    position += localDeltaRotated;
     super.onDragUpdate(event);
   }
 
@@ -86,18 +89,18 @@ class BattleshipComponent extends SpriteComponent
 
   Vector2 adjustPositionToStayWithinBounds(
       Vector2 position, Rect boundary, Vector2 size) {
-    double halfWidth = size.x / 2;
-    double halfHeight = size.y / 2;
+    double halfWidth = (angle == radians(90) ? size.y : size.x) / 2;
+    double halfHeight = (angle == radians(90) ? size.x : size.y) / 2;
 
     // Calculate new position ensuring the entire component stays within the boundary
     double newX = position.x;
     double newY = position.y;
 
     if (battleship.size % 2 == 0) {
-      if (battleship.symmetric == BattleshipSymmetric.horizontal) {
-        newX += GameData.instance.blockSize / 2;
-      } else {
+      if (angle == radians(90)) {
         newY += GameData.instance.blockSize / 2;
+      } else {
+        newX += GameData.instance.blockSize / 2;
       }
     }
 
@@ -119,43 +122,17 @@ class BattleshipComponent extends SpriteComponent
 
   @override
   void onTapUp(TapUpEvent event) async {
-    // angle += radians(90);
-    battleship.symmetric =
-        battleship.symmetric == BattleshipSymmetric.horizontal
-            ? BattleshipSymmetric.vertical
-            : BattleshipSymmetric.horizontal;
-    setBattleshipSize();
-    sprite = await setBattleshipSprite();
+    angle = angle == 0 ? radians(90) : 0;
     final v = findClosestVector(GameData.instance.seaBlocks, position);
     position = adjustPositionToStayWithinBounds(
         v, GameData.instance.getSeaBlocksBoundary(), size);
     super.onTapUp(event);
   }
 
-  Future<Sprite> setBattleshipSprite() async {
-    return await Sprite.load(
-      battleship.symmetric == BattleshipSymmetric.horizontal
-          ? battleship.horizontalSprite
-          : battleship.verticalSprite,
-    );
-  }
-
-  Vector2 setBattleshipSize() {
-    if (battleship.symmetric == BattleshipSymmetric.horizontal) {
-      size = Vector2(GameData.instance.blockSize * battleship.size,
-          GameData.instance.blockSize);
-    } else {
-      size = Vector2(GameData.instance.blockSize,
-          GameData.instance.blockSize * battleship.size);
-    }
-    _hitBox.size = size - Vector2.all(10);
-    return size;
-  }
-
   @override
   void onCollisionStart(
       Set<Vector2> intersectionPoints, PositionComponent other) {
-    if(other.hashCode != this.hashCode){
+    if (other.hashCode != this.hashCode) {
       _collisions.add(other);
     }
     _hitBox.paint.color = Colors.red.withOpacity(0.5);
@@ -164,10 +141,10 @@ class BattleshipComponent extends SpriteComponent
 
   @override
   void onCollisionEnd(PositionComponent other) {
-    if(other.hashCode != this.hashCode){
+    if (other.hashCode != this.hashCode) {
       _collisions.remove(other);
     }
-    if(_collisions.isEmpty){
+    if (_collisions.isEmpty) {
       _hitBox.paint.color = Colors.transparent;
     }
     super.onCollisionEnd(other);
