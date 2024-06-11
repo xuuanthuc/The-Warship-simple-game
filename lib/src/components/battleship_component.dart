@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:ui';
-
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:flame/game.dart';
 import 'package:flame_bloc/flame_bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/models/battleship.dart';
 import 'package:template/src/models/blue_sea.dart';
@@ -15,22 +14,41 @@ class BattleshipComponent extends SpriteComponent
         DragCallbacks,
         TapCallbacks,
         FlameBlocReader<BattleshipControlCubit, BattleshipControlState>,
-        FlameBlocListenable<BattleshipControlCubit, BattleshipControlState> {
+        FlameBlocListenable<BattleshipControlCubit, BattleshipControlState>,
+        CollisionCallbacks {
   final Battleship battleship;
+  final int index;
 
-  BattleshipComponent({required this.battleship});
+  BattleshipComponent({
+    required this.battleship,
+    required this.index,
+  });
+
+  late ShapeHitbox _hitBox;
+
+  List<PositionComponent> _collisions = [];
 
   @override
   Future<void> onLoad() async {
     sprite = await setBattleshipSprite();
-    position = Vector2(200, 100);
     anchor = Anchor.center;
-    size = setBattleshipSize();
+    final paint = Paint()
+      ..color = Colors.transparent
+      ..style = PaintingStyle.fill;
+    _hitBox = RectangleHitbox(position: Vector2(5, 5))
+      ..paint = paint
+      ..renderShape = true;
+    setBattleshipSize();
+    add(TextComponent(text: "$index"));
+    add(_hitBox);
     return super.onLoad();
   }
 
   @override
   void onDragUpdate(DragUpdateEvent event) {
+    // final localDelta = event.localDelta;
+    // final angleMatrix = Matrix2.rotation(angle);
+    // final localDeltaRotated = angleMatrix.transformed(localDelta);
     position += event.localDelta;
     super.onDragUpdate(event);
   }
@@ -38,12 +56,14 @@ class BattleshipComponent extends SpriteComponent
   @override
   void onDragStart(DragStartEvent event) {
     scale = Vector2(1.1, 1.1);
+    priority = 10;
     super.onDragStart(event);
   }
 
   @override
   void onDragEnd(DragEndEvent event) {
     scale = Vector2(1, 1);
+    priority = 0;
     final v = findClosestVector(GameData.instance.seaBlocks, position);
     position = adjustPositionToStayWithinBounds(
         v, GameData.instance.getSeaBlocksBoundary(), size);
@@ -73,6 +93,14 @@ class BattleshipComponent extends SpriteComponent
     double newX = position.x;
     double newY = position.y;
 
+    if (battleship.size % 2 == 0) {
+      if (battleship.symmetric == BattleshipSymmetric.horizontal) {
+        newX += GameData.instance.blockSize / 2;
+      } else {
+        newY += GameData.instance.blockSize / 2;
+      }
+    }
+
     // Ensure the component doesn't go beyond the left or right boundaries
     if (newX - halfWidth < boundary.left) {
       newX = boundary.left + halfWidth;
@@ -86,20 +114,21 @@ class BattleshipComponent extends SpriteComponent
     } else if (newY + halfHeight > boundary.bottom) {
       newY = boundary.bottom - halfHeight;
     }
-
     return Vector2(newX, newY);
   }
 
   @override
   void onTapUp(TapUpEvent event) async {
+    // angle += radians(90);
     battleship.symmetric =
         battleship.symmetric == BattleshipSymmetric.horizontal
             ? BattleshipSymmetric.vertical
             : BattleshipSymmetric.horizontal;
-    size = setBattleshipSize();
+    setBattleshipSize();
     sprite = await setBattleshipSprite();
+    final v = findClosestVector(GameData.instance.seaBlocks, position);
     position = adjustPositionToStayWithinBounds(
-        position, GameData.instance.getSeaBlocksBoundary(), size);
+        v, GameData.instance.getSeaBlocksBoundary(), size);
     super.onTapUp(event);
   }
 
@@ -112,10 +141,35 @@ class BattleshipComponent extends SpriteComponent
   }
 
   Vector2 setBattleshipSize() {
-    return battleship.symmetric == BattleshipSymmetric.horizontal
-        ? Vector2(GameData.instance.blockSize * battleship.size,
-            GameData.instance.blockSize)
-        : Vector2(GameData.instance.blockSize,
-            GameData.instance.blockSize * battleship.size);
+    if (battleship.symmetric == BattleshipSymmetric.horizontal) {
+      size = Vector2(GameData.instance.blockSize * battleship.size,
+          GameData.instance.blockSize);
+    } else {
+      size = Vector2(GameData.instance.blockSize,
+          GameData.instance.blockSize * battleship.size);
+    }
+    _hitBox.size = size - Vector2.all(10);
+    return size;
+  }
+
+  @override
+  void onCollisionStart(
+      Set<Vector2> intersectionPoints, PositionComponent other) {
+    if(other.hashCode != this.hashCode){
+      _collisions.add(other);
+    }
+    _hitBox.paint.color = Colors.red.withOpacity(0.5);
+    super.onCollisionStart(intersectionPoints, other);
+  }
+
+  @override
+  void onCollisionEnd(PositionComponent other) {
+    if(other.hashCode != this.hashCode){
+      _collisions.remove(other);
+    }
+    if(_collisions.isEmpty){
+      _hitBox.paint.color = Colors.transparent;
+    }
+    super.onCollisionEnd(other);
   }
 }

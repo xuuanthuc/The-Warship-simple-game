@@ -7,7 +7,6 @@ import 'package:template/src/components/battleship_component.dart';
 import 'package:template/src/components/blue_sea_component.dart';
 import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
-
 import '../../models/blue_sea.dart';
 
 class RootScreen extends StatelessWidget {
@@ -21,7 +20,7 @@ class RootScreen extends StatelessWidget {
   }
 }
 
-class MyGame extends FlameGame {
+class MyGame extends FlameGame with HasCollisionDetection {
   @override
   Color backgroundColor() {
     return Colors.blue.shade200;
@@ -44,18 +43,22 @@ class BattleshipWorld extends World {
   @override
   FutureOr<void> onLoad() {
     final game = GameData.instance;
-    for (var block in game.setSeaBlocks()) {
+
+    game.setSeaBlocks();
+    for (var i = 0; i < game.seaBlocks.length; i++) {
       add(
         BlueSeaComponent(
-          vector2: block.vector2 ?? Vector2.zero(),
+          blueSea: game.seaBlocks[i],
+          index: i,
         ),
       );
     }
 
-    for (var ship in game.battleships) {
+    for (var i = 0; i < game.battleships.length; i++) {
       add(
         BattleshipComponent(
-          battleship: ship,
+          battleship: game.battleships[i],
+          index: i,
         ),
       );
     }

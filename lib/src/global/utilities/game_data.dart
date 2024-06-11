@@ -23,6 +23,12 @@ class GameData {
 
   List<Battleship> battleships = [
     Battleship(
+      horizontalSprite: AppImages.tinyHorizontalShip,
+      verticalSprite: AppImages.tinyVerticalShip,
+      size: 2,
+      symmetric: BattleshipSymmetric.horizontal,
+    ),
+    Battleship(
       horizontalSprite: AppImages.smallHorizontalShip,
       verticalSprite: AppImages.smallVerticalShip,
       size: 3,
@@ -40,6 +46,12 @@ class GameData {
       size: 4,
       symmetric: BattleshipSymmetric.horizontal,
     ),
+    Battleship(
+      horizontalSprite: AppImages.largeHorizontalShip,
+      verticalSprite: AppImages.largeVerticalShip,
+      size: 5,
+      symmetric: BattleshipSymmetric.horizontal,
+    ),
   ];
 
   List<List<BlueSea>> blueBlocks = List.generate(
@@ -55,6 +67,7 @@ class GameData {
   List<BlueSea> seaBlocks = [];
 
   List<BlueSea> setSeaBlocks() {
+    seaBlocks.clear();
     blueBlocks.asMap().forEach(
       (yIndex, rowsOfBlocks) {
         rowsOfBlocks.asMap().forEach(
@@ -67,6 +80,7 @@ class GameData {
                   (blockSize * GameData.blockLength / 2) +
                   (blockSize / 2),
             );
+            block.coordinates = [yIndex,xIndex];
             seaBlocks.add(block);
           },
         );
@@ -91,6 +105,7 @@ class GameData {
       if (block.vector2!.y > maxY) maxY = block.vector2!.y;
     }
 
-    return Rect.fromLTRB(minX - blockSize / 2, minY - blockSize / 2, maxX + blockSize / 2, maxY + blockSize / 2);
+    return Rect.fromLTRB(minX - blockSize / 2, minY - blockSize / 2,
+        maxX + blockSize / 2, maxY + blockSize / 2);
   }
 }
