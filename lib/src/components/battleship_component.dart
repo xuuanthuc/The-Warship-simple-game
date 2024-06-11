@@ -42,7 +42,6 @@ class BattleshipComponent extends SpriteComponent
     size = Vector2(GameData.instance.blockSize * battleship.size,
         GameData.instance.blockSize);
     _hitBox.size = size - Vector2.all(10);
-    add(TextComponent(text: "$index"));
     add(_hitBox);
     return super.onLoad();
   }
@@ -70,6 +69,7 @@ class BattleshipComponent extends SpriteComponent
     final v = findClosestVector(GameData.instance.seaBlocks, position);
     position = adjustPositionToStayWithinBounds(
         v, GameData.instance.getSeaBlocksBoundary(), size);
+    getOverlappingSeaBlocks();
     super.onDragEnd(event);
   }
 
@@ -126,6 +126,7 @@ class BattleshipComponent extends SpriteComponent
     final v = findClosestVector(GameData.instance.seaBlocks, position);
     position = adjustPositionToStayWithinBounds(
         v, GameData.instance.getSeaBlocksBoundary(), size);
+    getOverlappingSeaBlocks();
     super.onTapUp(event);
   }
 
@@ -148,5 +149,51 @@ class BattleshipComponent extends SpriteComponent
       _hitBox.paint.color = Colors.transparent;
     }
     super.onCollisionEnd(other);
+  }
+
+  List<BlueSea> getOverlappingSeaBlocks() {
+    List<BlueSea> _list = [];
+    Rect battleshipRect = getBoundingRect();
+    for (BlueSea b in GameData.instance.seaBlocks) {
+      double minX = b.vector2!.x;
+      double maxX = b.vector2!.x;
+      double minY = b.vector2!.y;
+      double maxY = b.vector2!.y;
+
+      final r = Rect.fromLTRB(minX, minY, maxX, maxY);
+
+      if (battleshipRect.overlaps(r)) {
+        _list.add(b);
+        print(b.coordinates);
+      }
+    }
+    return _list;
+  }
+
+  Rect getBoundingRect() {
+    double halfWidth = angle == radians(90) ? size.y / 2 : size.x / 2;
+    double halfHeight = angle == radians(90) ? size.x / 2 : size.y / 2;
+
+    Vector2 topLeft = Vector2(-halfWidth, -halfHeight);
+    Vector2 topRight = Vector2(halfWidth, -halfHeight);
+    Vector2 bottomLeft = Vector2(-halfWidth, halfHeight);
+    Vector2 bottomRight = Vector2(halfWidth, halfHeight);
+
+    if (angle == radians(90)) {
+      topLeft -= position;
+      topRight -= position;
+      bottomLeft -= position;
+      bottomRight -= position;
+    } else {
+      topLeft += position;
+      topRight += position;
+      bottomLeft += position;
+      bottomRight += position;
+    }
+    final boundingRect = angle == radians(90)
+        ? Rect.fromLTRB(
+            -bottomRight.x, -bottomRight.y, -bottomLeft.x, -topLeft.y)
+        : Rect.fromLTRB(topLeft.x, topLeft.y, topRight.x, bottomLeft.y);
+    return boundingRect;
   }
 }
