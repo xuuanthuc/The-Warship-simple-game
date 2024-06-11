@@ -7,6 +7,7 @@ import 'package:template/src/components/battleship_component.dart';
 import 'package:template/src/components/blue_sea_component.dart';
 import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
+import '../../components/ready_button_component.dart';
 import '../../models/blue_sea.dart';
 
 class RootScreen extends StatelessWidget {
@@ -32,7 +33,10 @@ class MyGame extends FlameGame with HasCollisionDetection {
     add(
       FlameBlocProvider<BattleshipControlCubit, BattleshipControlState>(
         create: () => BattleshipControlCubit(),
-        children: [world],
+        children: [
+          world,
+          ReadyButtonComponent()
+        ],
       ),
     );
     return super.onLoad();

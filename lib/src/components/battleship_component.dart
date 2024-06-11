@@ -135,6 +135,7 @@ class BattleshipComponent extends SpriteComponent
       Set<Vector2> intersectionPoints, PositionComponent other) {
     if (other.hashCode != this.hashCode) {
       _collisions.add(other);
+      bloc.addCollisionBlocks(other);
     }
     _hitBox.paint.color = Colors.red.withOpacity(0.5);
     super.onCollisionStart(intersectionPoints, other);
@@ -144,6 +145,7 @@ class BattleshipComponent extends SpriteComponent
   void onCollisionEnd(PositionComponent other) {
     if (other.hashCode != this.hashCode) {
       _collisions.remove(other);
+      bloc.removeCollisionBlocks(other);
     }
     if (_collisions.isEmpty) {
       _hitBox.paint.color = Colors.transparent;
@@ -152,7 +154,7 @@ class BattleshipComponent extends SpriteComponent
   }
 
   List<BlueSea> getOverlappingSeaBlocks() {
-    List<BlueSea> _list = [];
+    List<BlueSea> _overlappingSeaBlocks = [];
     Rect battleshipRect = getBoundingRect();
     for (BlueSea b in GameData.instance.seaBlocks) {
       double minX = b.vector2!.x;
@@ -163,11 +165,11 @@ class BattleshipComponent extends SpriteComponent
       final r = Rect.fromLTRB(minX, minY, maxX, maxY);
 
       if (battleshipRect.overlaps(r)) {
-        _list.add(b);
+        _overlappingSeaBlocks.add(b);
         print(b.coordinates);
       }
     }
-    return _list;
+    return _overlappingSeaBlocks;
   }
 
   Rect getBoundingRect() {
