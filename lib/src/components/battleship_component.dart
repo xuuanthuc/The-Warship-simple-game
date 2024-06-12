@@ -8,9 +8,11 @@ import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/models/battleship.dart';
 import 'package:template/src/models/blue_sea.dart';
 import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
+import 'package:template/src/screens/root/root_screen.dart';
 
 class BattleshipComponent extends SpriteComponent
     with
+        HasGameRef<MyGame>,
         DragCallbacks,
         TapCallbacks,
         FlameBlocReader<BattleshipControlCubit, BattleshipControlState>,
@@ -18,13 +20,11 @@ class BattleshipComponent extends SpriteComponent
         CollisionCallbacks {
   final Battleship battleship;
   final int index;
-  final VoidCallback onCollisionCheck;
 
   BattleshipComponent({
     ComponentKey? key,
     required this.battleship,
     required this.index,
-    required this.onCollisionCheck,
   }) : super(key: key);
 
   late ShapeHitbox _hitBox;
@@ -151,6 +151,12 @@ class BattleshipComponent extends SpriteComponent
     super.onCollisionEnd(other);
   }
 
+  void onCollisionCheck() {
+    bloc.checkCollisionBlocks(
+      gameRef.world.children.query<BattleshipComponent>(),
+    );
+  }
+
   List<BlueSea> getOverlappingSeaBlocks() {
     overlappingSeaBlocks.clear();
     Rect battleshipRect = getBoundingRect();
@@ -204,5 +210,11 @@ class BattleshipComponent extends SpriteComponent
       size,
     );
     getOverlappingSeaBlocks();
+  }
+
+  @override
+  bool listenWhen(
+      BattleshipControlState previousState, BattleshipControlState newState) {
+    return newState.action == GameAction.prepare;
   }
 }

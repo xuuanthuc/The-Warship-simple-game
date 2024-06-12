@@ -1,32 +1,40 @@
+import 'dart:ui';
+
 import 'package:flame/components.dart';
+import 'package:flame/events.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:template/src/global/style/app_images.dart';
 import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
 
+import '../screens/root/root_screen.dart';
+import 'battleship_component.dart';
+import 'blue_sea_component.dart';
+
 class ReadyButtonComponent extends SpriteComponent
     with
+        HasGameRef<MyGame>,
         FlameBlocListenable<BattleshipControlCubit, BattleshipControlState>,
-        HasVisibility {
+        HasVisibility,
+        TapCallbacks {
+
   @override
   Future<void> onLoad() async {
     sprite = await Sprite.load(AppImages.readyButton);
     anchor = Anchor.center;
     isVisible = false;
+    final game = GameData.instance;
+    position = Vector2(0, game.blockSize * GameData.blockLength / 2 + 80);
     return super.onLoad();
   }
 
   @override
-  void onGameResize(Vector2 size) {
-    final game = GameData.instance;
-    position = game.screenSize.width < game.screenSize.height
-        ? Vector2(
-            game.screenSize.width / 2,
-            game.blockSize * GameData.blockLength * 1.7,
-          )
-        : Vector2(game.blockSize * GameData.blockLength * 2,
-            game.blockSize * GameData.blockLength);
-    super.onGameResize(size);
+  void onTapUp(TapUpEvent event) {
+    bloc.createLayoutBattle(
+      gameRef.world.children.query<BattleshipComponent>(),
+      gameRef.world.children.query<BlueSeaComponent>(),
+    );
+    super.onTapUp(event);
   }
 
   @override

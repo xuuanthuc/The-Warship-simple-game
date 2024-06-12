@@ -7,4 +7,6 @@ abstract class AppImages {
   static const String tinyShip = "tiny_ship.png";
   static const String largeShip = "large_ship.png";
   static const String readyButton = "ready_button.png";
+  static const String nonShip = "non_ship.png";
+  static const String hasShip = "has_ship.png";
 }
