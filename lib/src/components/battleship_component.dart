@@ -18,15 +18,19 @@ class BattleshipComponent extends SpriteComponent
         CollisionCallbacks {
   final Battleship battleship;
   final int index;
+  final VoidCallback onCollisionCheck;
 
   BattleshipComponent({
+    ComponentKey? key,
     required this.battleship,
     required this.index,
-  });
+    required this.onCollisionCheck,
+  }) : super(key: key);
 
   late ShapeHitbox _hitBox;
 
-  List<PositionComponent> _collisions = [];
+  List<PositionComponent> collisions = [];
+  List<BlueSea> overlappingSeaBlocks = [];
 
   @override
   Future<void> onLoad() async {
@@ -66,10 +70,7 @@ class BattleshipComponent extends SpriteComponent
   void onDragEnd(DragEndEvent event) {
     scale = Vector2(1, 1);
     priority = 0;
-    final v = findClosestVector(GameData.instance.seaBlocks, position);
-    position = adjustPositionToStayWithinBounds(
-        v, GameData.instance.getSeaBlocksBoundary(), size);
-    getOverlappingSeaBlocks();
+    handlePosition(findClosestVector(GameData.instance.seaBlocks, position));
     super.onDragEnd(event);
   }
 
@@ -123,10 +124,7 @@ class BattleshipComponent extends SpriteComponent
   @override
   void onTapUp(TapUpEvent event) async {
     angle = angle == 0 ? radians(90) : 0;
-    final v = findClosestVector(GameData.instance.seaBlocks, position);
-    position = adjustPositionToStayWithinBounds(
-        v, GameData.instance.getSeaBlocksBoundary(), size);
-    getOverlappingSeaBlocks();
+    handlePosition(findClosestVector(GameData.instance.seaBlocks, position));
     super.onTapUp(event);
   }
 
@@ -134,27 +132,27 @@ class BattleshipComponent extends SpriteComponent
   void onCollisionStart(
       Set<Vector2> intersectionPoints, PositionComponent other) {
     if (other.hashCode != this.hashCode) {
-      _collisions.add(other);
-      bloc.addCollisionBlocks(other);
+      collisions.add(other);
     }
     _hitBox.paint.color = Colors.red.withOpacity(0.5);
+    onCollisionCheck();
     super.onCollisionStart(intersectionPoints, other);
   }
 
   @override
   void onCollisionEnd(PositionComponent other) {
     if (other.hashCode != this.hashCode) {
-      _collisions.remove(other);
-      bloc.removeCollisionBlocks(other);
+      collisions.remove(other);
     }
-    if (_collisions.isEmpty) {
+    if (collisions.isEmpty) {
       _hitBox.paint.color = Colors.transparent;
     }
+    onCollisionCheck();
     super.onCollisionEnd(other);
   }
 
   List<BlueSea> getOverlappingSeaBlocks() {
-    List<BlueSea> _overlappingSeaBlocks = [];
+    overlappingSeaBlocks.clear();
     Rect battleshipRect = getBoundingRect();
     for (BlueSea b in GameData.instance.seaBlocks) {
       double minX = b.vector2!.x;
@@ -165,11 +163,11 @@ class BattleshipComponent extends SpriteComponent
       final r = Rect.fromLTRB(minX, minY, maxX, maxY);
 
       if (battleshipRect.overlaps(r)) {
-        _overlappingSeaBlocks.add(b);
+        overlappingSeaBlocks.add(b);
         print(b.coordinates);
       }
     }
-    return _overlappingSeaBlocks;
+    return overlappingSeaBlocks;
   }
 
   Rect getBoundingRect() {
@@ -197,5 +195,14 @@ class BattleshipComponent extends SpriteComponent
             -bottomRight.x, -bottomRight.y, -bottomLeft.x, -topLeft.y)
         : Rect.fromLTRB(topLeft.x, topLeft.y, topRight.x, bottomLeft.y);
     return boundingRect;
+  }
+
+  void handlePosition(Vector2 targetPosition) {
+    position = adjustPositionToStayWithinBounds(
+      targetPosition,
+      GameData.instance.getSeaBlocksBoundary(),
+      size,
+    );
+    getOverlappingSeaBlocks();
   }
 }

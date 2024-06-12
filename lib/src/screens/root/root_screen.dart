@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame/camera.dart';
 import 'package:flame/game.dart';
@@ -30,12 +31,12 @@ class MyGame extends FlameGame with HasCollisionDetection {
   @override
   FutureOr<void> onLoad() async {
     world = BattleshipWorld();
-    add(
+    await add(
       FlameBlocProvider<BattleshipControlCubit, BattleshipControlState>(
         create: () => BattleshipControlCubit(),
         children: [
           world,
-          ReadyButtonComponent()
+          ReadyButtonComponent(),
         ],
       ),
     );
@@ -43,29 +44,36 @@ class MyGame extends FlameGame with HasCollisionDetection {
   }
 }
 
-class BattleshipWorld extends World {
+class BattleshipWorld extends World
+    with FlameBlocReader<BattleshipControlCubit, BattleshipControlState> {
   @override
-  FutureOr<void> onLoad() {
+  Future<void> onLoad() async {
     final game = GameData.instance;
 
     game.setSeaBlocks();
     for (var i = 0; i < game.seaBlocks.length; i++) {
-      add(
+      await add(
         BlueSeaComponent(
           blueSea: game.seaBlocks[i],
           index: i,
         ),
       );
     }
-
     for (var i = 0; i < game.battleships.length; i++) {
-      add(
+      await add(
         BattleshipComponent(
+          key: ComponentKey.unique(),
           battleship: game.battleships[i],
           index: i,
+          onCollisionCheck: () {
+            bloc.checkCollisionBlocks(children.query<BattleshipComponent>());
+          },
         ),
       );
     }
+    Future.delayed(Duration(seconds: 2)).then((onValue){
+      bloc.shuffleShipPosition(children.query<BattleshipComponent>());
+    });
     return super.onLoad();
   }
 }

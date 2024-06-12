@@ -1,21 +1,18 @@
-import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:template/src/global/style/app_images.dart';
 import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
 
-class ReadyButtonComponent extends PositionComponent
-    with FlameBlocListenable<BattleshipControlCubit, BattleshipControlState> {
-  SpriteComponent? _button;
-
+class ReadyButtonComponent extends SpriteComponent
+    with
+        FlameBlocListenable<BattleshipControlCubit, BattleshipControlState>,
+        HasVisibility {
   @override
   Future<void> onLoad() async {
-    final sprite = await Sprite.load(AppImages.readyButton);
-    _button = SpriteComponent(sprite: sprite, anchor: Anchor.center);
+    sprite = await Sprite.load(AppImages.readyButton);
     anchor = Anchor.center;
-    add(_button!);
+    isVisible = false;
     return super.onLoad();
   }
 
@@ -34,11 +31,10 @@ class ReadyButtonComponent extends PositionComponent
 
   @override
   void onNewState(BattleshipControlState state) {
-    if (_button == null) return;
-    if (state.isPrepared == true) {
-      if (_button!.isRemoved) add(_button!);
+    if (state.status == GameStatus.ready) {
+      this.isVisible = true;
     } else {
-      if (_button!.isMounted) remove(_button!);
+      this.isVisible = false;
     }
     super.onNewState(state);
   }

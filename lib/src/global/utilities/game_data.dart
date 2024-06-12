@@ -5,6 +5,14 @@ import 'package:template/src/models/blue_sea.dart';
 
 import '../../models/battleship.dart';
 
+enum GameStatus {
+  prepare,
+  ready,
+  start,
+  paused,
+  end,
+}
+
 class GameData {
   GameData._privateConstructor();
 
@@ -70,7 +78,7 @@ class GameData {
                   (blockSize * GameData.blockLength / 2) +
                   (blockSize / 2),
             );
-            block.coordinates = [yIndex,xIndex];
+            block.coordinates = [yIndex, xIndex];
             seaBlocks.add(block);
           },
         );

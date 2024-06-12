@@ -1,19 +1,28 @@
 part of 'battleship_control_cubit.dart';
 
 @immutable
-class BattleshipControlState {
-  final bool? isPrepared;
-  final List<PositionComponent>? collisions;
+class BattleshipControlState extends Equatable {
+  final GameStatus status;
 
   const BattleshipControlState({
-    this.isPrepared,
-    this.collisions,
+    required this.status,
   });
 
-  BattleshipControlState copyWith({bool? isPrepared, List<PositionComponent>? collisions}) {
+  const BattleshipControlState.empty()
+      : this(
+          status: GameStatus.prepare,
+        );
+
+  BattleshipControlState copyWith({
+    GameStatus? status,
+  }) {
     return BattleshipControlState(
-      isPrepared: isPrepared ?? this.isPrepared,
-      collisions: collisions ?? this.collisions,
+      status: status ?? this.status,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        status,
+      ];
 }

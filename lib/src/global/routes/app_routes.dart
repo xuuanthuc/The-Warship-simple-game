@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../screens/home/home_screen.dart';
 import '../../screens/root/root_screen.dart';
 import '../../screens/splash/splash_screen.dart';
 import 'route_keys.dart';
@@ -10,9 +9,7 @@ class AppRoutes {
     switch (settings.name) {
       case RouteKey.splash:
         return _materialRoute(routeSettings, const SplashScreen());
-      case RouteKey.home:
-        return _materialRoute(routeSettings, const HomeScreen());
-        case RouteKey.root:
+      case RouteKey.root:
         return _materialRoute(routeSettings, const RootScreen());
       default:
         return null;
