@@ -27,16 +27,16 @@ class BlueSeaComponent extends SpriteComponent
     position = blueSea.vector2 ?? Vector2.zero();
     anchor = Anchor.center;
     size = Vector2.all(GameData.instance.blockSize);
-    add(
-      TextComponent(
-        text: "${blueSea.coordinates?.join(" - ")}",
-        anchor: Anchor.center,
-        position: Vector2.all(GameData.instance.blockSize / 2),
-        textRenderer: TextPaint(
-          style: TextStyle(color: Colors.black)
-        )
-      ),
-    );
+    // add(
+    //   TextComponent(
+    //     text: "${blueSea.coordinates?.join(" - ")}",
+    //     anchor: Anchor.center,
+    //     position: Vector2.all(GameData.instance.blockSize / 2),
+    //     textRenderer: TextPaint(
+    //       style: TextStyle(color: Colors.black)
+    //     )
+    //   ),
+    // );
     return super.onLoad();
   }
 }

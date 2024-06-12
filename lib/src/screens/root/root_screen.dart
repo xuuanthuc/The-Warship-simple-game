@@ -7,10 +7,12 @@ import 'package:template/src/components/battle_component.dart';
 import 'package:template/src/components/battleship_component.dart';
 import 'package:template/src/components/blue_sea_component.dart';
 import 'package:template/src/di/dependencies.dart';
+import 'package:template/src/global/style/app_images.dart';
 import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
 import '../../components/ready_button_component.dart';
 import '../../models/battle.dart';
+import 'package:flame/parallax.dart';
 
 class RootScreen extends StatelessWidget {
   const RootScreen({Key? key}) : super(key: key);
@@ -31,6 +33,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
 
   @override
   FutureOr<void> onLoad() async {
+    add(MyParallaxComponent());
     world = BattleshipWorld();
     await add(
       FlameBlocProvider<BattleshipControlCubit, BattleshipControlState>(
@@ -51,6 +54,7 @@ class BattleshipWorld extends World
   @override
   Future<void> onLoad() async {
     final game = GameData.instance;
+    add(OceanSprite());
     game.setSeaBlocks();
     for (var i = 0; i < game.seaBlocks.length; i++) {
       await add(
@@ -99,5 +103,30 @@ class BattleshipWorld extends World
     BattleshipControlState newState,
   ) {
     return newState.action == GameAction.ready;
+  }
+}
+
+class OceanSprite extends SpriteComponent {
+  @override
+  FutureOr<void> onLoad() async {
+    sprite = await Sprite.load(AppImages.background);
+    anchor = Anchor.center;
+    size = Vector2.all(GameData.instance.blockSize * GameData.blockLength);
+    return super.onLoad();
+  }
+}
+
+class MyParallaxComponent extends ParallaxComponent<MyGame>
+    with HasGameRef<MyGame> {
+  @override
+  Future<void> onLoad() async {
+    parallax = await gameRef.loadParallax(
+      [
+        ParallaxImageData(AppImages.parallax),
+      ],
+      baseVelocity: Vector2(5, 0),
+      velocityMultiplierDelta: Vector2(1.8, 1.0),
+      filterQuality: FilterQuality.none,
+    );
   }
 }
