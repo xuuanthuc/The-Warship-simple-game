@@ -105,7 +105,7 @@ class BattleshipWorld extends World
       await add(
         ShipInBattleComponent(
           key: ComponentKey.unique(),
-          battleship: ship.ship,
+          shipInBattle: ship,
           index: i,
           angleInit: ship.angle,
           positionInit: GameData.instance.setBlockVector2(

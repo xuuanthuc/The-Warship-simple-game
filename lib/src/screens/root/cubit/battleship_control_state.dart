@@ -4,6 +4,9 @@ enum GameAction {
   prepare,
   shuffle,
   ready,
+  checkHit,
+  checkSunk,
+  shoot,
 }
 
 @immutable

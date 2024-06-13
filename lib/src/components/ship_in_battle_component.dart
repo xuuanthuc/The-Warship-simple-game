@@ -11,15 +11,15 @@ import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
 class ShipInBattleComponent extends SpriteComponent
     with
         FlameBlocReader<BattleshipControlCubit, BattleshipControlState>,
-        FlameBlocListenable<BattleshipControlCubit, BattleshipControlState> {
-  final Battleship battleship;
+        FlameBlocListenable<BattleshipControlCubit, BattleshipControlState>, HasVisibility {
+  final ShipInBattle shipInBattle;
   final int index;
   final Vector2 positionInit;
   final double angleInit;
 
   ShipInBattleComponent({
     ComponentKey? key,
-    required this.battleship,
+    required this.shipInBattle,
     required this.index,
     required this.positionInit,
     required this.angleInit,
@@ -30,14 +30,15 @@ class ShipInBattleComponent extends SpriteComponent
 
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load(battleship.sprite);
+    sprite = await Sprite.load(shipInBattle.ship.sprite);
     anchor = Anchor.center;
     angle = angleInit;
     priority = 3;
+    isVisible = false;
     Future.delayed(Duration(seconds: 1)).then((_) {
       handlePosition(findClosestVector(bloc.state.battles, positionInit));
     });
-    size = Vector2(GameData.instance.blockSize * battleship.size,
+    size = Vector2(GameData.instance.blockSize * shipInBattle.ship.size,
         GameData.instance.blockSize);
     return super.onLoad();
   }
@@ -66,7 +67,7 @@ class ShipInBattleComponent extends SpriteComponent
     double newX = position.x;
     double newY = position.y;
 
-    if (battleship.size % 2 == 0) {
+    if (shipInBattle.ship.size % 2 == 0) {
       if (angle == radians(90)) {
         newY += GameData.instance.blockSize / 2;
       } else {
@@ -96,5 +97,14 @@ class ShipInBattleComponent extends SpriteComponent
       GameData.instance.getSeaBlocksBoundary(),
       size,
     );
+  }
+
+  @override
+  void onNewState(BattleshipControlState state) {
+    print('check state');
+    if(shipInBattle.positions.isEmpty){
+      isVisible = true;
+    }
+    super.onNewState(state);
   }
 }

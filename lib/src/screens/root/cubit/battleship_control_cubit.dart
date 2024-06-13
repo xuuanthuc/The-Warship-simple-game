@@ -105,12 +105,11 @@ class BattleshipControlCubit extends Cubit<BattleshipControlState> {
 
   void shootEnemy(SeaInBattle battle) {
     if (battle.status == BattleSquareStatus.determined) return;
+    emit(state.copyWith(action: GameAction.shoot));
     battle.status = BattleSquareStatus.determined;
-    print(battle.blueSea.coordinates);
     state.ships.forEach((ship){
-      print(ship.toString());
-      final target = ship.positions.firstWhereOrNull((ps) => ps.coordinates == battle.blueSea.coordinates);
-      print(target);
+      ship.positions.removeWhere((ps) => ps.coordinates == battle.blueSea.coordinates);
     });
+    emit(state.copyWith(action: GameAction.checkSunk));
   }
 }
