@@ -39,7 +39,7 @@ class ReadyButtonComponent extends SpriteComponent
 
   @override
   void onNewState(BattleshipControlState state) {
-    if (state.status == GameStatus.ready) {
+    if (state.status == GameStatus.prepared) {
       this.isVisible = true;
     } else {
       this.isVisible = false;

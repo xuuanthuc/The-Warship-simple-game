@@ -10,6 +10,7 @@ import 'package:template/src/models/battle.dart';
 import 'package:template/src/models/blue_sea.dart';
 import '../../../components/battleship_component.dart';
 import '../../../global/utilities/game_data.dart';
+import 'package:collection/collection.dart';
 
 part 'battleship_control_state.dart';
 
@@ -20,12 +21,12 @@ class BattleshipControlCubit extends Cubit<BattleshipControlState> {
   void checkCollisionBlocks(List<BattleshipComponent> components) {
     if (components.any((b) => b.collisions.isNotEmpty)) {
       emit(state.copyWith(
-        status: GameStatus.prepare,
+        status: GameStatus.preparing,
         action: GameAction.prepare,
       ));
     } else {
       emit(state.copyWith(
-        status: GameStatus.ready,
+        status: GameStatus.prepared,
         action: GameAction.prepare,
       ));
     }
@@ -50,12 +51,12 @@ class BattleshipControlCubit extends Cubit<BattleshipControlState> {
     List<BlueSea> targetSea,
   ) {
     /// create [target] is random [BlueSea] in target list
-    var target = targetSea[_random.nextInt(targetSea.length)];
+    final index = _random.nextInt(targetSea.length);
+    var target = targetSea[index];
     final targetPosition = target.vector2 ?? Vector2.zero();
-
     /// set new position for BattleshipSprite
+    ship.targetPoint = target;
     ship.handlePosition(targetPosition);
-
     /// Remove sea's item if it contains in ship's overlapping list
     targetSea.removeWhere((tg) => ship.overlappingSeaBlocks.contains(tg));
 
@@ -70,24 +71,46 @@ class BattleshipControlCubit extends Cubit<BattleshipControlState> {
     List<BattleshipComponent> ships,
     List<BlueSeaComponent> blocks,
   ) {
-    List<Battle> battles = [];
+    List<SeaInBattle> seaBlocks = [];
+    List<ShipInBattle> shipBlocks = [];
+
+    for (final BattleshipComponent ship in ships) {
+      final newShipSquare = ShipInBattle(
+        positions: ship.overlappingSeaBlocks,
+        ship: ship.battleship,
+        angle: ship.angle,
+        centerPoint: ship.targetPoint,
+      );
+      shipBlocks.add(newShipSquare);
+    }
+
     for (final BlueSeaComponent block in blocks) {
-      final newBattleSquare = Battle(
+      final ship = ships.firstWhereOrNull(
+          (ship) => ship.overlappingSeaBlocks.contains(block.blueSea));
+      final newBattleSquare = SeaInBattle(
         blueSea: block.blueSea,
         status: BattleSquareStatus.undefined,
-        type: ships.any(
-                (ship) => ship.overlappingSeaBlocks.contains(block.blueSea))
-            ? BattleSquareType.ship
-            : BattleSquareType.sea,
+        type: ship != null ? BattleSquareType.ship : BattleSquareType.sea,
       );
-      battles.add(newBattleSquare);
+      seaBlocks.add(newBattleSquare);
     }
-    emit(state.copyWith(battles: battles, action: GameAction.ready));
+
+    emit(state.copyWith(
+      battles: seaBlocks,
+      ships: shipBlocks,
+      action: GameAction.ready,
+      status: GameStatus.ready,
+    ));
   }
 
-  void shootEnemy(Battle battle) {
-    if(battle.status == BattleSquareStatus.determined) return;
+  void shootEnemy(SeaInBattle battle) {
+    if (battle.status == BattleSquareStatus.determined) return;
     battle.status = BattleSquareStatus.determined;
-
+    print(battle.blueSea.coordinates);
+    state.ships.forEach((ship){
+      print(ship.toString());
+      final target = ship.positions.firstWhereOrNull((ps) => ps.coordinates == battle.blueSea.coordinates);
+      print(target);
+    });
   }
 }

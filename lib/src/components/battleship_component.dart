@@ -20,6 +20,7 @@ class BattleshipComponent extends SpriteComponent
         CollisionCallbacks {
   final Battleship battleship;
   final int index;
+  BlueSea? targetPoint;
 
   BattleshipComponent({
     ComponentKey? key,
@@ -43,6 +44,7 @@ class BattleshipComponent extends SpriteComponent
       ..paint = paint
       ..renderShape = true;
     scale = Vector2(1, 1);
+    priority = 0;
     size = Vector2(GameData.instance.blockSize * battleship.size,
         GameData.instance.blockSize);
     _hitBox.size = size - Vector2.all(10);
@@ -83,6 +85,7 @@ class BattleshipComponent extends SpriteComponent
       if (distance < minDistance) {
         minDistance = distance;
         closestVector = vector.vector2!;
+        targetPoint = vector;
       }
     }
     return closestVector;
@@ -131,11 +134,13 @@ class BattleshipComponent extends SpriteComponent
   @override
   void onCollisionStart(
       Set<Vector2> intersectionPoints, PositionComponent other) {
-    if (other.hashCode != this.hashCode) {
-      collisions.add(other);
+    if(other is BattleshipComponent){
+      if (other.hashCode != this.hashCode) {
+        collisions.add(other);
+      }
+      _hitBox.paint.color = Colors.red.withOpacity(0.5);
+      onCollisionCheck();
     }
-    _hitBox.paint.color = Colors.red.withOpacity(0.5);
-    onCollisionCheck();
     super.onCollisionStart(intersectionPoints, other);
   }
 

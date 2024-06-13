@@ -3,13 +3,16 @@ import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
-import 'package:template/src/components/battle_component.dart';
+import 'package:template/src/components/sea_battle_component.dart';
 import 'package:template/src/components/battleship_component.dart';
 import 'package:template/src/components/blue_sea_component.dart';
+import 'package:template/src/components/ship_in_battle_component.dart';
 import 'package:template/src/di/dependencies.dart';
 import 'package:template/src/global/style/app_images.dart';
 import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
+import '../../components/ocean_component.dart';
+import '../../components/parallax_background_component.dart';
 import '../../components/ready_button_component.dart';
 import '../../models/battle.dart';
 import 'package:flame/parallax.dart';
@@ -33,13 +36,14 @@ class MyGame extends FlameGame with HasCollisionDetection {
 
   @override
   FutureOr<void> onLoad() async {
-    add(MyParallaxComponent());
+    final parallax = MyParallaxComponent();
     world = BattleshipWorld();
     await add(
       FlameBlocProvider<BattleshipControlCubit, BattleshipControlState>(
         create: () => getIt.get<BattleshipControlCubit>(),
         children: [
           world,
+          parallax,
         ],
       ),
     );
@@ -83,17 +87,35 @@ class BattleshipWorld extends World
   @override
   void onNewState(BattleshipControlState state) async {
     for (var i = 0; i < state.battles.length; i++) {
-      Battle block = state.battles[i];
+      SeaInBattle block = state.battles[i];
       block.blueSea.vector2 = GameData.instance.setBlockVector2(
         block.blueSea.coordinates!.last,
         block.blueSea.coordinates!.first,
       );
       await add(
-        BattleComponent(
+        SeaInBattleComponent(
           battle: state.battles[i],
         ),
       );
     }
+    // children.query()
+
+    for (var i = 0; i < state.ships.length; i++) {
+      final ship = state.ships[i];
+      await add(
+        ShipInBattleComponent(
+          key: ComponentKey.unique(),
+          battleship: ship.ship,
+          index: i,
+          angleInit: ship.angle,
+          positionInit: GameData.instance.setBlockVector2(
+            ship.centerPoint!.coordinates!.last,
+            ship.centerPoint!.coordinates!.first,
+          ),
+        ),
+      );
+    }
+
     super.onNewState(state);
   }
 
@@ -103,30 +125,5 @@ class BattleshipWorld extends World
     BattleshipControlState newState,
   ) {
     return newState.action == GameAction.ready;
-  }
-}
-
-class OceanSprite extends SpriteComponent {
-  @override
-  FutureOr<void> onLoad() async {
-    sprite = await Sprite.load(AppImages.background);
-    anchor = Anchor.center;
-    size = Vector2.all(GameData.instance.blockSize * GameData.blockLength);
-    return super.onLoad();
-  }
-}
-
-class MyParallaxComponent extends ParallaxComponent<MyGame>
-    with HasGameRef<MyGame> {
-  @override
-  Future<void> onLoad() async {
-    parallax = await gameRef.loadParallax(
-      [
-        ParallaxImageData(AppImages.parallax),
-      ],
-      baseVelocity: Vector2(5, 0),
-      velocityMultiplierDelta: Vector2(1.8, 1.0),
-      filterQuality: FilterQuality.none,
-    );
   }
 }

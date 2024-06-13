@@ -9,14 +9,14 @@ import '../global/style/app_images.dart';
 import '../global/utilities/game_data.dart';
 import '../screens/root/cubit/battleship_control_cubit.dart';
 
-class BattleComponent extends SpriteComponent
+class SeaInBattleComponent extends SpriteComponent
     with
         FlameBlocReader<BattleshipControlCubit, BattleshipControlState>,
         TapCallbacks,
         DragCallbacks {
-  final Battle battle;
+  final SeaInBattle battle;
 
-  BattleComponent({
+  SeaInBattleComponent({
     required this.battle,
   });
 
@@ -25,7 +25,7 @@ class BattleComponent extends SpriteComponent
     sprite = await Sprite.load(AppImages.blueSea);
     position = battle.blueSea.vector2 ?? Vector2.zero();
     anchor = Anchor.center;
-    priority = 11;
+    priority = 2;
     size = Vector2.all(GameData.instance.blockSize);
     if (battle.type == BattleSquareType.ship) {
       add(
@@ -51,7 +51,7 @@ class BattleComponent extends SpriteComponent
 }
 
 class ShootPointSprite extends SpriteComponent with HasVisibility {
-  final Battle battle;
+  final SeaInBattle battle;
 
   ShootPointSprite({required this.battle});
 

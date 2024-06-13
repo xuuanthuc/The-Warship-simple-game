@@ -6,11 +6,18 @@ import 'package:template/src/models/blue_sea.dart';
 import '../../models/battleship.dart';
 
 enum GameStatus {
-  prepare,
+  init,
+  loading,
+  loaded,
+  preparing,
+  prepared,
   ready,
-  start,
+  started,
+  playing,
   paused,
-  end,
+  resumed,
+  finished,
+  error,
 }
 
 class GameData {
@@ -31,24 +38,57 @@ class GameData {
 
   List<Battleship> battleships = [
     Battleship(
-      sprite: AppImages.tinyShip,
+      sprite: AppImages.tinyShipA,
       size: 2,
+      id: 001,
     ),
     Battleship(
-      sprite: AppImages.smallShip,
+      sprite: AppImages.smallShipA,
       size: 3,
+      id: 002,
     ),
     Battleship(
-      sprite: AppImages.smallShip,
+      sprite: AppImages.smallShipA,
       size: 3,
+      id: 003,
     ),
     Battleship(
-      sprite: AppImages.mediumShip,
+      sprite: AppImages.mediumShipA,
       size: 4,
+      id: 004,
     ),
     Battleship(
-      sprite: AppImages.largeShip,
+      sprite: AppImages.largeShipA,
       size: 5,
+      id: 005,
+    ),
+  ];
+
+  List<Battleship> enemyBattleships = [
+    Battleship(
+      sprite: AppImages.tinyShipB,
+      size: 2,
+      id: 001,
+    ),
+    Battleship(
+      sprite: AppImages.smallShipB,
+      size: 3,
+      id: 002,
+    ),
+    Battleship(
+      sprite: AppImages.smallShipB,
+      size: 3,
+      id: 003,
+    ),
+    Battleship(
+      sprite: AppImages.mediumShipB,
+      size: 4,
+      id: 004,
+    ),
+    Battleship(
+      sprite: AppImages.largeShipB,
+      size: 5,
+      id: 005,
     ),
   ];
 
