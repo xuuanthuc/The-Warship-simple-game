@@ -18,6 +18,10 @@ part 'battleship_control_state.dart';
 class BattleshipControlCubit extends Cubit<BattleshipControlState> {
   BattleshipControlCubit() : super(BattleshipControlState.empty());
 
+  void printInstance(){
+    print(this.hashCode);
+  }
+
   void checkCollisionBlocks(List<BattleshipComponent> components) {
     if (components.any((b) => b.collisions.isNotEmpty)) {
       emit(state.copyWith(

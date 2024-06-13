@@ -3,32 +3,47 @@ import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/components/sea_battle_component.dart';
 import 'package:template/src/components/battleship_component.dart';
 import 'package:template/src/components/blue_sea_component.dart';
 import 'package:template/src/components/ship_in_battle_component.dart';
-import 'package:template/src/di/dependencies.dart';
-import 'package:template/src/global/style/app_images.dart';
 import 'package:template/src/global/utilities/game_data.dart';
 import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
 import '../../components/ocean_component.dart';
 import '../../components/parallax_background_component.dart';
 import '../../components/ready_button_component.dart';
 import '../../models/battle.dart';
-import 'package:flame/parallax.dart';
 
-class RootScreen extends StatelessWidget {
+class RootScreen extends StatefulWidget {
   const RootScreen({Key? key}) : super(key: key);
+
+  @override
+  State<RootScreen> createState() => _RootScreenState();
+}
+
+class _RootScreenState extends State<RootScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<BattleshipControlCubit>().printInstance();
+  }
 
   @override
   Widget build(BuildContext context) {
     return GameWidget(
-      game: MyGame(),
+      game: MyGame(
+        cubit: context.read<BattleshipControlCubit>(),
+      ),
     );
   }
 }
 
 class MyGame extends FlameGame with HasCollisionDetection {
+  final BattleshipControlCubit cubit;
+
+  MyGame({required this.cubit});
+
   @override
   Color backgroundColor() {
     return Colors.blue.shade200;
@@ -39,8 +54,8 @@ class MyGame extends FlameGame with HasCollisionDetection {
     final parallax = MyParallaxComponent();
     world = BattleshipWorld();
     await add(
-      FlameBlocProvider<BattleshipControlCubit, BattleshipControlState>(
-        create: () => getIt.get<BattleshipControlCubit>(),
+      FlameBlocProvider<BattleshipControlCubit, BattleshipControlState>.value(
+        value: cubit,
         children: [
           world,
           parallax,
@@ -77,10 +92,11 @@ class BattleshipWorld extends World
         ),
       );
     }
-    Future.delayed(Duration(seconds: 2)).then((onValue) {
+    await add(ReadyButtonComponent());
+    Future.delayed(Duration(milliseconds: 300)).then((onValue) {
+      bloc.printInstance();
       bloc.shuffleShipPosition(children.query<BattleshipComponent>());
     });
-    await add(ReadyButtonComponent());
     return super.onLoad();
   }
 

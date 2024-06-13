@@ -35,11 +35,11 @@ class ShipInBattleComponent extends SpriteComponent
     angle = angleInit;
     priority = 3;
     isVisible = false;
-    Future.delayed(Duration(seconds: 1)).then((_) {
-      handlePosition(findClosestVector(bloc.state.battles, positionInit));
-    });
     size = Vector2(GameData.instance.blockSize * shipInBattle.ship.size,
         GameData.instance.blockSize);
+    Future.delayed(const Duration(seconds: 1)).then((_) {
+      handlePosition(findClosestVector(bloc.state.battles, positionInit));
+    });
     return super.onLoad();
   }
 

@@ -20,6 +20,11 @@ enum GameStatus {
   error,
 }
 
+enum BattleshipSkin {
+  A,
+  B
+}
+
 class GameData {
   GameData._privateConstructor();
 
@@ -64,34 +69,6 @@ class GameData {
     ),
   ];
 
-  List<Battleship> enemyBattleships = [
-    Battleship(
-      sprite: AppImages.tinyShipB,
-      size: 2,
-      id: 001,
-    ),
-    Battleship(
-      sprite: AppImages.smallShipB,
-      size: 3,
-      id: 002,
-    ),
-    Battleship(
-      sprite: AppImages.smallShipB,
-      size: 3,
-      id: 003,
-    ),
-    Battleship(
-      sprite: AppImages.mediumShipB,
-      size: 4,
-      id: 004,
-    ),
-    Battleship(
-      sprite: AppImages.largeShipB,
-      size: 5,
-      id: 005,
-    ),
-  ];
-
   List<List<BlueSea>> blueBlocks = List.generate(
     blockLength,
     (index) => List.generate(
@@ -125,6 +102,45 @@ class GameData {
       },
     );
     return seaBlocks;
+  }
+
+  void setBattleshipSkin(BattleshipSkin skin) {
+    for (Battleship ship in battleships){
+      switch(skin){
+        case BattleshipSkin.A:
+          switch(ship.size) {
+            case 2:
+              ship.sprite = AppImages.tinyShipA;
+              break;
+            case 3:
+              ship.sprite = AppImages.smallShipA;
+              break;
+            case 4:
+              ship.sprite = AppImages.mediumShipA;
+              break;
+            case 5:
+              ship.sprite = AppImages.largeShipA;
+              break;
+          }
+          break;
+        case BattleshipSkin.B:
+          switch(ship.size) {
+            case 2:
+              ship.sprite = AppImages.tinyShipB;
+              break;
+            case 3:
+              ship.sprite = AppImages.smallShipB;
+              break;
+            case 4:
+              ship.sprite = AppImages.mediumShipB;
+              break;
+            case 5:
+              ship.sprite = AppImages.largeShipB;
+              break;
+          }
+          break;
+      }
+    }
   }
 
   Vector2 setBlockVector2(int xIndex, int yIndex) {

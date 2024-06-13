@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
+import '../../di/dependencies.dart';
 import '../../screens/root/root_screen.dart';
 import '../../screens/splash/splash_screen.dart';
 import 'route_keys.dart';
@@ -10,7 +13,13 @@ class AppRoutes {
       case RouteKey.splash:
         return _materialRoute(routeSettings, const SplashScreen());
       case RouteKey.root:
-        return _materialRoute(routeSettings, const RootScreen());
+        return _materialRoute(
+          routeSettings,
+          BlocProvider(
+            create: (context) => getIt.get<BattleshipControlCubit>(),
+            child: const RootScreen(),
+          ),
+        );
       default:
         return null;
     }
@@ -29,7 +38,7 @@ class AppRoutes {
         const end = Offset.zero;
         const curve = Curves.ease;
         var tween =
-        Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
         return SlideTransition(
           position: animation.drive(tween),
           child: child,

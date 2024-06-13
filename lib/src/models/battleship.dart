@@ -1,5 +1,5 @@
 class Battleship {
-  final String sprite;
+  String sprite;
   final int size;
   final int id;
 
