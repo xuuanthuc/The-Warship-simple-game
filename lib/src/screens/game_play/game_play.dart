@@ -8,41 +8,37 @@ import 'package:template/src/components/sea_battle_component.dart';
 import 'package:template/src/components/battleship_component.dart';
 import 'package:template/src/components/blue_sea_component.dart';
 import 'package:template/src/components/ship_in_battle_component.dart';
-import 'package:template/src/global/utilities/game_data.dart';
-import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
+import 'package:template/src/utilities/game_data.dart';
+import '../../bloc/game_play/game_play_cubit.dart';
 import '../../components/ocean_component.dart';
 import '../../components/parallax_background_component.dart';
 import '../../components/ready_button_component.dart';
 import '../../models/battle.dart';
 
-class RootScreen extends StatefulWidget {
-  const RootScreen({Key? key}) : super(key: key);
+class GamePlayScreen extends StatefulWidget {
+  const GamePlayScreen({Key? key}) : super(key: key);
 
   @override
-  State<RootScreen> createState() => _RootScreenState();
+  State<GamePlayScreen> createState() => _GamePlayScreenState();
 }
 
-class _RootScreenState extends State<RootScreen> {
+class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
-  void initState() {
-    super.initState();
-    context.read<BattleshipControlCubit>().printInstance();
-  }
 
   @override
   Widget build(BuildContext context) {
     return GameWidget(
-      game: MyGame(
-        cubit: context.read<BattleshipControlCubit>(),
+      game: BattleshipGameFlame(
+        cubit: context.read<GamePlayCubit>(),
       ),
     );
   }
 }
 
-class MyGame extends FlameGame with HasCollisionDetection {
-  final BattleshipControlCubit cubit;
+class BattleshipGameFlame extends FlameGame with HasCollisionDetection {
+  final GamePlayCubit cubit;
 
-  MyGame({required this.cubit});
+  BattleshipGameFlame({required this.cubit});
 
   @override
   Color backgroundColor() {
@@ -54,7 +50,7 @@ class MyGame extends FlameGame with HasCollisionDetection {
     final parallax = MyParallaxComponent();
     world = BattleshipWorld();
     await add(
-      FlameBlocProvider<BattleshipControlCubit, BattleshipControlState>.value(
+      FlameBlocProvider<GamePlayCubit, GamePlayState>.value(
         value: cubit,
         children: [
           world,
@@ -68,8 +64,8 @@ class MyGame extends FlameGame with HasCollisionDetection {
 
 class BattleshipWorld extends World
     with
-        FlameBlocReader<BattleshipControlCubit, BattleshipControlState>,
-        FlameBlocListenable<BattleshipControlCubit, BattleshipControlState> {
+        FlameBlocReader<GamePlayCubit, GamePlayState>,
+        FlameBlocListenable<GamePlayCubit, GamePlayState> {
   @override
   Future<void> onLoad() async {
     final game = GameData.instance;
@@ -94,14 +90,13 @@ class BattleshipWorld extends World
     }
     await add(ReadyButtonComponent());
     Future.delayed(Duration(milliseconds: 300)).then((onValue) {
-      bloc.printInstance();
       bloc.shuffleShipPosition(children.query<BattleshipComponent>());
     });
     return super.onLoad();
   }
 
   @override
-  void onNewState(BattleshipControlState state) async {
+  void onNewState(GamePlayState state) async {
     for (var i = 0; i < state.battles.length; i++) {
       SeaInBattle block = state.battles[i];
       block.blueSea.vector2 = GameData.instance.setBlockVector2(
@@ -137,8 +132,8 @@ class BattleshipWorld extends World
 
   @override
   bool listenWhen(
-    BattleshipControlState previousState,
-    BattleshipControlState newState,
+    GamePlayState previousState,
+    GamePlayState newState,
   ) {
     return newState.action == GameAction.ready;
   }

@@ -1,20 +1,17 @@
-import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import 'package:template/src/global/style/app_images.dart';
-import 'package:template/src/global/utilities/game_data.dart';
-import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
-
-import '../screens/root/root_screen.dart';
+import 'package:template/src/style/app_images.dart';
+import 'package:template/src/utilities/game_data.dart';
+import '../bloc/game_play/game_play_cubit.dart';
+import '../screens/game_play/game_play.dart';
 import 'battleship_component.dart';
 import 'blue_sea_component.dart';
 
 class ReadyButtonComponent extends SpriteComponent
     with
-        HasGameRef<MyGame>,
-        FlameBlocListenable<BattleshipControlCubit, BattleshipControlState>,
+        HasGameRef<BattleshipGameFlame>,
+        FlameBlocListenable<GamePlayCubit, GamePlayState>,
         HasVisibility,
         TapCallbacks {
 
@@ -38,7 +35,7 @@ class ReadyButtonComponent extends SpriteComponent
   }
 
   @override
-  void onNewState(BattleshipControlState state) {
+  void onNewState(GamePlayState state) {
     if (state.status == GameStatus.prepared) {
       this.isVisible = true;
     } else {

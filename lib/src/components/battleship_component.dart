@@ -4,19 +4,20 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:template/src/global/utilities/game_data.dart';
+import 'package:template/src/bloc/game_play/game_play_cubit.dart';
+import 'package:template/src/utilities/game_data.dart';
 import 'package:template/src/models/battleship.dart';
 import 'package:template/src/models/blue_sea.dart';
-import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
-import 'package:template/src/screens/root/root_screen.dart';
+
+import '../screens/game_play/game_play.dart';
 
 class BattleshipComponent extends SpriteComponent
     with
-        HasGameRef<MyGame>,
+        HasGameRef<BattleshipGameFlame>,
         DragCallbacks,
         TapCallbacks,
-        FlameBlocReader<BattleshipControlCubit, BattleshipControlState>,
-        FlameBlocListenable<BattleshipControlCubit, BattleshipControlState>,
+        FlameBlocReader<GamePlayCubit, GamePlayState>,
+        FlameBlocListenable<GamePlayCubit, GamePlayState>,
         CollisionCallbacks {
   final Battleship battleship;
   final int index;
@@ -219,7 +220,7 @@ class BattleshipComponent extends SpriteComponent
 
   @override
   bool listenWhen(
-      BattleshipControlState previousState, BattleshipControlState newState) {
+      GamePlayState previousState, GamePlayState newState) {
     return newState.action == GameAction.prepare;
   }
 }

@@ -4,14 +4,13 @@ import 'package:flame/text.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:template/src/models/battle.dart';
-
-import '../global/style/app_images.dart';
-import '../global/utilities/game_data.dart';
-import '../screens/root/cubit/battleship_control_cubit.dart';
+import '../bloc/game_play/game_play_cubit.dart';
+import '../style/app_images.dart';
+import '../utilities/game_data.dart';
 
 class SeaInBattleComponent extends SpriteComponent
     with
-        FlameBlocReader<BattleshipControlCubit, BattleshipControlState>,
+        FlameBlocReader<GamePlayCubit, GamePlayState>,
         TapCallbacks,
         DragCallbacks {
   final SeaInBattle battle;

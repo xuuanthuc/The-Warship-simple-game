@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'global/routes/app_routes.dart';
-import 'global/routes/navigation_service.dart';
-import 'global/routes/route_observer.dart';
+import 'bloc/game_play/game_play_cubit.dart';
+import 'di/dependencies.dart';
+import 'routes/app_routes.dart';
+import 'routes/navigation_service.dart';
+import 'routes/route_observer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'global_bloc/connectivity/connectivity_bloc.dart';
+import 'bloc/connectivity/connectivity_bloc.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -15,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ConnectivityBloc()),
+        BlocProvider(create: (context) => getIt.get<GamePlayCubit>()),
       ],
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),

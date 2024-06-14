@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
-import '../../di/dependencies.dart';
-import '../../screens/root/root_screen.dart';
-import '../../screens/splash/splash_screen.dart';
+import '../screens/game_play/game_play.dart';
+import '../screens/splash/splash_screen.dart';
 import 'route_keys.dart';
 
 class AppRoutes {
@@ -13,13 +10,7 @@ class AppRoutes {
       case RouteKey.splash:
         return _materialRoute(routeSettings, const SplashScreen());
       case RouteKey.root:
-        return _materialRoute(
-          routeSettings,
-          BlocProvider(
-            create: (context) => getIt.get<BattleshipControlCubit>(),
-            child: const RootScreen(),
-          ),
-        );
+        return _materialRoute(routeSettings, const GamePlayScreen());
       default:
         return null;
     }

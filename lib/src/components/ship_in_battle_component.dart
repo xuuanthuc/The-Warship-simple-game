@@ -2,16 +2,15 @@ import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:template/src/global/utilities/game_data.dart';
+import 'package:template/src/utilities/game_data.dart';
 import 'package:template/src/models/battle.dart';
-import 'package:template/src/models/battleship.dart';
 import 'package:template/src/models/blue_sea.dart';
-import 'package:template/src/screens/root/cubit/battleship_control_cubit.dart';
+import '../bloc/game_play/game_play_cubit.dart';
 
 class ShipInBattleComponent extends SpriteComponent
     with
-        FlameBlocReader<BattleshipControlCubit, BattleshipControlState>,
-        FlameBlocListenable<BattleshipControlCubit, BattleshipControlState>, HasVisibility {
+        FlameBlocReader<GamePlayCubit, GamePlayState>,
+        FlameBlocListenable<GamePlayCubit, GamePlayState>, HasVisibility {
   final ShipInBattle shipInBattle;
   final int index;
   final Vector2 positionInit;
@@ -100,7 +99,7 @@ class ShipInBattleComponent extends SpriteComponent
   }
 
   @override
-  void onNewState(BattleshipControlState state) {
+  void onNewState(GamePlayState state) {
     print('check state');
     if(shipInBattle.positions.isEmpty){
       isVisible = true;

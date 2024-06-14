@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flame/components.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import '../global/style/app_images.dart';
-import '../global/utilities/game_data.dart';
-import '../screens/root/cubit/battleship_control_cubit.dart';
+import '../bloc/game_play/game_play_cubit.dart';
+import '../style/app_images.dart';
+import '../utilities/game_data.dart';
 
 class OceanSprite extends SpriteComponent
-    with FlameBlocListenable<BattleshipControlCubit, BattleshipControlState> {
+    with FlameBlocListenable<GamePlayCubit, GamePlayState> {
   @override
   FutureOr<void> onLoad() async {
     sprite = await Sprite.load(AppImages.background);
@@ -16,7 +16,7 @@ class OceanSprite extends SpriteComponent
   }
 
   @override
-  void onNewState(BattleshipControlState state) {
+  void onNewState(GamePlayState state) {
     if(state.status.index <= 4) {
       priority = -1;
     } else {
@@ -26,7 +26,7 @@ class OceanSprite extends SpriteComponent
   }
 
   @override
-  bool listenWhen(BattleshipControlState previousState, BattleshipControlState newState) {
+  bool listenWhen(GamePlayState previousState, GamePlayState newState) {
     return previousState.status != newState.status;
   }
 }

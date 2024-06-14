@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:injectable/injectable.dart';
-import '../global/utilities/logger.dart';
+import '../utilities/logger.dart';
 import 'error_code.dart';
 import 'exception.dart';
 

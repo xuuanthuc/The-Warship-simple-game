@@ -1,18 +1,13 @@
 import 'dart:async';
-
-import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
-import 'package:flame/text.dart';
 import 'package:flame_bloc/flame_bloc.dart';
-import 'package:flutter/material.dart';
-import 'package:template/src/global/style/app_images.dart';
-import 'package:template/src/global/utilities/game_data.dart';
-
+import 'package:template/src/style/app_images.dart';
+import 'package:template/src/utilities/game_data.dart';
+import '../bloc/game_play/game_play_cubit.dart';
 import '../models/blue_sea.dart';
-import '../screens/root/cubit/battleship_control_cubit.dart';
 
 class BlueSeaComponent extends SpriteComponent
-    with FlameBlocReader<BattleshipControlCubit, BattleshipControlState> {
+    with FlameBlocReader<GamePlayCubit, GamePlayState> {
   final BlueSea blueSea;
   final int index;
 

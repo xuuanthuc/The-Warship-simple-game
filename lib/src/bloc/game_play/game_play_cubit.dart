@@ -8,19 +8,16 @@ import 'package:meta/meta.dart';
 import 'package:template/src/components/blue_sea_component.dart';
 import 'package:template/src/models/battle.dart';
 import 'package:template/src/models/blue_sea.dart';
-import '../../../components/battleship_component.dart';
-import '../../../global/utilities/game_data.dart';
 import 'package:collection/collection.dart';
 
-part 'battleship_control_state.dart';
+import '../../components/battleship_component.dart';
+import '../../utilities/game_data.dart';
+
+part 'game_play_state.dart';
 
 @injectable
-class BattleshipControlCubit extends Cubit<BattleshipControlState> {
-  BattleshipControlCubit() : super(BattleshipControlState.empty());
-
-  void printInstance(){
-    print(this.hashCode);
-  }
+class GamePlayCubit extends Cubit<GamePlayState> {
+  GamePlayCubit() : super(GamePlayState.empty());
 
   void checkCollisionBlocks(List<BattleshipComponent> components) {
     if (components.any((b) => b.collisions.isNotEmpty)) {

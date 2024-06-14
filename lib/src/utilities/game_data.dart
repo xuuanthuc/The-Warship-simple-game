@@ -1,9 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:template/src/global/style/app_images.dart';
+import 'package:template/src/style/app_images.dart';
 import 'package:template/src/models/blue_sea.dart';
 
-import '../../models/battleship.dart';
+import '../models/battleship.dart';
 
 enum GameStatus {
   init,
