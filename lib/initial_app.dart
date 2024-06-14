@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import './../../src/di/dependencies.dart';
+import 'firebase_options.dart';
 
 class AppBlocObserver extends BlocObserver {
   @override
@@ -28,5 +30,8 @@ Future<void> initialApp(FutureOr<Widget> Function() builder) async {
   WidgetsFlutterBinding.ensureInitialized();
   configureDependencies();
   Bloc.observer = AppBlocObserver();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(await builder());
 }
