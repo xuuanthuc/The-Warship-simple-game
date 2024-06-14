@@ -7,8 +7,8 @@ import 'package:flame/parallax.dart';
 import '../screens/game_play/game_play.dart';
 import '../style/app_images.dart';
 
-class MyParallaxComponent extends ParallaxComponent<BattleshipGameFlame>
-    with HasGameRef<BattleshipGameFlame> {
+class MyParallaxComponent extends ParallaxComponent<BattleGameFlame>
+    with HasGameRef<BattleGameFlame> {
   @override
   Future<void> onLoad() async {
     parallax = await gameRef.loadParallax(

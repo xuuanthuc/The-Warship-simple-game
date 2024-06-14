@@ -5,7 +5,7 @@ import '../bloc/game_play/game_play_cubit.dart';
 import '../style/app_images.dart';
 import '../utilities/game_data.dart';
 
-class OceanSprite extends SpriteComponent
+class TerrainComponent extends SpriteComponent
     with FlameBlocListenable<GamePlayCubit, GamePlayState> {
   @override
   FutureOr<void> onLoad() async {

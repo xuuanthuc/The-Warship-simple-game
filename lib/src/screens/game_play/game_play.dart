@@ -4,13 +4,13 @@ import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template/src/components/sea_battle_component.dart';
-import 'package:template/src/components/battleship_component.dart';
-import 'package:template/src/components/blue_sea_component.dart';
-import 'package:template/src/components/ship_in_battle_component.dart';
+import 'package:template/src/components/empty_battle_square_component.dart';
+import 'package:template/src/components/occupied_component.dart';
+import 'package:template/src/components/empty_square_component.dart';
+import 'package:template/src/components/occupied_battle_square_component.dart';
 import 'package:template/src/utilities/game_data.dart';
 import '../../bloc/game_play/game_play_cubit.dart';
-import '../../components/ocean_component.dart';
+import '../../components/terrain_component.dart';
 import '../../components/parallax_background_component.dart';
 import '../../components/ready_button_component.dart';
 import '../../models/battle.dart';
@@ -28,17 +28,17 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
   Widget build(BuildContext context) {
     return GameWidget(
-      game: BattleshipGameFlame(
+      game: BattleGameFlame(
         cubit: context.read<GamePlayCubit>(),
       ),
     );
   }
 }
 
-class BattleshipGameFlame extends FlameGame with HasCollisionDetection {
+class BattleGameFlame extends FlameGame with HasCollisionDetection {
   final GamePlayCubit cubit;
 
-  BattleshipGameFlame({required this.cubit});
+  BattleGameFlame({required this.cubit});
 
   @override
   Color backgroundColor() {
@@ -48,7 +48,7 @@ class BattleshipGameFlame extends FlameGame with HasCollisionDetection {
   @override
   FutureOr<void> onLoad() async {
     final parallax = MyParallaxComponent();
-    world = BattleshipWorld();
+    world = BattlegroundWorld();
     await add(
       FlameBlocProvider<GamePlayCubit, GamePlayState>.value(
         value: cubit,
@@ -62,66 +62,66 @@ class BattleshipGameFlame extends FlameGame with HasCollisionDetection {
   }
 }
 
-class BattleshipWorld extends World
+class BattlegroundWorld extends World
     with
         FlameBlocReader<GamePlayCubit, GamePlayState>,
         FlameBlocListenable<GamePlayCubit, GamePlayState> {
   @override
   Future<void> onLoad() async {
     final game = GameData.instance;
-    add(OceanSprite());
+    add(TerrainComponent());
     game.setSeaBlocks();
-    for (var i = 0; i < game.seaBlocks.length; i++) {
+    for (var i = 0; i < game.emptyBlocks.length; i++) {
       await add(
-        BlueSeaComponent(
-          blueSea: game.seaBlocks[i],
+        EmptySquareComponent(
+          blueSea: game.emptyBlocks[i],
           index: i,
         ),
       );
     }
-    for (var i = 0; i < game.battleships.length; i++) {
+    for (var i = 0; i < game.battleOccupied.length; i++) {
       await add(
-        BattleshipComponent(
+        OccupiedComponent(
           key: ComponentKey.unique(),
-          battleship: game.battleships[i],
+          block: game.battleOccupied[i],
           index: i,
         ),
       );
     }
     await add(ReadyButtonComponent());
     Future.delayed(Duration(milliseconds: 300)).then((onValue) {
-      bloc.shuffleShipPosition(children.query<BattleshipComponent>());
+      bloc.shuffleOccupiedPosition(children.query<OccupiedComponent>());
     });
     return super.onLoad();
   }
 
   @override
   void onNewState(GamePlayState state) async {
-    for (var i = 0; i < state.battles.length; i++) {
-      SeaInBattle block = state.battles[i];
-      block.blueSea.vector2 = GameData.instance.setBlockVector2(
-        block.blueSea.coordinates!.last,
-        block.blueSea.coordinates!.first,
+    for (var i = 0; i < state.emptySquares.length; i++) {
+      EmptyBattleSquare block = state.emptySquares[i];
+      block.block.vector2 = GameData.instance.setBlockVector2(
+        block.block.coordinates!.last,
+        block.block.coordinates!.first,
       );
       await add(
-        SeaInBattleComponent(
-          battle: state.battles[i],
+        EmptyBattleSquareComponent(
+          battle: state.emptySquares[i],
         ),
       );
     }
     // children.query()
 
-    for (var i = 0; i < state.ships.length; i++) {
-      final ship = state.ships[i];
+    for (var i = 0; i < state.occupiedSquares.length; i++) {
+      final ship = state.occupiedSquares[i];
       await add(
-        ShipInBattleComponent(
+        OccupiedBattleSquareComponent(
           key: ComponentKey.unique(),
-          shipInBattle: ship,
+          square: ship,
           index: i,
-          angleInit: ship.angle,
-          positionInit: GameData.instance.setBlockVector2(
-            ship.centerPoint!.coordinates!.last,
-            ship.centerPoint!.coordinates!.first,
+          initialAngle: ship.angle,
+          initialPosition: GameData.instance.setBlockVector2(
+            ship.targetPoint!.coordinates!.last,
+            ship.targetPoint!.coordinates!.first,
           ),
         ),
       );

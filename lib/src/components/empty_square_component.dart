@@ -4,14 +4,14 @@ import 'package:flame_bloc/flame_bloc.dart';
 import 'package:template/src/style/app_images.dart';
 import 'package:template/src/utilities/game_data.dart';
 import '../bloc/game_play/game_play_cubit.dart';
-import '../models/blue_sea.dart';
+import '../models/empty_block.dart';
 
-class BlueSeaComponent extends SpriteComponent
+class EmptySquareComponent extends SpriteComponent
     with FlameBlocReader<GamePlayCubit, GamePlayState> {
-  final BlueSea blueSea;
+  final EmptyBlock blueSea;
   final int index;
 
-  BlueSeaComponent({
+  EmptySquareComponent({
     required this.blueSea,
     required this.index,
   });

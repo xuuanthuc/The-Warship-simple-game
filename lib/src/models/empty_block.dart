@@ -1,12 +1,12 @@
 import 'package:flame/components.dart';
 
-class BlueSea {
+class EmptyBlock {
   Vector2? vector2;
 
   //y first, x second
   List<int>? coordinates = [];
 
-  BlueSea({
+  EmptyBlock({
     this.vector2,
     this.coordinates,
   });

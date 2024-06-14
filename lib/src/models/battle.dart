@@ -1,9 +1,9 @@
-import 'package:template/src/models/battleship.dart';
-import 'package:template/src/models/blue_sea.dart';
+import 'package:template/src/models/occupied_block.dart';
+import 'package:template/src/models/empty_block.dart';
 
 enum BattleSquareType {
-  sea,
-  ship,
+  empty,
+  occupied,
 }
 
 enum BattleSquareStatus {
@@ -11,48 +11,48 @@ enum BattleSquareStatus {
   determined,
 }
 
-class SeaInBattle {
-  final BlueSea blueSea;
+class EmptyBattleSquare {
+  final EmptyBlock block;
   final BattleSquareType type;
   BattleSquareStatus status;
 
-  SeaInBattle({
-    required this.blueSea,
+  EmptyBattleSquare({
+    required this.block,
     required this.type,
     required this.status,
   });
 }
 
-class ShipInBattle {
-  final Battleship ship;
-  final BlueSea? centerPoint;
+class OccupiedBattleSquare {
+  final OccupiedBlock block;
+  final EmptyBlock? targetPoint;
   final double angle;
-  final List<BlueSea> positions;
+  final List<EmptyBlock> overlappingPositions;
 
-  ShipInBattle({
-    required this.positions,
+  OccupiedBattleSquare({
+    required this.overlappingPositions,
     required this.angle,
-    required this.centerPoint,
-    required this.ship,
+    required this.targetPoint,
+    required this.block,
   });
 
   @override
   String toString() {
     return """
     "ship": {
-      ${ship.id},
-      ${ship.sprite},
-      ${ship.size},
+      ${block.id},
+      ${block.sprite},
+      ${block.size},
     },
     "centerPoint": {
-      ${centerPoint?.coordinates},
-      ${centerPoint?.vector2},
+      ${targetPoint?.coordinates},
+      ${targetPoint?.vector2},
     },
     "angle": {
       ${angle},
     },
     "positions": {
-      ${positions},
+      ${overlappingPositions},
     },
     """;
   }

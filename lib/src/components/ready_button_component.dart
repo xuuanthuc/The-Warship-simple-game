@@ -5,12 +5,12 @@ import 'package:template/src/style/app_images.dart';
 import 'package:template/src/utilities/game_data.dart';
 import '../bloc/game_play/game_play_cubit.dart';
 import '../screens/game_play/game_play.dart';
-import 'battleship_component.dart';
-import 'blue_sea_component.dart';
+import 'occupied_component.dart';
+import 'empty_square_component.dart';
 
 class ReadyButtonComponent extends SpriteComponent
     with
-        HasGameRef<BattleshipGameFlame>,
+        HasGameRef<BattleGameFlame>,
         FlameBlocListenable<GamePlayCubit, GamePlayState>,
         HasVisibility,
         TapCallbacks {
@@ -28,8 +28,8 @@ class ReadyButtonComponent extends SpriteComponent
   @override
   void onTapUp(TapUpEvent event) {
     bloc.createLayoutBattle(
-      gameRef.world.children.query<BattleshipComponent>(),
-      gameRef.world.children.query<BlueSeaComponent>(),
+      gameRef.world.children.query<OccupiedComponent>(),
+      gameRef.world.children.query<EmptySquareComponent>(),
     );
     super.onTapUp(event);
   }

@@ -12,14 +12,14 @@ enum GameAction {
 @immutable
 class GamePlayState extends Equatable {
   final GameStatus status;
-  final List<SeaInBattle> battles;
-  final List<ShipInBattle> ships;
+  final List<EmptyBattleSquare> emptySquares;
+  final List<OccupiedBattleSquare> occupiedSquares;
   final GameAction action;
 
   const GamePlayState({
     required this.status,
-    required this.battles,
-    required this.ships,
+    required this.emptySquares,
+    required this.occupiedSquares,
     required this.action,
   });
 
@@ -27,20 +27,20 @@ class GamePlayState extends Equatable {
       : this(
           action: GameAction.prepare,
           status: GameStatus.init,
-          battles: [],
-          ships: [],
+          emptySquares: [],
+          occupiedSquares: [],
         );
 
   GamePlayState copyWith({
     GameStatus? status,
-    List<SeaInBattle>? battles,
-    List<ShipInBattle>? ships,
+    List<EmptyBattleSquare>? battles,
+    List<OccupiedBattleSquare>? ships,
     GameAction? action,
   }) {
     return GamePlayState(
       status: status ?? this.status,
-      battles: battles ?? this.battles,
-      ships: ships ?? this.ships,
+      emptySquares: battles ?? this.emptySquares,
+      occupiedSquares: ships ?? this.occupiedSquares,
       action: action ?? this.action,
     );
   }
@@ -48,8 +48,8 @@ class GamePlayState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        battles,
-        ships,
+        emptySquares,
+        occupiedSquares,
         action,
       ];
 }

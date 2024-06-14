@@ -1,9 +1,9 @@
-class Battleship {
+class OccupiedBlock {
   String sprite;
   final int size;
   final int id;
 
-  Battleship({
+  OccupiedBlock({
     required this.sprite,
     required this.size,
     required this.id,

@@ -1,9 +1,9 @@
 import 'package:flame/components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:template/src/style/app_images.dart';
-import 'package:template/src/models/blue_sea.dart';
+import 'package:template/src/models/empty_block.dart';
 
-import '../models/battleship.dart';
+import '../models/occupied_block.dart';
 
 enum GameStatus {
   init,
@@ -41,49 +41,49 @@ class GameData {
       ? screenSize.width / 12
       : screenSize.height / 12;
 
-  List<Battleship> battleships = [
-    Battleship(
+  List<OccupiedBlock> battleOccupied = [
+    OccupiedBlock(
       sprite: AppImages.tinyShipA,
       size: 2,
       id: 001,
     ),
-    Battleship(
+    OccupiedBlock(
       sprite: AppImages.smallShipA,
       size: 3,
       id: 002,
     ),
-    Battleship(
+    OccupiedBlock(
       sprite: AppImages.smallShipA,
       size: 3,
       id: 003,
     ),
-    Battleship(
+    OccupiedBlock(
       sprite: AppImages.mediumShipA,
       size: 4,
       id: 004,
     ),
-    Battleship(
+    OccupiedBlock(
       sprite: AppImages.largeShipA,
       size: 5,
       id: 005,
     ),
   ];
 
-  List<List<BlueSea>> blueBlocks = List.generate(
+  List<List<EmptyBlock>> matrixEmptyBlocks = List.generate(
     blockLength,
     (index) => List.generate(
       blockLength,
       (index) {
-        return BlueSea();
+        return EmptyBlock();
       },
     ),
   );
 
-  List<BlueSea> seaBlocks = [];
+  List<EmptyBlock> emptyBlocks = [];
 
-  List<BlueSea> setSeaBlocks() {
-    seaBlocks.clear();
-    blueBlocks.asMap().forEach(
+  List<EmptyBlock> setSeaBlocks() {
+    emptyBlocks.clear();
+    matrixEmptyBlocks.asMap().forEach(
       (yIndex, rowsOfBlocks) {
         rowsOfBlocks.asMap().forEach(
           (xIndex, block) {
@@ -96,46 +96,46 @@ class GameData {
                   (blockSize / 2),
             );
             block.coordinates = [yIndex, xIndex];
-            seaBlocks.add(block);
+            emptyBlocks.add(block);
           },
         );
       },
     );
-    return seaBlocks;
+    return emptyBlocks;
   }
 
-  void setBattleshipSkin(BattleshipSkin skin) {
-    for (Battleship ship in battleships){
+  void setOccupiedSkin(BattleshipSkin skin) {
+    for (OccupiedBlock block in battleOccupied){
       switch(skin){
         case BattleshipSkin.A:
-          switch(ship.size) {
+          switch(block.size) {
             case 2:
-              ship.sprite = AppImages.tinyShipA;
+              block.sprite = AppImages.tinyShipA;
               break;
             case 3:
-              ship.sprite = AppImages.smallShipA;
+              block.sprite = AppImages.smallShipA;
               break;
             case 4:
-              ship.sprite = AppImages.mediumShipA;
+              block.sprite = AppImages.mediumShipA;
               break;
             case 5:
-              ship.sprite = AppImages.largeShipA;
+              block.sprite = AppImages.largeShipA;
               break;
           }
           break;
         case BattleshipSkin.B:
-          switch(ship.size) {
+          switch(block.size) {
             case 2:
-              ship.sprite = AppImages.tinyShipB;
+              block.sprite = AppImages.tinyShipB;
               break;
             case 3:
-              ship.sprite = AppImages.smallShipB;
+              block.sprite = AppImages.smallShipB;
               break;
             case 4:
-              ship.sprite = AppImages.mediumShipB;
+              block.sprite = AppImages.mediumShipB;
               break;
             case 5:
-              ship.sprite = AppImages.largeShipB;
+              block.sprite = AppImages.largeShipB;
               break;
           }
           break;
@@ -155,15 +155,15 @@ class GameData {
   }
 
   // New method to get the boundaries
-  Rect getSeaBlocksBoundary() {
-    if (seaBlocks.isEmpty) return Rect.zero;
+  Rect getEmptyBlocksBoundary() {
+    if (emptyBlocks.isEmpty) return Rect.zero;
 
-    double minX = seaBlocks.first.vector2!.x;
-    double maxX = seaBlocks.first.vector2!.x;
-    double minY = seaBlocks.first.vector2!.y;
-    double maxY = seaBlocks.first.vector2!.y;
+    double minX = emptyBlocks.first.vector2!.x;
+    double maxX = emptyBlocks.first.vector2!.x;
+    double minY = emptyBlocks.first.vector2!.y;
+    double maxY = emptyBlocks.first.vector2!.y;
 
-    for (var block in seaBlocks) {
+    for (var block in emptyBlocks) {
       if (block.vector2!.x < minX) minX = block.vector2!.x;
       if (block.vector2!.x > maxX) maxX = block.vector2!.x;
       if (block.vector2!.y < minY) minY = block.vector2!.y;

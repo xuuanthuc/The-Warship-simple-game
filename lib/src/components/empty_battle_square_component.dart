@@ -8,28 +8,28 @@ import '../bloc/game_play/game_play_cubit.dart';
 import '../style/app_images.dart';
 import '../utilities/game_data.dart';
 
-class SeaInBattleComponent extends SpriteComponent
+class EmptyBattleSquareComponent extends SpriteComponent
     with
         FlameBlocReader<GamePlayCubit, GamePlayState>,
         TapCallbacks,
         DragCallbacks {
-  final SeaInBattle battle;
+  final EmptyBattleSquare battle;
 
-  SeaInBattleComponent({
+  EmptyBattleSquareComponent({
     required this.battle,
   });
 
   @override
   Future<void> onLoad() async {
     sprite = await Sprite.load(AppImages.blueSea);
-    position = battle.blueSea.vector2 ?? Vector2.zero();
+    position = battle.block.vector2 ?? Vector2.zero();
     anchor = Anchor.center;
     priority = 2;
     size = Vector2.all(GameData.instance.blockSize);
-    if (battle.type == BattleSquareType.ship) {
+    if (battle.type == BattleSquareType.occupied) {
       add(
         TextComponent(
-          text: "${battle.blueSea.coordinates?.join(" - ")}",
+          text: "${battle.block.coordinates?.join(" - ")}",
           anchor: Anchor.center,
           position: Vector2.all(GameData.instance.blockSize / 2),
           textRenderer: TextPaint(
@@ -50,13 +50,13 @@ class SeaInBattleComponent extends SpriteComponent
 }
 
 class ShootPointSprite extends SpriteComponent with HasVisibility {
-  final SeaInBattle battle;
+  final EmptyBattleSquare battle;
 
   ShootPointSprite({required this.battle});
 
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load(battle.type == BattleSquareType.ship
+    sprite = await Sprite.load(battle.type == BattleSquareType.occupied
         ? AppImages.hasShip
         : AppImages.nonShip);
     size = Vector2.all(GameData.instance.blockSize);

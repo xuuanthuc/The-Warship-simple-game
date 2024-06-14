@@ -4,54 +4,54 @@ import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:template/src/utilities/game_data.dart';
 import 'package:template/src/models/battle.dart';
-import 'package:template/src/models/blue_sea.dart';
+import 'package:template/src/models/empty_block.dart';
 import '../bloc/game_play/game_play_cubit.dart';
 
-class ShipInBattleComponent extends SpriteComponent
+class OccupiedBattleSquareComponent extends SpriteComponent
     with
         FlameBlocReader<GamePlayCubit, GamePlayState>,
         FlameBlocListenable<GamePlayCubit, GamePlayState>, HasVisibility {
-  final ShipInBattle shipInBattle;
+  final OccupiedBattleSquare square;
   final int index;
-  final Vector2 positionInit;
-  final double angleInit;
+  final Vector2 initialPosition;
+  final double initialAngle;
 
-  ShipInBattleComponent({
+  OccupiedBattleSquareComponent({
     ComponentKey? key,
-    required this.shipInBattle,
+    required this.square,
     required this.index,
-    required this.positionInit,
-    required this.angleInit,
+    required this.initialPosition,
+    required this.initialAngle,
   }) : super(key: key);
 
   List<PositionComponent> collisions = [];
-  List<BlueSea> overlappingSeaBlocks = [];
+  List<EmptyBlock> overlappingEmptyBlocks = [];
 
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load(shipInBattle.ship.sprite);
+    sprite = await Sprite.load(square.block.sprite);
     anchor = Anchor.center;
-    angle = angleInit;
+    angle = initialAngle;
     priority = 3;
     isVisible = false;
-    size = Vector2(GameData.instance.blockSize * shipInBattle.ship.size,
+    size = Vector2(GameData.instance.blockSize * square.block.size,
         GameData.instance.blockSize);
     Future.delayed(const Duration(seconds: 1)).then((_) {
-      handlePosition(findClosestVector(bloc.state.battles, positionInit));
+      handlePosition(findClosestVector(bloc.state.emptySquares, initialPosition));
     });
     return super.onLoad();
   }
 
 
-  Vector2 findClosestVector(List<SeaInBattle> vectors, Vector2 target) {
-    Vector2 closestVector = vectors.first.blueSea.vector2!;
+  Vector2 findClosestVector(List<EmptyBattleSquare> vectors, Vector2 target) {
+    Vector2 closestVector = vectors.first.block.vector2!;
     double minDistance = double.infinity;
 
-    for (SeaInBattle vector in vectors) {
-      double distance = (vector.blueSea.vector2! - target).length;
+    for (EmptyBattleSquare vector in vectors) {
+      double distance = (vector.block.vector2! - target).length;
       if (distance < minDistance) {
         minDistance = distance;
-        closestVector = vector.blueSea.vector2!;
+        closestVector = vector.block.vector2!;
       }
     }
     return closestVector;
@@ -66,7 +66,7 @@ class ShipInBattleComponent extends SpriteComponent
     double newX = position.x;
     double newY = position.y;
 
-    if (shipInBattle.ship.size % 2 == 0) {
+    if (square.block.size % 2 == 0) {
       if (angle == radians(90)) {
         newY += GameData.instance.blockSize / 2;
       } else {
@@ -93,7 +93,7 @@ class ShipInBattleComponent extends SpriteComponent
   void handlePosition(Vector2 targetPosition) {
     position = adjustPositionToStayWithinBounds(
       targetPosition,
-      GameData.instance.getSeaBlocksBoundary(),
+      GameData.instance.getEmptyBlocksBoundary(),
       size,
     );
   }
@@ -101,7 +101,7 @@ class ShipInBattleComponent extends SpriteComponent
   @override
   void onNewState(GamePlayState state) {
     print('check state');
-    if(shipInBattle.positions.isEmpty){
+    if(square.overlappingPositions.isEmpty){
       isVisible = true;
     }
     super.onNewState(state);
