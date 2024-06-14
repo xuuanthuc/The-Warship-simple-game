@@ -8,7 +8,7 @@ class LobbyScreen extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          ElevatedButton(onPressed: (){}, child: Text(""))
+          ElevatedButton(onPressed: (){}, child: Text("Create room"))
         ],
       ),
     );
