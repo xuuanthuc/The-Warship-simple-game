@@ -12,13 +12,10 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState() {
-    super.initState();
-  }
 
   goToHome() async {
     await Future.delayed(const Duration(seconds: 1));
-    navService.pushNamed(RouteKey.root);
+    navService.pushNamed(RouteKey.gameClient);
   }
 
   @override

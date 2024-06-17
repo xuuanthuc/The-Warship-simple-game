@@ -1,16 +1,20 @@
 import 'dart:async';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
 
 part 'connectivity_event.dart';
 
 part 'connectivity_state.dart';
 
+@injectable
 class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
-  ConnectivityBloc() : super(ConnectivityInitial()) {
+  ConnectivityBloc()
+      : super(ConnectivityState(result: ConnectivityResult.none)) {
     on<ConnectivityChangedEvent>(_onConnectivityChanged);
     _connectivitySubscription = Connectivity()
         .onConnectivityChanged
@@ -23,7 +27,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     ConnectivityChangedEvent event,
     Emitter<ConnectivityState> emit,
   ) {
-    emit(ConnectivityChangedState(event.result));
+    emit(ConnectivityState(result: event.result));
   }
 
   @override

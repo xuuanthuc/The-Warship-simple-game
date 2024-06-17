@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ConnectivityBloc()),
+        BlocProvider(create: (context) => getIt.get<ConnectivityBloc>()),
         BlocProvider(create: (context) => getIt.get<GamePlayCubit>()),
       ],
       child: GestureDetector(
