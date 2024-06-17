@@ -5,9 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
-import 'package:template/src/utilities/logger.dart';
 import 'package:uuid/uuid.dart';
-
 import '../../bloc/connectivity/connectivity_bloc.dart';
 import '../../models/player.dart';
 import '../../utilities/toast.dart';
@@ -42,17 +40,16 @@ class _LobbyScreenState extends State<LobbyScreen> {
             ),
           );
         }).then((code) {
-      print(code);
       if (code != null) {
-        if (context.read<ConnectivityBloc>().state.result ==
-                ConnectivityResult.wifi ||
-            context.read<ConnectivityBloc>().state.result ==
-                ConnectivityResult.mobile) {
+        final connectionResult = context.read<ConnectivityBloc>().state.result;
+        if (connectionResult == ConnectivityResult.wifi ||
+            connectionResult == ConnectivityResult.mobile) {
           final player = OpponentPlayer(
-            id: Uuid().v4(),
+            id: const Uuid().v4(),
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),
-            connectivityResult: context.read<ConnectivityBloc>().state.result,
+            connectivityResult: connectionResult,
+            ready: false,
           );
           context.read<GameClientCubit>().joinRoom(
                 player: player,
@@ -79,16 +76,16 @@ class _LobbyScreenState extends State<LobbyScreen> {
         children: [
           ElevatedButton(
             onPressed: () {
-              if (context.read<ConnectivityBloc>().state.result ==
-                      ConnectivityResult.wifi ||
-                  context.read<ConnectivityBloc>().state.result ==
-                      ConnectivityResult.mobile) {
+              final connectionResult =
+                  context.read<ConnectivityBloc>().state.result;
+              if (connectionResult == ConnectivityResult.wifi ||
+                  connectionResult == ConnectivityResult.mobile) {
                 final player = OwnerPlayer(
-                  id: Uuid().v4(),
+                  id: const Uuid().v4(),
                   createdAt: Timestamp.now(),
                   updatedAt: Timestamp.now(),
-                  connectivityResult:
-                      context.read<ConnectivityBloc>().state.result,
+                  connectivityResult: connectionResult,
+                  ready: false,
                 );
                 context.read<GameClientCubit>().createNewRoom(
                       player: player,

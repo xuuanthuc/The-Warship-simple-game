@@ -5,7 +5,7 @@ class GameClientState extends Equatable {
   final RoomData? room;
   final Player? player;
 
-  GameClientState({
+  const GameClientState({
     required this.room,
     this.player,
   });

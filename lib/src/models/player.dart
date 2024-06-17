@@ -6,15 +6,18 @@ abstract class Player {
   Timestamp? createdAt;
   Timestamp? updatedAt;
   ConnectivityResult? connectivityResult;
+  bool? ready;
 
   Player(
       {required this.id,
       this.connectivityResult,
       this.createdAt,
+      this.ready,
       this.updatedAt});
 
   Player.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    ready = json['ready'];
     createdAt = json["createdAt"];
     updatedAt = json["updatedAt"];
     connectivityResult = getConnectivityResult(json["connectionStatus"]);
@@ -23,6 +26,7 @@ abstract class Player {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) "id": id,
+      if (ready != null) "ready": ready,
       if (createdAt != null) "createdAt": createdAt,
       if (updatedAt != null) "updatedAt": updatedAt,
       if (connectivityResult != null)
@@ -60,11 +64,13 @@ class OwnerPlayer extends Player {
     ConnectivityResult? connectivityResult,
     Timestamp? createdAt,
     Timestamp? updatedAt,
+    bool? ready,
   }) : super(
           id: id,
           connectivityResult: connectivityResult,
           createdAt: createdAt,
           updatedAt: updatedAt,
+          ready: ready,
         );
 }
 
@@ -76,10 +82,18 @@ class OpponentPlayer extends Player {
     ConnectivityResult? connectivityResult,
     Timestamp? createdAt,
     Timestamp? updatedAt,
+    bool? ready,
   }) : super(
-    id: id,
-    connectivityResult: connectivityResult,
-    createdAt: createdAt,
-    updatedAt: updatedAt,
-  );
+          id: id,
+          connectivityResult: connectivityResult,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          ready: ready,
+        );
+
+  Map<String, dynamic> readyForGame() {
+    return {
+      "opponentPlayer.ready": !(ready ?? false),
+    };
+  }
 }
