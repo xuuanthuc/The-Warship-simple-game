@@ -15,11 +15,11 @@ class RoomData {
   final RoomState? roomState;
 
   RoomData({
-    required this.code,
-    required this.opponentPlayer,
-    required this.ownerPlayer,
-    required this.gameStatus,
-    required this.roomState,
+    this.code,
+    this.opponentPlayer,
+    this.ownerPlayer,
+    this.gameStatus,
+    this.roomState,
   });
 
   factory RoomData.fromFireStore(
@@ -51,7 +51,6 @@ class RoomData {
 
   Map<String, dynamic> opponentOutOfRoom = {
     "opponentPlayer": FieldValue.delete(),
-    "gameStatus": GameStatus.loading.name,
     "roomState": RoomState.empty.name,
   };
 }

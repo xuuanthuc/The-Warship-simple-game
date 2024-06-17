@@ -8,11 +8,13 @@ abstract class AppImages {
   static const String background = "background2.png";
   static const String parallax = "parallax.png";
   //type A
+  static const String previewA = "battleships/type_a_preview.png";
   static const String mediumShipA = "battleships/medium_ship_a.png";
   static const String smallShipA = "battleships/small_ship_a.png";
   static const String tinyShipA = "battleships/tiny_ship_a.png";
   static const String largeShipA = "battleships/large_ship_a.png";
   //type B
+  static const String previewB = "battleships/type_b_preview.png";
   static const String mediumShipB = "battleships/medium_ship_b.png";
   static const String smallShipB = "battleships/small_ship_b.png";
   static const String tinyShipB = "battleships/tiny_ship_b.png";

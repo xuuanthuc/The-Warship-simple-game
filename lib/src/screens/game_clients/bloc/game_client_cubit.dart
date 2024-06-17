@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:template/src/models/player.dart';
 import 'package:template/src/models/room_data.dart';
@@ -33,7 +33,6 @@ class GameClientCubit extends Cubit<GameClientState> {
     final newCodeGenerated = getRandomString(6);
 
     final room = RoomData(
-      opponentPlayer: null,
       code: newCodeGenerated,
       ownerPlayer: player,
       gameStatus: GameStatus.loading,
@@ -47,6 +46,15 @@ class GameClientCubit extends Cubit<GameClientState> {
         .then((value) {
       setRoomDataStreamSubscription(newCodeGenerated, player);
     });
+  }
+
+  void opponentReady() {
+    final db = FirebaseFirestore.instance;
+    if (state.room?.opponentPlayer?.readyForGame == null) return;
+    db
+        .collection("rooms")
+        .doc(state.room?.code)
+        .update(state.room!.opponentPlayer!.readyForGame());
   }
 
   void deleteRoom() {
@@ -96,14 +104,12 @@ class GameClientCubit extends Cubit<GameClientState> {
     final db = FirebaseFirestore.instance;
 
     final room = RoomData(
-      code: code,
+      code: code.toUpperCase(),
       opponentPlayer: player,
-      ownerPlayer: null,
-      gameStatus: GameStatus.loaded,
       roomState: RoomState.full,
     );
 
-    db.collection("rooms").doc(code).get().then((value) {
+    db.collection("rooms").doc(code.toUpperCase()).get().then((value) {
       if (value.exists) {
         final roomData = RoomData.fromFireStore(value);
         if (roomData.roomState == RoomState.full) {
@@ -112,10 +118,10 @@ class GameClientCubit extends Cubit<GameClientState> {
         }
         db
             .collection("rooms")
-            .doc(code)
+            .doc(code.toUpperCase())
             .set(room.toFireStore(), SetOptions(merge: true))
             .then((onValue) {
-          setRoomDataStreamSubscription(code, player);
+          setRoomDataStreamSubscription(code.toUpperCase(), player);
         });
       } else {
         LoggerUtils.i("Rooom not exists");

@@ -12,8 +12,6 @@ class GameClientScreen extends StatelessWidget {
     return Scaffold(
       body: BlocBuilder<GameClientCubit, GameClientState>(
         builder: (context, state) {
-          print("room");
-          print(state.room);
           if(state.room != null){
             return RoomScreen();
           }

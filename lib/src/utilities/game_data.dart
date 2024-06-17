@@ -1,9 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:template/src/models/player.dart';
 import 'package:template/src/style/app_images.dart';
 import 'package:template/src/models/empty_block.dart';
-
 import '../models/occupied_block.dart';
 
 enum GameStatus {
