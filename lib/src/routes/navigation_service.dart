@@ -69,7 +69,7 @@ class NavigationService<T, U> {
     return navigationKey.currentState!.canPop();
   }
 
-  void goBack({T? result}) {
+  void pop({T? result}) {
     assert(navigationKey.currentState != null);
     return navigationKey.currentState!.pop<T>(result);
   }

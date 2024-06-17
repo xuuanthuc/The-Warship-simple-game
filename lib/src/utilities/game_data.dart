@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:template/src/models/player.dart';
 import 'package:template/src/style/app_images.dart';
 import 'package:template/src/models/empty_block.dart';
 
@@ -20,10 +21,7 @@ enum GameStatus {
   error,
 }
 
-enum BattleshipSkin {
-  A,
-  B
-}
+enum BattleshipSkin { A, B }
 
 class GameData {
   GameData._privateConstructor();
@@ -105,10 +103,10 @@ class GameData {
   }
 
   void setOccupiedSkin(BattleshipSkin skin) {
-    for (OccupiedBlock block in battleOccupied){
-      switch(skin){
+    for (OccupiedBlock block in battleOccupied) {
+      switch (skin) {
         case BattleshipSkin.A:
-          switch(block.size) {
+          switch (block.size) {
             case 2:
               block.sprite = AppImages.tinyShipA;
               break;
@@ -124,7 +122,7 @@ class GameData {
           }
           break;
         case BattleshipSkin.B:
-          switch(block.size) {
+          switch (block.size) {
             case 2:
               block.sprite = AppImages.tinyShipB;
               break;
