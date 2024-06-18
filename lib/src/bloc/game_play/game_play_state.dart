@@ -15,12 +15,16 @@ class GamePlayState extends Equatable {
   final List<EmptyBattleSquare> emptySquares;
   final List<OccupiedBattleSquare> occupiedSquares;
   final GameAction action;
+  final RoomData? room;
+  final Player? player;
 
   const GamePlayState({
     required this.status,
     required this.emptySquares,
     required this.occupiedSquares,
     required this.action,
+    required this.room,
+    required this.player,
   });
 
   GamePlayState.empty()
@@ -29,6 +33,8 @@ class GamePlayState extends Equatable {
           status: GameStatus.init,
           emptySquares: [],
           occupiedSquares: [],
+          room: null,
+          player: null,
         );
 
   GamePlayState copyWith({
@@ -36,12 +42,16 @@ class GamePlayState extends Equatable {
     List<EmptyBattleSquare>? battles,
     List<OccupiedBattleSquare>? ships,
     GameAction? action,
+    RoomData? room,
+    Player? player,
   }) {
     return GamePlayState(
       status: status ?? this.status,
       emptySquares: battles ?? this.emptySquares,
       occupiedSquares: ships ?? this.occupiedSquares,
       action: action ?? this.action,
+      room: room ?? this.room,
+      player: player ?? this.player,
     );
   }
 
@@ -51,5 +61,7 @@ class GamePlayState extends Equatable {
         emptySquares,
         occupiedSquares,
         action,
+        room,
+        player,
       ];
 }

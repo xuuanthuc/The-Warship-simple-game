@@ -27,9 +27,9 @@ class ReadyButtonComponent extends SpriteComponent
 
   @override
   void onTapUp(TapUpEvent event) {
-    bloc.createLayoutBattle(
-      gameRef.world.children.query<OccupiedComponent>(),
-      gameRef.world.children.query<EmptySquareComponent>(),
+    bloc.readyForBattle(
+      occupiedItems: gameRef.world.children.query<OccupiedComponent>(),
+      blocks: gameRef.world.children.query<EmptySquareComponent>(),
     );
     super.onTapUp(event);
   }

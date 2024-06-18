@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
 import 'package:template/src/style/app_images.dart';
 import 'package:template/src/utilities/game_data.dart';
@@ -139,10 +140,16 @@ class _RoomScreenState extends State<RoomScreen> {
                       : Colors.grey,
                 ),
               ),
-              onPressed: () {
+              onPressed: ()  async {
+                final room = state.room;
+                final player = state.player;
+                if(room == null || player == null) return;
+                context.read<GamePlayCubit>().getRoomDataToPrepareBattleGame(room, player);
+                await Future.delayed(Duration(milliseconds: 300));
                 if (iamHost) {
-                  if (state.room?.opponentPlayer?.ready == true) {
+                  if (room.opponentPlayer?.ready == true) {
                     print("start game");
+                    context.read<GameClientCubit>().start();
                   } else {
                     print("opponent not Ready game");
                   }
