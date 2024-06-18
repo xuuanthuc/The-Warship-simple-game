@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:template/src/models/player.dart';
 import 'package:template/src/utilities/game_data.dart';
 
+import 'battle.dart';
+
 enum RoomState {
   empty,
-  full,
+  full;
 }
 
 class RoomData {
@@ -13,6 +15,8 @@ class RoomData {
   final OpponentPlayer? opponentPlayer;
   final GameStatus? gameStatus;
   final RoomState? roomState;
+  PlayingData? ownerPlayingData;
+  PlayingData? opponentPlayingData;
 
   RoomData({
     this.code,
@@ -20,6 +24,8 @@ class RoomData {
     this.ownerPlayer,
     this.gameStatus,
     this.roomState,
+    this.ownerPlayingData,
+    this.opponentPlayingData,
   });
 
   factory RoomData.fromFireStore(
@@ -33,9 +39,15 @@ class RoomData {
       ownerPlayer: data['ownerPlayer'] != null
           ? OwnerPlayer.fromJson(data['ownerPlayer'])
           : null,
-      gameStatus: getGameStatus(data['gameStatus']),
+      gameStatus: GameStatus.values.byName(data['gameStatus']),
       code: data['room_code'],
-      roomState: getRoomState(data['roomState']),
+      roomState: RoomState.values.byName(data['roomState']),
+      ownerPlayingData: data['ownerPlayingData'] != null
+          ? PlayingData.fromJson(data['ownerPlayingData'])
+          : null,
+      opponentPlayingData: data['opponentPlayingData'] != null
+          ? PlayingData.fromJson(data['opponentPlayingData'])
+          : null,
     );
   }
 
@@ -46,6 +58,10 @@ class RoomData {
       if (ownerPlayer != null) "ownerPlayer": ownerPlayer?.toJson(),
       if (gameStatus != null) "gameStatus": gameStatus?.name,
       if (roomState != null) "roomState": roomState?.name,
+      if (ownerPlayingData != null)
+        "ownerPlayingData": ownerPlayingData?.toJson(),
+      if (opponentPlayingData != null)
+        "opponentPlayingData": opponentPlayingData?.toJson(),
     };
   }
 
@@ -53,45 +69,51 @@ class RoomData {
     "opponentPlayer": FieldValue.delete(),
     "roomState": RoomState.empty.name,
   };
+
+  Map<String, dynamic> startPreparing = {
+    "gameStatus": GameStatus.preparing.name,
+  };
 }
 
-GameStatus getGameStatus(String name) {
-  switch (name) {
-    case "init":
-      return GameStatus.init;
-    case "loading":
-      return GameStatus.loading;
-    case "loaded":
-      return GameStatus.loaded;
-    case "preparing":
-      return GameStatus.preparing;
-    case "prepared":
-      return GameStatus.prepared;
-    case "ready":
-      return GameStatus.ready;
-    case "started":
-      return GameStatus.started;
-    case "playing":
-      return GameStatus.playing;
-    case "paused":
-      return GameStatus.paused;
-    case "resumed":
-      return GameStatus.resumed;
-    case "finished":
-      return GameStatus.finished;
-    case "error":
-    default:
-      return GameStatus.error;
+class PlayingData {
+  final List<EmptyBattleSquare> emptyBlocks;
+  final List<OccupiedBattleSquare> occupiedBlocks;
+
+  PlayingData({
+    required this.emptyBlocks,
+    required this.occupiedBlocks,
+  });
+
+  factory PlayingData.fromJson(Map<String, dynamic> json) {
+    final List<EmptyBattleSquare> emptyBlocks = [];
+    final List<OccupiedBattleSquare> occupiedBlocks = [];
+    if (json['emptyBlocks'] != null) {
+      json['emptyBlocks'].forEach(
+        (b) => emptyBlocks.add(
+          EmptyBattleSquare.fromJson(b),
+        ),
+      );
+    }
+
+    if (json['occupiedBlocks'] != null) {
+      json['occupiedBlocks'].forEach(
+        (o) => occupiedBlocks.add(
+          OccupiedBattleSquare.fromJson(o),
+        ),
+      );
+    }
+
+    return PlayingData(
+      emptyBlocks: emptyBlocks,
+      occupiedBlocks: occupiedBlocks,
+    );
   }
-}
 
-RoomState getRoomState(String name) {
-  switch (name) {
-    case "empty":
-      return RoomState.empty;
-    case "full":
-      return RoomState.full;
-    default:
-      return RoomState.full;
+  Map<String, dynamic> toJson() {
+    print("here");
+    return {
+      "emptyBlocks": emptyBlocks.map((e) => e.toJson()).toList(),
+      "occupiedBlocks": occupiedBlocks.map((e) => e.toFireStore()).toList(),
+    };
   }
 }

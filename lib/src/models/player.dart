@@ -8,12 +8,13 @@ abstract class Player {
   ConnectivityResult? connectivityResult;
   bool? ready;
 
-  Player(
-      {required this.id,
-      this.connectivityResult,
-      this.createdAt,
-      this.ready,
-      this.updatedAt});
+  Player({
+    required this.id,
+    this.connectivityResult,
+    this.createdAt,
+    this.ready,
+    this.updatedAt,
+  });
 
   Player.fromJson(Map<String, dynamic> json) {
     id = json['id'];

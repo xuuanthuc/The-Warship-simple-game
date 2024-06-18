@@ -24,12 +24,12 @@ class GameClientCubit extends Cubit<GameClientState> {
   GameClientCubit() : super(GameClientState(room: null));
 
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _roomStream;
+  final firebase = FirebaseFirestore.instance;
 
   void createNewRoom({
     required GameStatus status,
     required OwnerPlayer player,
   }) {
-    final db = FirebaseFirestore.instance;
     final newCodeGenerated = getRandomString(6);
 
     final room = RoomData(
@@ -39,7 +39,7 @@ class GameClientCubit extends Cubit<GameClientState> {
       roomState: RoomState.empty,
     );
 
-    db
+    firebase
         .collection("rooms")
         .doc(newCodeGenerated)
         .set(room.toFireStore(), SetOptions(merge: true))
@@ -49,26 +49,23 @@ class GameClientCubit extends Cubit<GameClientState> {
   }
 
   void opponentReady() {
-    final db = FirebaseFirestore.instance;
     if (state.room?.opponentPlayer?.readyForGame == null) return;
-    db
+    firebase
         .collection("rooms")
         .doc(state.room?.code)
         .update(state.room!.opponentPlayer!.readyForGame());
   }
 
   void deleteRoom() {
-    final db = FirebaseFirestore.instance;
     LoggerUtils.i("Delete Room");
-    db.collection("rooms").doc(state.room?.code).delete().then((value) {
+    firebase.collection("rooms").doc(state.room?.code).delete().then((value) {
       removeRoomDataStreamSubscription();
     });
   }
 
   void outRoom() {
-    final db = FirebaseFirestore.instance;
     LoggerUtils.i("Out room");
-    db
+    firebase
         .collection("rooms")
         .doc(state.room?.code)
         .update(state.room!.opponentOutOfRoom)
@@ -81,9 +78,8 @@ class GameClientCubit extends Cubit<GameClientState> {
     String code,
     Player player,
   ) {
-    final db = FirebaseFirestore.instance;
     _roomStream =
-        db.collection("rooms").doc(code).snapshots().listen((roomData) {
+        firebase.collection("rooms").doc(code).snapshots().listen((roomData) {
       emit(state.copyWith(
         room: roomData.data() != null ? RoomData.fromFireStore(roomData) : null,
         player: player,
@@ -92,31 +88,29 @@ class GameClientCubit extends Cubit<GameClientState> {
   }
 
   void removeRoomDataStreamSubscription() {
+    emit(state.copyWith(room: null));
     _roomStream?.cancel();
     _roomStream = null;
-    emit(state.copyWith(room: null));
   }
 
   void joinRoom({
     required OpponentPlayer player,
     required String code,
   }) {
-    final db = FirebaseFirestore.instance;
-
     final room = RoomData(
       code: code.toUpperCase(),
       opponentPlayer: player,
       roomState: RoomState.full,
     );
 
-    db.collection("rooms").doc(code.toUpperCase()).get().then((value) {
+    firebase.collection("rooms").doc(code.toUpperCase()).get().then((value) {
       if (value.exists) {
         final roomData = RoomData.fromFireStore(value);
         if (roomData.roomState == RoomState.full) {
           LoggerUtils.i("Fullll");
           return;
         }
-        db
+        firebase
             .collection("rooms")
             .doc(code.toUpperCase())
             .set(room.toFireStore(), SetOptions(merge: true))
@@ -129,5 +123,18 @@ class GameClientCubit extends Cubit<GameClientState> {
     }).onError((error, s) {
       LoggerUtils.e(error.toString());
     });
+  }
+
+  void start() {
+    firebase
+        .collection("rooms")
+        .doc(state.room?.code)
+        .update(state.room!.startPreparing);
+  }
+
+  @override
+  Future<void> close() {
+    removeRoomDataStreamSubscription();
+    return super.close();
   }
 }
