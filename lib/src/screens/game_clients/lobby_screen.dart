@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
+import 'package:template/src/utilities/game_data.dart';
 import 'package:uuid/uuid.dart';
 import '../../bloc/connectivity/connectivity_bloc.dart';
 import '../../models/player.dart';
@@ -89,7 +90,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                 );
                 context.read<GameClientCubit>().createNewRoom(
                       player: player,
-                      status: context.read<GamePlayCubit>().state.status,
+                      status: GameStatus.init,
                     );
               }
             },

@@ -10,7 +10,8 @@ import '../bloc/game_play/game_play_cubit.dart';
 class OccupiedBattleSquareComponent extends SpriteComponent
     with
         FlameBlocReader<GamePlayCubit, GamePlayState>,
-        FlameBlocListenable<GamePlayCubit, GamePlayState>, HasVisibility {
+        FlameBlocListenable<GamePlayCubit, GamePlayState>,
+        HasVisibility {
   final OccupiedBattleSquare square;
   final int index;
   final Vector2 initialPosition;
@@ -37,11 +38,13 @@ class OccupiedBattleSquareComponent extends SpriteComponent
     size = Vector2(GameData.instance.blockSize * square.block.size,
         GameData.instance.blockSize);
     Future.delayed(const Duration(seconds: 1)).then((_) {
-      handlePosition(findClosestVector(bloc.state.emptySquares, initialPosition));
+      final List<EmptyBattleSquare> vectors = bloc.state.iamHost == true
+          ? bloc.state.room.opponentPlayingData?.emptyBlocks ?? []
+          : bloc.state.room.ownerPlayingData?.emptyBlocks ?? [];
+      handlePosition(findClosestVector(vectors, initialPosition));
     });
     return super.onLoad();
   }
-
 
   Vector2 findClosestVector(List<EmptyBattleSquare> vectors, Vector2 target) {
     Vector2 closestVector = vectors.first.block.vector2!;
@@ -59,18 +62,18 @@ class OccupiedBattleSquareComponent extends SpriteComponent
 
   Vector2 adjustPositionToStayWithinBounds(
       Vector2 position, Rect boundary, Vector2 size) {
-    double halfWidth = (angle == radians(90) ? size.y : size.x) / 2;
-    double halfHeight = (angle == radians(90) ? size.x : size.y) / 2;
+    double halfWidth = (angle == 0 ? size.x : size.y) / 2;
+    double halfHeight = (angle == 0 ? size.y : size.x) / 2;
 
     // Calculate new position ensuring the entire component stays within the boundary
     double newX = position.x;
     double newY = position.y;
 
     if (square.block.size % 2 == 0) {
-      if (angle == radians(90)) {
-        newY += GameData.instance.blockSize / 2;
-      } else {
+      if (angle == 0) {
         newX += GameData.instance.blockSize / 2;
+      } else {
+        newY += GameData.instance.blockSize / 2;
       }
     }
 
@@ -101,7 +104,7 @@ class OccupiedBattleSquareComponent extends SpriteComponent
   @override
   void onNewState(GamePlayState state) {
     print('check state');
-    if(square.overlappingPositions.isEmpty){
+    if (square.overlappingPositions.isEmpty) {
       isVisible = true;
     }
     super.onNewState(state);

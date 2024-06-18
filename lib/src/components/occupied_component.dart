@@ -46,8 +46,8 @@ class OccupiedComponent extends SpriteComponent
       ..renderShape = true;
     scale = Vector2(1, 1);
     priority = 0;
-    size = Vector2(GameData.instance.blockSize * block.size,
-        GameData.instance.blockSize);
+    size = Vector2(
+        GameData.instance.blockSize * block.size, GameData.instance.blockSize);
     _hitBox.size = size - Vector2.all(10);
     add(_hitBox);
     return super.onLoad();
@@ -94,18 +94,18 @@ class OccupiedComponent extends SpriteComponent
 
   Vector2 adjustPositionToStayWithinBounds(
       Vector2 position, Rect boundary, Vector2 size) {
-    double halfWidth = (angle == radians(90) ? size.y : size.x) / 2;
-    double halfHeight = (angle == radians(90) ? size.x : size.y) / 2;
+    double halfWidth = (angle == 0 ? size.x : size.y) / 2;
+    double halfHeight = (angle == 0 ? size.y : size.x) / 2;
 
     // Calculate new position ensuring the entire component stays within the boundary
     double newX = position.x;
     double newY = position.y;
 
     if (block.size % 2 == 0) {
-      if (angle == radians(90)) {
-        newY += GameData.instance.blockSize / 2;
-      } else {
+      if (angle == 0) {
         newX += GameData.instance.blockSize / 2;
+      } else {
+        newY += GameData.instance.blockSize / 2;
       }
     }
 
@@ -135,7 +135,7 @@ class OccupiedComponent extends SpriteComponent
   @override
   void onCollisionStart(
       Set<Vector2> intersectionPoints, PositionComponent other) {
-    if(other is OccupiedComponent){
+    if (other is OccupiedComponent) {
       if (other.hashCode != this.hashCode) {
         collisions.add(other);
       }
@@ -183,29 +183,29 @@ class OccupiedComponent extends SpriteComponent
   }
 
   Rect getBoundingRect() {
-    double halfWidth = angle == radians(90) ? size.y / 2 : size.x / 2;
-    double halfHeight = angle == radians(90) ? size.x / 2 : size.y / 2;
+    double halfWidth = angle == 0 ? size.x / 2 : size.y / 2;
+    double halfHeight = angle == 0 ? size.y / 2 : size.x / 2;
 
     Vector2 topLeft = Vector2(-halfWidth, -halfHeight);
     Vector2 topRight = Vector2(halfWidth, -halfHeight);
     Vector2 bottomLeft = Vector2(-halfWidth, halfHeight);
     Vector2 bottomRight = Vector2(halfWidth, halfHeight);
 
-    if (angle == radians(90)) {
-      topLeft -= position;
-      topRight -= position;
-      bottomLeft -= position;
-      bottomRight -= position;
-    } else {
+    if (angle == 0) {
       topLeft += position;
       topRight += position;
       bottomLeft += position;
       bottomRight += position;
+    } else {
+      topLeft -= position;
+      topRight -= position;
+      bottomLeft -= position;
+      bottomRight -= position;
     }
-    final boundingRect = angle == radians(90)
-        ? Rect.fromLTRB(
-            -bottomRight.x, -bottomRight.y, -bottomLeft.x, -topLeft.y)
-        : Rect.fromLTRB(topLeft.x, topLeft.y, topRight.x, bottomLeft.y);
+    final boundingRect = angle == 0
+        ? Rect.fromLTRB(topLeft.x, topLeft.y, topRight.x, bottomLeft.y)
+        : Rect.fromLTRB(
+            -bottomRight.x, -bottomRight.y, -bottomLeft.x, -topLeft.y);
     return boundingRect;
   }
 
@@ -219,8 +219,7 @@ class OccupiedComponent extends SpriteComponent
   }
 
   @override
-  bool listenWhen(
-      GamePlayState previousState, GamePlayState newState) {
+  bool listenWhen(GamePlayState previousState, GamePlayState newState) {
     return newState.action == GameAction.prepare;
   }
 }

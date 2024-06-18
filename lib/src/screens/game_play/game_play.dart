@@ -97,22 +97,27 @@ class BattlegroundWorld extends World
 
   @override
   void onNewState(GamePlayState state) async {
-    for (var i = 0; i < state.emptySquares.length; i++) {
-      EmptyBattleSquare block = state.emptySquares[i];
+    print("Game plat world changed state");
+    final List<EmptyBattleSquare> emptySquares = bloc.state.iamHost == true
+        ? bloc.state.room.opponentPlayingData?.emptyBlocks ?? []
+        : bloc.state.room.ownerPlayingData?.emptyBlocks ?? [];
+    final List<OccupiedBattleSquare> occupiedSquares = bloc.state.iamHost == true
+        ? bloc.state.room.opponentPlayingData?.occupiedBlocks ?? []
+        : bloc.state.room.ownerPlayingData?.occupiedBlocks ?? [];
+    for (var i = 0; i < emptySquares.length; i++) {
+      EmptyBattleSquare block = emptySquares[i];
       block.block.vector2 = GameData.instance.setBlockVector2(
         block.block.coordinates!.last,
         block.block.coordinates!.first,
       );
       await add(
         EmptyBattleSquareComponent(
-          battle: state.emptySquares[i],
+          battle: emptySquares[i],
         ),
       );
     }
-    // children.query()
-
-    for (var i = 0; i < state.occupiedSquares.length; i++) {
-      final ship = state.occupiedSquares[i];
+    for (var i = 0; i < occupiedSquares.length; i++) {
+      final ship = occupiedSquares[i];
       await add(
         OccupiedBattleSquareComponent(
           key: ComponentKey.unique(),
