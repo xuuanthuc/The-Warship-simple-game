@@ -4,64 +4,68 @@ enum GameAction {
   prepare,
   shuffle,
   ready,
+  play,
   checkHit,
   checkSunk,
   shoot,
+  pause,
+  end
+}
+
+enum ReadyStatus {
+  init,
+  preparing,
+  prepared,
+  ready,
 }
 
 @immutable
 class GamePlayState extends Equatable {
-  final GameStatus status;
-  final List<EmptyBattleSquare> emptySquares;
-  final List<OccupiedBattleSquare> occupiedSquares;
+  final ReadyStatus status;
   final GameAction action;
-  final RoomData? room;
+  final RoomData room;
   final Player? player;
+  final bool? iamHost;
 
   const GamePlayState({
     required this.status,
-    required this.emptySquares,
-    required this.occupiedSquares,
     required this.action,
     required this.room,
     required this.player,
+    required this.iamHost,
   });
 
   GamePlayState.empty()
       : this(
           action: GameAction.prepare,
-          status: GameStatus.init,
-          emptySquares: [],
-          occupiedSquares: [],
-          room: null,
+          status: ReadyStatus.init,
+          room: RoomData(),
           player: null,
+          iamHost: false,
         );
 
   GamePlayState copyWith({
-    GameStatus? status,
-    List<EmptyBattleSquare>? battles,
-    List<OccupiedBattleSquare>? ships,
+    ReadyStatus? status,
     GameAction? action,
     RoomData? room,
     Player? player,
+    bool? iamHost,
   }) {
     return GamePlayState(
       status: status ?? this.status,
-      emptySquares: battles ?? this.emptySquares,
-      occupiedSquares: ships ?? this.occupiedSquares,
       action: action ?? this.action,
       room: room ?? this.room,
       player: player ?? this.player,
+      iamHost: iamHost ?? this.iamHost,
     );
   }
 
   @override
   List<Object?> get props => [
         status,
-        emptySquares,
-        occupiedSquares,
         action,
         room,
         player,
+        iamHost,
       ];
 }

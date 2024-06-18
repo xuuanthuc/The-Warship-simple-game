@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:equatable/equatable.dart';
 import 'package:template/src/models/player.dart';
 import 'package:template/src/utilities/game_data.dart';
 
@@ -73,6 +74,10 @@ class RoomData {
   Map<String, dynamic> startPreparing = {
     "gameStatus": GameStatus.preparing.name,
   };
+
+  Map<String, dynamic> playGame = {
+    "gameStatus": GameStatus.started.name,
+  };
 }
 
 class PlayingData {
@@ -110,7 +115,6 @@ class PlayingData {
   }
 
   Map<String, dynamic> toJson() {
-    print("here");
     return {
       "emptyBlocks": emptyBlocks.map((e) => e.toJson()).toList(),
       "occupiedBlocks": occupiedBlocks.map((e) => e.toFireStore()).toList(),

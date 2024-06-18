@@ -21,7 +21,7 @@ abstract class Player {
     ready = json['ready'];
     createdAt = json["createdAt"];
     updatedAt = json["updatedAt"];
-    connectivityResult = getConnectivityResult(json["connectionStatus"]);
+    connectivityResult = ConnectivityResult.values.byName(json["connectionStatus"]);
   }
 
   Map<String, dynamic> toJson() {
@@ -33,27 +33,6 @@ abstract class Player {
       if (connectivityResult != null)
         "connectionStatus": connectivityResult?.name,
     };
-  }
-}
-
-ConnectivityResult getConnectivityResult(String name) {
-  switch (name) {
-    case "none":
-      return ConnectivityResult.none;
-    case "wifi":
-      return ConnectivityResult.wifi;
-    case "mobile":
-      return ConnectivityResult.mobile;
-    case "ethernet":
-      return ConnectivityResult.ethernet;
-    case "bluetooth":
-      return ConnectivityResult.bluetooth;
-    case "vpn":
-      return ConnectivityResult.vpn;
-    case "other":
-      return ConnectivityResult.other;
-    default:
-      return ConnectivityResult.none;
   }
 }
 

@@ -13,7 +13,6 @@ class EmptyBlock {
 
   factory EmptyBlock.fromJson(Map<String, dynamic> json) {
     return EmptyBlock(
-      vector2: Vector2(json['x'], json['y']),
       coordinates: json['coordinates'] is Iterable
           ? List.from(json['coordinates'])
           : null,
@@ -21,10 +20,7 @@ class EmptyBlock {
   }
 
   Map<String, dynamic> toJson() {
-    print("empty here ???");
     return {
-      if (vector2 != null) "x": vector2?.x,
-      if (vector2 != null) "y": vector2?.y,
       if (coordinates != null) "coordinates": coordinates?.map((e) => e).toList(),
     };
   }

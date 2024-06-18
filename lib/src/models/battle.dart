@@ -44,7 +44,6 @@ class EmptyBattleSquare {
   }
 
   Map<String, dynamic> toJson() {
-    print("empty here?");
     return {
       "block": block.toJson(),
       "type": type.name,
@@ -87,7 +86,6 @@ class OccupiedBattleSquare {
   }
 
   Map<String, dynamic> toFireStore() {
-    print("block");
     return {
       "block": block.toJson(),
       if(targetPoint != null) "targetPoint": targetPoint!.toJson(),

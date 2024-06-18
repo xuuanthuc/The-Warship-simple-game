@@ -17,7 +17,8 @@ class TerrainComponent extends SpriteComponent
 
   @override
   void onNewState(GamePlayState state) {
-    if(state.status.index <= 4) {
+    print("terreian changed");
+    if((state.room.gameStatus?.index ?? 0) <= 4) {
       priority = -1;
     } else {
       priority = 1;
@@ -27,6 +28,6 @@ class TerrainComponent extends SpriteComponent
 
   @override
   bool listenWhen(GamePlayState previousState, GamePlayState newState) {
-    return previousState.status != newState.status;
+    return previousState.room.gameStatus != newState.room.gameStatus;
   }
 }

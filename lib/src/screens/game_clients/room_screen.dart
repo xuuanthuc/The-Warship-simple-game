@@ -44,7 +44,13 @@ class _RoomScreenState extends State<RoomScreen> {
                 Text("Waiting the opponent..."),
               ],
             ),
-            Text(state.room?.code ?? ''),
+            Text(
+              state.room?.code ?? '',
+              style: TextStyle(
+                fontSize: 30,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -140,11 +146,13 @@ class _RoomScreenState extends State<RoomScreen> {
                       : Colors.grey,
                 ),
               ),
-              onPressed: ()  async {
+              onPressed: () async {
                 final room = state.room;
                 final player = state.player;
-                if(room == null || player == null) return;
-                context.read<GamePlayCubit>().getRoomDataToPrepareBattleGame(room, player);
+                if (room == null || player == null) return;
+                context
+                    .read<GamePlayCubit>()
+                    .getRoomDataToPrepareBattleGame(room, player);
                 await Future.delayed(Duration(milliseconds: 300));
                 if (iamHost) {
                   if (room.opponentPlayer?.ready == true) {

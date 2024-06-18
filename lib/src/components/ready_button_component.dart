@@ -36,7 +36,8 @@ class ReadyButtonComponent extends SpriteComponent
 
   @override
   void onNewState(GamePlayState state) {
-    if (state.status == GameStatus.prepared) {
+    print("ready button check state");
+    if (state.status == ReadyStatus.prepared) {
       this.isVisible = true;
     } else {
       this.isVisible = false;
