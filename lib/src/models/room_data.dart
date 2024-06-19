@@ -1,7 +1,8 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:template/src/models/player.dart';
 import 'package:template/src/utilities/game_data.dart';
-
 import 'battle.dart';
 
 enum RoomState {
@@ -19,7 +20,7 @@ class RoomData {
   PlayingData? opponentPlayingData;
   final EmptyBattleSquare? nextOwnerPlayerAction;
   final EmptyBattleSquare? nextOpponentPlayerAction;
-  final Player? nextPlayer;
+  Player? nextPlayer;
 
   RoomData({
     this.code,
@@ -94,8 +95,9 @@ class RoomData {
     "gameStatus": GameStatus.preparing.name,
   };
 
-  Map<String, dynamic> playGame = {
+  Map<String, dynamic> playGame(Player firstTurn) => {
     "gameStatus": GameStatus.started.name,
+    "nextPlayer": firstTurn.toJson(),
   };
 
   Map<String, dynamic> actionOfOwnerPlayer(EmptyBattleSquare square) => {
