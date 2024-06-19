@@ -14,7 +14,6 @@ class ReadyButtonComponent extends SpriteComponent
         FlameBlocListenable<GamePlayCubit, GamePlayState>,
         HasVisibility,
         TapCallbacks {
-
   @override
   Future<void> onLoad() async {
     sprite = await Sprite.load(AppImages.readyButton);
@@ -43,5 +42,12 @@ class ReadyButtonComponent extends SpriteComponent
       this.isVisible = false;
     }
     super.onNewState(state);
+  }
+
+  @override
+  bool listenWhen(GamePlayState previousState, GamePlayState newState) {
+    return newState.status == ReadyStatus.preparing ||
+        newState.status == ReadyStatus.prepared ||
+        previousState.status != newState.status;
   }
 }
