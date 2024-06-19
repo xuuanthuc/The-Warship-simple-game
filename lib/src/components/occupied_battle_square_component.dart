@@ -109,4 +109,9 @@ class OccupiedBattleSquareComponent extends SpriteComponent
     }
     super.onNewState(state);
   }
+
+  @override
+  bool listenWhen(GamePlayState previousState, GamePlayState newState) {
+    return newState.action == GameAction.checkSunk;
+  }
 }
