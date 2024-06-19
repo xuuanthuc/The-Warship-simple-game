@@ -13,7 +13,7 @@ import 'package:template/src/utilities/logger.dart';
 
 part 'game_client_state.dart';
 
-const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+const _chars = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
 Random _rnd = Random();
 
 String getRandomString(int length) => String.fromCharCodes(Iterable.generate(

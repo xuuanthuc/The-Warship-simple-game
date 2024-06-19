@@ -159,7 +159,7 @@ class OccupiedComponent extends SpriteComponent
 
   void onCollisionCheck() {
     bloc.checkCollisionBlocks(
-      gameRef.world.children.query<OccupiedComponent>(),
+      gameRef.world.children.query<ReadyBattleWorld>().first.children.query<OccupiedComponent>(),
     );
   }
 

@@ -8,6 +8,7 @@ enum GameAction {
   checkHit,
   checkSunk,
   shoot,
+  nextTurn,
   pause,
   end
 }

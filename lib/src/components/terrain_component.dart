@@ -12,22 +12,7 @@ class TerrainComponent extends SpriteComponent
     sprite = await Sprite.load(AppImages.background);
     anchor = Anchor.center;
     size = Vector2.all(GameData.instance.blockSize * GameData.blockLength);
+    priority = -1;
     return super.onLoad();
-  }
-
-  @override
-  void onNewState(GamePlayState state) {
-    print("terreian changed");
-    if((state.room.gameStatus?.index ?? 0) <= 4) {
-      priority = -1;
-    } else {
-      priority = 1;
-    }
-    super.onNewState(state);
-  }
-
-  @override
-  bool listenWhen(GamePlayState previousState, GamePlayState newState) {
-    return previousState.room.gameStatus != newState.room.gameStatus;
   }
 }

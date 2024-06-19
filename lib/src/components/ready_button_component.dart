@@ -27,8 +27,16 @@ class ReadyButtonComponent extends SpriteComponent
   @override
   void onTapUp(TapUpEvent event) {
     bloc.readyForBattle(
-      occupiedItems: gameRef.world.children.query<OccupiedComponent>(),
-      blocks: gameRef.world.children.query<EmptySquareComponent>(),
+      occupiedItems: gameRef.world.children
+          .query<ReadyBattleWorld>()
+          .first
+          .children
+          .query<OccupiedComponent>(),
+      blocks: gameRef.world.children
+          .query<ReadyBattleWorld>()
+          .first
+          .children
+          .query<EmptySquareComponent>(),
     );
     super.onTapUp(event);
   }
