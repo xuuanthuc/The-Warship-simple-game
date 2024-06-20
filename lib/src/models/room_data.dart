@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:template/src/models/player.dart';
 import 'package:template/src/utilities/game_data.dart';
@@ -13,24 +11,24 @@ enum RoomState {
 class RoomData {
   final String? code;
   final OwnerPlayer? ownerPlayer;
-  final OpponentPlayer? opponentPlayer;
+  final GuestPlayer? guestPlayer;
   final GameStatus? gameStatus;
   final RoomState? roomState;
   PlayingData? ownerPlayingData;
-  PlayingData? opponentPlayingData;
+  PlayingData? guestPlayingData;
   final EmptyBattleSquare? nextOwnerPlayerAction;
-  final EmptyBattleSquare? nextOpponentPlayerAction;
+  final EmptyBattleSquare? nextGuestPlayerAction;
   Player? nextPlayer;
 
   RoomData({
     this.code,
-    this.opponentPlayer,
+    this.guestPlayer,
     this.ownerPlayer,
     this.gameStatus,
     this.roomState,
     this.ownerPlayingData,
-    this.opponentPlayingData,
-    this.nextOpponentPlayerAction,
+    this.guestPlayingData,
+    this.nextGuestPlayerAction,
     this.nextOwnerPlayerAction,
     this.nextPlayer,
   });
@@ -40,8 +38,8 @@ class RoomData {
   ) {
     final data = snapshot.data() as Map<String, dynamic>;
     return RoomData(
-      opponentPlayer: data['opponentPlayer'] != null
-          ? OpponentPlayer.fromJson(data['opponentPlayer'])
+      guestPlayer: data['guestPlayer'] != null
+          ? GuestPlayer.fromJson(data['guestPlayer'])
           : null,
       ownerPlayer: data['ownerPlayer'] != null
           ? OwnerPlayer.fromJson(data['ownerPlayer'])
@@ -52,14 +50,14 @@ class RoomData {
       ownerPlayingData: data['ownerPlayingData'] != null
           ? PlayingData.fromJson(data['ownerPlayingData'])
           : null,
-      opponentPlayingData: data['opponentPlayingData'] != null
-          ? PlayingData.fromJson(data['opponentPlayingData'])
+      guestPlayingData: data['guestPlayingData'] != null
+          ? PlayingData.fromJson(data['guestPlayingData'])
           : null,
       nextOwnerPlayerAction: data['nextOwnerPlayerAction'] != null
           ? EmptyBattleSquare.fromJson(data['nextOwnerPlayerAction'])
           : null,
-      nextOpponentPlayerAction: data['nextOpponentPlayerAction'] != null
-          ? EmptyBattleSquare.fromJson(data['nextOpponentPlayerAction'])
+      nextGuestPlayerAction: data['nextGuestPlayerAction'] != null
+          ? EmptyBattleSquare.fromJson(data['nextGuestPlayerAction'])
           : null,
       nextPlayer: data['nextPlayer'] != null
           ? OwnerPlayer.fromJson(data['nextPlayer'])
@@ -70,24 +68,24 @@ class RoomData {
   Map<String, dynamic> toFireStore() {
     return {
       if (code != null) "room_code": code,
-      if (opponentPlayer != null) "opponentPlayer": opponentPlayer?.toJson(),
+      if (guestPlayer != null) "guestPlayer": guestPlayer?.toJson(),
       if (ownerPlayer != null) "ownerPlayer": ownerPlayer?.toJson(),
       if (gameStatus != null) "gameStatus": gameStatus?.name,
       if (roomState != null) "roomState": roomState?.name,
       if (ownerPlayingData != null)
         "ownerPlayingData": ownerPlayingData?.toJson(),
-      if (opponentPlayingData != null)
-        "opponentPlayingData": opponentPlayingData?.toJson(),
+      if (guestPlayingData != null)
+        "guestPlayingData": guestPlayingData?.toJson(),
       if (nextOwnerPlayerAction != null)
         "nextOwnerPlayerAction": nextOwnerPlayerAction?.toJson(),
-      if (nextOpponentPlayerAction != null)
-        "nextOpponentPlayerAction": nextOpponentPlayerAction?.toJson(),
+      if (nextGuestPlayerAction != null)
+        "nextGuestPlayerAction": nextGuestPlayerAction?.toJson(),
       if (nextPlayer != null) "nextPlayer": nextPlayer?.toJson(),
     };
   }
 
-  Map<String, dynamic> opponentOutOfRoom = {
-    "opponentPlayer": FieldValue.delete(),
+  Map<String, dynamic> guestOutOfRoom = {
+    "guestPlayer": FieldValue.delete(),
     "roomState": RoomState.empty.name,
   };
 
@@ -100,18 +98,18 @@ class RoomData {
     "nextPlayer": firstTurn.toJson(),
   };
 
-  Map<String, dynamic> actionOfOwnerPlayer(EmptyBattleSquare square) => {
+  Map<String, dynamic> actionOfOwnerPlayer(EmptyBattleSquare square, Player? player) => {
         "nextOwnerPlayerAction": square.toJson(),
-        "opponentPlayingData": opponentPlayingData?.toJson(),
-        "nextOpponentPlayerAction": null,
-        if (opponentPlayer != null) "nextPlayer": opponentPlayer?.toJson(),
+        "guestPlayingData": guestPlayingData?.toJson(),
+        "nextGuestPlayerAction": null,
+        if (player != null) "nextPlayer": player.toJson(),
       };
 
-  Map<String, dynamic> actionOfOccupiedPlayer(EmptyBattleSquare square) => {
-        "nextOpponentPlayerAction": square.toJson(),
+  Map<String, dynamic> actionOfOccupiedPlayer(EmptyBattleSquare square, Player? player) => {
+        "nextGuestPlayerAction": square.toJson(),
         "ownerPlayingData": ownerPlayingData?.toJson(),
         "nextOwnerPlayerAction": null,
-        if (ownerPlayer != null) "nextPlayer": ownerPlayer?.toJson(),
+        if (player != null) "nextPlayer": player.toJson(),
       };
 }
 

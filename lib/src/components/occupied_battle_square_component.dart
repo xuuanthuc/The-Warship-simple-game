@@ -16,7 +16,7 @@ class OccupiedBattleSquareComponent extends SpriteComponent
   final int index;
   final Vector2 initialPosition;
   final double initialAngle;
-  final bool isOpponent;
+  final bool isGuest;
 
   OccupiedBattleSquareComponent({
     ComponentKey? key,
@@ -24,7 +24,7 @@ class OccupiedBattleSquareComponent extends SpriteComponent
     required this.index,
     required this.initialPosition,
     required this.initialAngle,
-    required this.isOpponent,
+    required this.isGuest,
   }) : super(key: key);
 
   List<PositionComponent> collisions = [];
@@ -40,8 +40,8 @@ class OccupiedBattleSquareComponent extends SpriteComponent
     size = Vector2(GameData.instance.blockSize * square.block.size,
         GameData.instance.blockSize);
     Future.delayed(const Duration(seconds: 1)).then((_) {
-      final List<EmptyBattleSquare> vectors = isOpponent
-          ? bloc.state.room.opponentPlayingData?.emptyBlocks ?? []
+      final List<EmptyBattleSquare> vectors = isGuest
+          ? bloc.state.room.guestPlayingData?.emptyBlocks ?? []
           : bloc.state.room.ownerPlayingData?.emptyBlocks ?? [];
       handlePosition(findClosestVector(vectors, initialPosition));
     });

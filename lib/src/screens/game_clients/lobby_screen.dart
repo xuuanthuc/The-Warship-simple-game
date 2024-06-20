@@ -45,7 +45,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
         final connectionResult = context.read<ConnectivityBloc>().state.result;
         if (connectionResult == ConnectivityResult.wifi ||
             connectionResult == ConnectivityResult.mobile) {
-          final player = OpponentPlayer(
+          final player = GuestPlayer(
             id: const Uuid().v4(),
             createdAt: Timestamp.now(),
             updatedAt: Timestamp.now(),

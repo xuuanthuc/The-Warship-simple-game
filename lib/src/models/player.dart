@@ -54,10 +54,10 @@ class OwnerPlayer extends Player {
         );
 }
 
-class OpponentPlayer extends Player {
-  OpponentPlayer.fromJson(super.json) : super.fromJson();
+class GuestPlayer extends Player {
+  GuestPlayer.fromJson(super.json) : super.fromJson();
 
-  OpponentPlayer({
+  GuestPlayer({
     required String id,
     ConnectivityResult? connectivityResult,
     Timestamp? createdAt,
@@ -73,7 +73,7 @@ class OpponentPlayer extends Player {
 
   Map<String, dynamic> readyForGame() {
     return {
-      "opponentPlayer.ready": !(ready ?? false),
+      "guestPlayer.ready": !(ready ?? false),
     };
   }
 }

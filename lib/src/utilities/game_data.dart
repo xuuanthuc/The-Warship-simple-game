@@ -34,8 +34,8 @@ class GameData {
       WidgetsBinding.instance.platformDispatcher.views.first.physicalSize / 2;
 
   double get blockSize => screenSize.width < screenSize.height
-      ? screenSize.width / 12
-      : screenSize.height / 12;
+      ? screenSize.width / 13
+      : screenSize.height / 13;
 
   List<OccupiedBlock> battleOccupied = [
     OccupiedBlock(
