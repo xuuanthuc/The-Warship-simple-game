@@ -21,7 +21,11 @@ String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
 
 @injectable
 class GameClientCubit extends Cubit<GameClientState> {
-  GameClientCubit() : super(const GameClientState(room: null));
+  GameClientCubit()
+      : super(const GameClientState(
+          room: null,
+          skin: BattleshipSkin.A,
+        ));
 
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _roomStream;
   final firebase = FirebaseFirestore.instance;
@@ -132,7 +136,7 @@ class GameClientCubit extends Cubit<GameClientState> {
         .update(state.room!.startPreparing);
   }
 
-  void setSkin(BattleshipSkin skin){
+  void setSkin(BattleshipSkin skin) {
     GameData.instance.setOccupiedSkin(skin);
     emit(state.copyWith(room: state.room, skin: skin));
   }
