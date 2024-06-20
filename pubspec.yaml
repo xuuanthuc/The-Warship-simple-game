@@ -98,11 +98,14 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: Rowdies
+    - family: Mitr
       fonts:
-        - asset: assets/fonts/Rowdies-Bold.ttf
-        - asset: assets/fonts/Rowdies-Light.ttf
-        - asset: assets/fonts/Rowdies-Regular.ttf
+        - asset: assets/fonts/Mitr-Bold.ttf
+        - asset: assets/fonts/Mitr-SemiBold.ttf
+        - asset: assets/fonts/Mitr-Light.ttf
+        - asset: assets/fonts/Mitr-ExtraLight.ttf
+        - asset: assets/fonts/Mitr-Regular.ttf
+        - asset: assets/fonts/Mitr-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro

@@ -4,7 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 void appToast(
   BuildContext context, {
   required String message,
-  ToastGravity? gravity = ToastGravity.CENTER,
+  ToastGravity? gravity = ToastGravity.BOTTOM,
 }) {
   FToast fToast = FToast();
   fToast.init(context);
@@ -17,7 +17,10 @@ void appToast(
     child: Text(
       message,
       style: const TextStyle(
-          fontWeight: FontWeight.w500, color: Colors.white, fontSize: 12),
+        fontWeight: FontWeight.w500,
+        color: Colors.white,
+        fontSize: 14,
+      ),
     ),
   );
 

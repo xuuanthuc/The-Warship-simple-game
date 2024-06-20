@@ -11,6 +11,7 @@ abstract class AppImages {
   static const String github = "assets/images/github.png";
   static const String stackOverflow = "assets/images/stack_overflow.png";
   static const String menu = "assets/images/menu.png";
+  static const String arrowBack = "assets/images/arrow_back.png";
   //type A
   static const String previewA = "battleships/type_a_preview.png";
   static const String mediumShipA = "battleships/medium_ship_a.png";

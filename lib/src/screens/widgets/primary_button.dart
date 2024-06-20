@@ -15,7 +15,7 @@ class PrimaryButton extends StatefulWidget {
   final double borderWidth;
   final String text;
 
-  PrimaryButton.primary({
+  const PrimaryButton.primary({
     Key? key,
     required this.onPressed,
     required this.text,
@@ -31,7 +31,7 @@ class PrimaryButton extends StatefulWidget {
     this.borderWidth = 3,
   }) : super(key: key);
 
-  PrimaryButton.secondary({
+  const PrimaryButton.secondary({
     Key? key,
     required this.onPressed,
     required this.text,
@@ -136,7 +136,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
                     Text(
                       widget.text,
                       style: TextStyle(
-                        fontFamily: "Rowdies",
+                        fontFamily: "Mitr",
                         fontWeight: widget.fontWeight,
                         fontSize: widget.fontSize,
                         letterSpacing: 2,
@@ -149,7 +149,7 @@ class _PrimaryButtonState extends State<PrimaryButton>
                     Text(
                       widget.text,
                       style: TextStyle(
-                        fontFamily: "Rowdies",
+                        fontFamily: "Mitr",
                         letterSpacing: 2,
                         fontWeight: widget.fontWeight,
                         fontSize: widget.fontSize,

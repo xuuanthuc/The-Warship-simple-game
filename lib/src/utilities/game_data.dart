@@ -1,5 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:template/src/style/app_colors.dart';
 import 'package:template/src/style/app_images.dart';
 import 'package:template/src/models/empty_block.dart';
 import '../models/occupied_block.dart';
@@ -29,6 +31,8 @@ class GameData {
   static GameData get instance => _instance;
 
   static const blockLength = 10;
+
+  RadialGradient backgroundStyle = AppColors.backgroundYellow;
 
   Size get screenSize =>
       WidgetsBinding.instance.platformDispatcher.views.first.physicalSize / 2;
@@ -104,6 +108,7 @@ class GameData {
     for (OccupiedBlock block in battleOccupied) {
       switch (skin) {
         case BattleshipSkin.A:
+          backgroundStyle = AppColors.backgroundYellow;
           switch (block.size) {
             case 2:
               block.sprite = AppImages.tinyShipA;
@@ -120,6 +125,7 @@ class GameData {
           }
           break;
         case BattleshipSkin.B:
+          backgroundStyle = AppColors.backgroundBlue;
           switch (block.size) {
             case 2:
               block.sprite = AppImages.tinyShipB;
