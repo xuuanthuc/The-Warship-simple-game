@@ -5,7 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
+import 'package:template/src/screens/widgets/primary_button.dart';
+import 'package:template/src/screens/widgets/secondary_button.dart';
+import 'package:template/src/style/app_images.dart';
 import 'package:template/src/utilities/game_data.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:uuid/uuid.dart';
 import '../../bloc/connectivity/connectivity_bloc.dart';
 import '../../models/player.dart';
@@ -20,6 +24,12 @@ class LobbyScreen extends StatefulWidget {
 
 class _LobbyScreenState extends State<LobbyScreen> {
   final TextEditingController _controller = TextEditingController();
+
+  Future<void> _launchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw Exception('Could not launch $url');
+    }
+  }
 
   void _enterRoomCodeDialog() {
     showDialog<String?>(
@@ -71,38 +81,81 @@ class _LobbyScreenState extends State<LobbyScreen> {
           appToast(context, message: "No connection");
         }
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              final connectionResult =
-                  context.read<ConnectivityBloc>().state.result;
-              if (connectionResult == ConnectivityResult.wifi ||
-                  connectionResult == ConnectivityResult.mobile) {
-                final player = OwnerPlayer(
-                  id: const Uuid().v4(),
-                  createdAt: Timestamp.now(),
-                  updatedAt: Timestamp.now(),
-                  connectivityResult: connectionResult,
-                  ready: false,
-                );
-                context.read<GameClientCubit>().createNewRoom(
-                      player: player,
-                      status: GameStatus.init,
-                    );
-              }
-            },
-            child: Text("Create room"),
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage(AppImages.lobby),
+            fit: BoxFit.cover,
           ),
-          ElevatedButton(
-            onPressed: () {
-              _enterRoomCodeDialog();
-            },
-            child: Text("Join room"),
-          )
-        ],
+        ),
+        padding: EdgeInsets.all(50),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: SecondaryButton.icon(
+                onPressed: () {},
+                icon: AppImages.menu,
+              ),
+            ),
+            Spacer(),
+            Align(
+              alignment: Alignment.centerRight,
+              child: SecondaryButton(
+                onPressed: () => _launchUrl(
+                  "https://github.com/xuuanthuc/battleship",
+                ),
+                text: "GITHUB",
+                icon: AppImages.github,
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: SecondaryButton(
+                onPressed: () => _launchUrl(
+                  "https://stackoverflow.com/users/15110149/xuuan-thuc",
+                ),
+                text: "STACK",
+                icon: AppImages.stackOverflow,
+              ),
+            ),
+            Expanded(child: Container()),
+            PrimaryButton.primary(
+              onPressed: () {
+                final connectionResult =
+                    context.read<ConnectivityBloc>().state.result;
+                if (connectionResult == ConnectivityResult.wifi ||
+                    connectionResult == ConnectivityResult.mobile) {
+                  final player = OwnerPlayer(
+                    id: const Uuid().v4(),
+                    createdAt: Timestamp.now(),
+                    updatedAt: Timestamp.now(),
+                    connectivityResult: connectionResult,
+                    ready: false,
+                  );
+                  context.read<GameClientCubit>().createNewRoom(
+                        player: player,
+                        status: GameStatus.init,
+                      );
+                }
+              },
+              text: "CREATE ROOM",
+              fontSize: 35,
+              padding: EdgeInsets.symmetric(vertical: 35, horizontal: 40),
+            ),
+            const SizedBox(height: 30),
+            PrimaryButton.secondary(
+              onPressed: () {
+                _enterRoomCodeDialog();
+              },
+              text: "JOIN ROOM",
+              fontSize: 24,
+              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 40),
+            ),
+          ],
+        ),
       ),
     );
   }

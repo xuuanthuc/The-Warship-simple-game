@@ -53,6 +53,7 @@ dependencies:
   cloud_firestore: ^5.0.1
   uuid: ^4.4.0
   collection: ^1.18.0
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
@@ -96,10 +97,12 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
+  fonts:
+    - family: Rowdies
+      fonts:
+        - asset: assets/fonts/Rowdies-Bold.ttf
+        - asset: assets/fonts/Rowdies-Light.ttf
+        - asset: assets/fonts/Rowdies-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic
   #   - family: Trajan Pro
