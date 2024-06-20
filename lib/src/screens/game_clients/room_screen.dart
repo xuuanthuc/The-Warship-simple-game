@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
+import 'package:template/src/style/app_colors.dart';
 import 'package:template/src/style/app_images.dart';
 import 'package:template/src/utilities/game_data.dart';
+import 'package:template/src/utilities/toast.dart';
+
+import '../widgets/primary_button.dart';
+import '../widgets/secondary_button.dart';
 
 class RoomScreen extends StatefulWidget {
   const RoomScreen({super.key});
@@ -13,8 +19,6 @@ class RoomScreen extends StatefulWidget {
 }
 
 class _RoomScreenState extends State<RoomScreen> {
-  BattleshipSkin _occupiedPreview = BattleshipSkin.A;
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GameClientCubit, GameClientState>(
@@ -31,7 +35,7 @@ class _RoomScreenState extends State<RoomScreen> {
           children: [
             Row(
               children: [
-                ElevatedButton(
+                SecondaryButton.icon(
                   onPressed: () {
                     if (iamHost) {
                       context.read<GameClientCubit>().deleteRoom();
@@ -39,17 +43,15 @@ class _RoomScreenState extends State<RoomScreen> {
                       context.read<GameClientCubit>().outRoom();
                     }
                   },
-                  child: Text("Exit room"),
+                  icon: AppImages.arrowBack,
                 ),
-                Text("Waiting the opponent..."),
               ],
             ),
-            Text(
-              state.room?.code ?? '',
-              style: TextStyle(
-                fontSize: 30,
-                fontWeight: FontWeight.w700,
-              ),
+            const Spacer(),
+            Row(
+              children: [
+                Text("Waiting the opponent..."),
+              ],
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -107,7 +109,7 @@ class _RoomScreenState extends State<RoomScreen> {
                     child: Container(
                       margin: const EdgeInsets.all(20),
                       child: Image.asset(
-                        _occupiedPreview == BattleshipSkin.A
+                        state.skin == BattleshipSkin.A
                             ? "assets/images/${AppImages.previewA}"
                             : "assets/images/${AppImages.previewB}",
                       ),
@@ -120,58 +122,68 @@ class _RoomScreenState extends State<RoomScreen> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    setState(() {
-                      _occupiedPreview = BattleshipSkin.A;
-                      GameData.instance.setOccupiedSkin(_occupiedPreview);
-                    });
+                    context.read<GameClientCubit>().setSkin(BattleshipSkin.A);
                   },
                   child: Text("Skin A"),
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    setState(() {
-                      _occupiedPreview = BattleshipSkin.B;
-                      GameData.instance.setOccupiedSkin(_occupiedPreview);
-                    });
+                    context.read<GameClientCubit>().setSkin(BattleshipSkin.B);
                   },
                   child: Text("Skin B"),
                 ),
               ],
             ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(
-                  state.room?.guestPlayer?.ready == true
-                      ? Colors.green
-                      : Colors.grey,
+            const Spacer(),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                PrimaryButton.secondary(
+                  onPressed: () async {
+                    if((state.room?.code ?? "").isEmpty) return;
+                    await Clipboard.setData(ClipboardData(text: state.room!.code!));
+                    if(context.mounted){
+                      appToast(context, message: "Copied to clipboard!");
+                    }
+                  },
+                  text:"${state.room?.code ?? ''}  ❐",
+                  fontSize: 24,
+                  background: AppColors.gray,
+                  underground: AppColors.grayDark,
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                 ),
-              ),
-              onPressed: () async {
-                final room = state.room;
-                final player = state.player;
-                if (room == null || player == null) return;
-                context
-                    .read<GamePlayCubit>()
-                    .getRoomDataToPrepareBattleGame(room, player);
-                await Future.delayed(Duration(milliseconds: 300));
-                if (iamHost) {
-                  if (room.guestPlayer?.ready == true) {
-                    print("start game");
-                    context.read<GameClientCubit>().start();
-                  } else {
-                    print("opponent not Ready game");
-                  }
-                } else {
-                  context.read<GameClientCubit>().guestReady();
-                }
-              },
-              child: Text(
-                iamHost
-                    ? "Start"
-                    : state.room?.guestPlayer?.ready == true
-                        ? "Cancel ready"
-                        : "Ready",
-              ),
+                const SizedBox(width: 30),
+                PrimaryButton.primary(
+                  onPressed: () async {
+                    final room = state.room;
+                    final player = state.player;
+                    if (room == null || player == null) return;
+                    context
+                        .read<GamePlayCubit>()
+                        .getRoomDataToPrepareBattleGame(room, player);
+                    await Future.delayed(const Duration(milliseconds: 300));
+                    if (iamHost) {
+                      if (room.guestPlayer?.ready == true) {
+                        if (context.mounted) {
+                          context.read<GameClientCubit>().start();
+                        }
+                      } else {
+                        print("opponent not Ready game");
+                      }
+                    } else {
+                      context.read<GameClientCubit>().guestReady();
+                    }
+                  },
+                  text: iamHost
+                      ? "START"
+                      : state.room?.guestPlayer?.ready == true
+                          ? "CANCEL"
+                          : "READY",
+                  fontSize: 30,
+                  padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 50),
+                ),
+              ],
             ),
           ],
         );

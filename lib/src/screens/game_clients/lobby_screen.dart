@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
 import 'package:template/src/screens/widgets/primary_button.dart';
@@ -45,7 +44,7 @@ class _LobbyScreenState extends State<LobbyScreen> {
                   onPressed: () {
                     navService.pop(result: _controller.text);
                   },
-                  child: Text("Join room"),
+                  child: const Text("Join room"),
                 )
               ],
             ),
@@ -67,8 +66,6 @@ class _LobbyScreenState extends State<LobbyScreen> {
                 code: code,
               );
         }
-      } else {
-        print("no Internet");
       }
     });
   }
@@ -81,81 +78,66 @@ class _LobbyScreenState extends State<LobbyScreen> {
           appToast(context, message: "No connection");
         }
       },
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(AppImages.lobby),
-            fit: BoxFit.cover,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Spacer(),
+          Align(
+            alignment: Alignment.centerRight,
+            child: SecondaryButton(
+              onPressed: () => _launchUrl(
+                "https://github.com/xuuanthuc/battleship",
+              ),
+              text: "GITHUB",
+              icon: AppImages.github,
+            ),
           ),
-        ),
-        padding: EdgeInsets.all(50),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: SecondaryButton.icon(
-                onPressed: () {},
-                icon: AppImages.menu,
+          const SizedBox(height: 10),
+          Align(
+            alignment: Alignment.centerRight,
+            child: SecondaryButton(
+              onPressed: () => _launchUrl(
+                "https://stackoverflow.com/users/15110149/xuuan-thuc",
               ),
+              text: "STACK",
+              icon: AppImages.stackOverflow,
             ),
-            Spacer(),
-            Align(
-              alignment: Alignment.centerRight,
-              child: SecondaryButton(
-                onPressed: () => _launchUrl(
-                  "https://github.com/xuuanthuc/battleship",
-                ),
-                text: "GITHUB",
-                icon: AppImages.github,
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: SecondaryButton(
-                onPressed: () => _launchUrl(
-                  "https://stackoverflow.com/users/15110149/xuuan-thuc",
-                ),
-                text: "STACK",
-                icon: AppImages.stackOverflow,
-              ),
-            ),
-            Expanded(child: Container()),
-            PrimaryButton.primary(
-              onPressed: () {
-                final connectionResult =
-                    context.read<ConnectivityBloc>().state.result;
-                if (connectionResult == ConnectivityResult.wifi ||
-                    connectionResult == ConnectivityResult.mobile) {
-                  final player = OwnerPlayer(
-                    id: const Uuid().v4(),
-                    createdAt: Timestamp.now(),
-                    updatedAt: Timestamp.now(),
-                    connectivityResult: connectionResult,
-                    ready: false,
-                  );
-                  context.read<GameClientCubit>().createNewRoom(
-                        player: player,
-                        status: GameStatus.init,
-                      );
-                }
-              },
-              text: "CREATE ROOM",
-              fontSize: 35,
-              padding: EdgeInsets.symmetric(vertical: 35, horizontal: 40),
-            ),
-            const SizedBox(height: 30),
-            PrimaryButton.secondary(
-              onPressed: () {
-                _enterRoomCodeDialog();
-              },
-              text: "JOIN ROOM",
-              fontSize: 24,
-              padding: EdgeInsets.symmetric(vertical: 30, horizontal: 40),
-            ),
-          ],
-        ),
+          ),
+          const Spacer(),
+          PrimaryButton.primary(
+            onPressed: () {
+              final connectionResult =
+                  context.read<ConnectivityBloc>().state.result;
+              if (connectionResult == ConnectivityResult.wifi ||
+                  connectionResult == ConnectivityResult.mobile) {
+                final player = OwnerPlayer(
+                  id: const Uuid().v4(),
+                  createdAt: Timestamp.now(),
+                  updatedAt: Timestamp.now(),
+                  connectivityResult: connectionResult,
+                  ready: false,
+                );
+                context.read<GameClientCubit>().createNewRoom(
+                      player: player,
+                      status: GameStatus.init,
+                    );
+              }
+            },
+            text: "CREATE ROOM",
+            fontSize: 30,
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 32),
+          ),
+          const SizedBox(height: 30),
+          PrimaryButton.secondary(
+            onPressed: () {
+              _enterRoomCodeDialog();
+            },
+            text: "JOIN ROOM",
+            fontSize: 24,
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+          ),
+        ],
       ),
     );
   }

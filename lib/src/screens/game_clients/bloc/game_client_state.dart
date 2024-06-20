@@ -4,19 +4,23 @@ part of 'game_client_cubit.dart';
 class GameClientState extends Equatable {
   final RoomData? room;
   final Player? player;
+  final BattleshipSkin? skin;
 
   const GameClientState({
     required this.room,
     this.player,
+    this.skin,
   });
 
   GameClientState copyWith({
     required RoomData? room,
     Player? player,
+    BattleshipSkin? skin,
   }) {
     return GameClientState(
       room: room,
       player: player ?? this.player,
+      skin: skin ?? this.skin,
     );
   }
 
@@ -24,5 +28,6 @@ class GameClientState extends Equatable {
   List<Object?> get props => [
         room,
         player,
+        skin,
       ];
 }

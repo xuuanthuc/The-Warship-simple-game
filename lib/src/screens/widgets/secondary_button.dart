@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:template/src/style/app_colors.dart';
-import 'package:template/src/style/app_images.dart';
 
 class SecondaryButton extends StatefulWidget {
   final Function onPressed;
   final Color? background;
   final Color? underground;
-  final double opacity;
   final double radius;
   final EdgeInsets? padding;
   final FontWeight fontWeight;
@@ -20,8 +18,9 @@ class SecondaryButton extends StatefulWidget {
   final double? iconWidth;
   final double? iconHeight;
   final double? width;
+  final AlignmentDirectional alignment;
 
-  SecondaryButton({
+  const SecondaryButton({
     Key? key,
     required this.onPressed,
     required this.text,
@@ -29,20 +28,20 @@ class SecondaryButton extends StatefulWidget {
     this.background = AppColors.gray,
     this.underground = AppColors.grayDark,
     this.padding,
-    this.opacity = 0.3,
     this.radius = 12,
     this.fontWeight = FontWeight.w700,
-    this.fontSize = 24,
+    this.fontSize = 18,
     this.fontStroke = 5,
     this.darkSize = 10,
     this.borderWidth = 3,
-    this.bottom = 70,
-    this.iconWidth = 100,
-    this.iconHeight = 100,
-    this.width = 180,
+    this.bottom = 50,
+    this.iconWidth = 60,
+    this.iconHeight = 60,
+    this.width = 110,
+    this.alignment = AlignmentDirectional.bottomCenter,
   }) : super(key: key);
 
-  SecondaryButton.icon({
+  const SecondaryButton.icon({
     Key? key,
     required this.onPressed,
     this.text = '',
@@ -50,7 +49,6 @@ class SecondaryButton extends StatefulWidget {
     this.background = AppColors.gray,
     this.underground = AppColors.grayDark,
     this.padding,
-    this.opacity = 0,
     this.radius = 12,
     this.fontWeight = FontWeight.w100,
     this.fontSize = 0,
@@ -61,6 +59,7 @@ class SecondaryButton extends StatefulWidget {
     this.iconWidth = 80,
     this.iconHeight = 50,
     this.width = 90,
+    this.alignment = AlignmentDirectional.center,
   }) : super(key: key);
 
   @override
@@ -99,70 +98,49 @@ class _SecondaryButtonState extends State<SecondaryButton>
         onTapCancel: () {
           _controller.reverse();
         },
-        child: Stack(
-          alignment: AlignmentDirectional.bottomCenter,
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(widget.radius),
-                border: Border.all(
-                  width: widget.borderWidth,
-                  color: Colors.black,
-                ),
-                color: widget.underground,
-              ),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Container(
-                      margin: EdgeInsets.only(
-                        bottom: widget.darkSize,
-                      ),
-                      decoration: BoxDecoration(
-                        color: widget.background,
-                        borderRadius: BorderRadius.circular(widget.radius - 4),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [],
-                      ),
-                    ),
+        child: SizedBox(
+          width: widget.width,
+          child: Stack(
+            alignment: widget.alignment,
+            children: [
+              Container(
+                height: (widget.iconHeight ?? 1) * 1.2,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(widget.radius),
+                  border: Border.all(
+                    width: widget.borderWidth,
+                    color: Colors.black,
                   ),
-                  Positioned.fill(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(widget.opacity),
-                              borderRadius:
-                                  BorderRadius.circular(widget.radius - 4),
-                            ),
-                            margin: EdgeInsets.fromLTRB(8, 8, 8, 0),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(),
-                        ),
-                      ],
-                    ),
+                  color: widget.underground,
+                ),
+                child: Container(
+                  margin: EdgeInsets.only(
+                    bottom: widget.darkSize,
+                  ),
+                  decoration: BoxDecoration(
+                    color: widget.background,
+                    borderRadius: BorderRadius.circular(widget.radius - 4),
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  SizedBox(
+                    height: widget.iconWidth,
+                    width: widget.iconHeight,
+                    child: Image.asset(widget.icon),
                   ),
                   Container(
-                    padding: widget.padding ??
-                        EdgeInsets.fromLTRB(
-                          20,
-                          60,
-                          20,
-                          10,
-                        ),
-                    width: widget.width,
+                    padding: EdgeInsets.symmetric(
+                      vertical: widget.fontSize == 0 ? 0 : 5,
+                    ),
                     child: Stack(
                       alignment: Alignment.bottomCenter,
                       children: [
                         Text(
                           widget.text,
                           style: TextStyle(
-                            fontFamily: "Rowdies",
+                            fontFamily: "Mitr",
                             fontWeight: widget.fontWeight,
                             fontSize: widget.fontSize,
                             letterSpacing: 2,
@@ -175,7 +153,7 @@ class _SecondaryButtonState extends State<SecondaryButton>
                         Text(
                           widget.text,
                           style: TextStyle(
-                            fontFamily: "Rowdies",
+                            fontFamily: "Mitr",
                             letterSpacing: 2,
                             fontWeight: widget.fontWeight,
                             fontSize: widget.fontSize,
@@ -186,21 +164,9 @@ class _SecondaryButtonState extends State<SecondaryButton>
                     ),
                   ),
                 ],
-              ),
-            ),
-            Column(
-              children: [
-                SizedBox(
-                  height: widget.iconWidth,
-                  width: widget.iconHeight,
-                  child: Image.asset(widget.icon),
-                ),
-                SizedBox(
-                  height: widget.bottom,
-                ),
-              ],
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );
