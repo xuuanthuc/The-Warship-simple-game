@@ -7,6 +7,10 @@ abstract class AppImages {
   static const String hasShip = "has_ship.png";
   static const String background = "background2.png";
   static const String parallax = "parallax.png";
+  static const String lobby = "assets/images/lobby.png";
+  static const String github = "assets/images/github.png";
+  static const String stackOverflow = "assets/images/stack_overflow.png";
+  static const String menu = "assets/images/menu.png";
   //type A
   static const String previewA = "battleships/type_a_preview.png";
   static const String mediumShipA = "battleships/medium_ship_a.png";
