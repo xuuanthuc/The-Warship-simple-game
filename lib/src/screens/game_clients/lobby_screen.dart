@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
+import 'package:template/src/screens/game_clients/widgets/join_room_dialog.dart';
 import 'package:template/src/screens/widgets/primary_button.dart';
 import 'package:template/src/screens/widgets/secondary_button.dart';
 import 'package:template/src/style/app_images.dart';
@@ -14,15 +14,8 @@ import '../../bloc/connectivity/connectivity_bloc.dart';
 import '../../models/player.dart';
 import '../../utilities/toast.dart';
 
-class LobbyScreen extends StatefulWidget {
+class LobbyScreen extends StatelessWidget {
   const LobbyScreen({super.key});
-
-  @override
-  State<LobbyScreen> createState() => _LobbyScreenState();
-}
-
-class _LobbyScreenState extends State<LobbyScreen> {
-  final TextEditingController _controller = TextEditingController();
 
   Future<void> _launchUrl(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
@@ -30,25 +23,11 @@ class _LobbyScreenState extends State<LobbyScreen> {
     }
   }
 
-  void _enterRoomCodeDialog() {
+  void _enterRoomCodeDialog(BuildContext context) {
     showDialog<String?>(
         context: context,
         builder: (context) {
-          return Dialog(
-            child: Column(
-              children: [
-                TextField(
-                  controller: _controller,
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    navService.pop(result: _controller.text);
-                  },
-                  child: const Text("Join room"),
-                )
-              ],
-            ),
-          );
+          return const JoinRoomDialog();
         }).then((code) {
       if (code != null) {
         final connectionResult = context.read<ConnectivityBloc>().state.result;
@@ -130,12 +109,13 @@ class _LobbyScreenState extends State<LobbyScreen> {
           ),
           const SizedBox(height: 30),
           PrimaryButton.secondary(
-            onPressed: () {
-              _enterRoomCodeDialog();
-            },
+            onPressed: () => _enterRoomCodeDialog(context),
             text: "JOIN ROOM",
             fontSize: 24,
-            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+            padding: const EdgeInsets.symmetric(
+              vertical: 20,
+              horizontal: 30,
+            ),
           ),
         ],
       ),
