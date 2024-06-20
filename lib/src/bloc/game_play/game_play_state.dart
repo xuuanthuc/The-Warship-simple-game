@@ -8,6 +8,7 @@ enum GameAction {
   checkHit,
   checkSunk,
   shoot,
+  continueTurn,
   nextTurn,
   pause,
   end
@@ -27,6 +28,7 @@ class GamePlayState extends Equatable {
   final RoomData room;
   final Player? player;
   final bool? iamHost;
+  final bool skipIntro;
 
   const GamePlayState({
     required this.status,
@@ -34,6 +36,7 @@ class GamePlayState extends Equatable {
     required this.room,
     required this.player,
     required this.iamHost,
+    required this.skipIntro,
   });
 
   GamePlayState.empty()
@@ -43,6 +46,7 @@ class GamePlayState extends Equatable {
           room: RoomData(),
           player: null,
           iamHost: false,
+          skipIntro: false,
         );
 
   GamePlayState copyWith({
@@ -51,6 +55,7 @@ class GamePlayState extends Equatable {
     RoomData? room,
     Player? player,
     bool? iamHost,
+    bool? skipIntro,
   }) {
     return GamePlayState(
       status: status ?? this.status,
@@ -58,6 +63,7 @@ class GamePlayState extends Equatable {
       room: room ?? this.room,
       player: player ?? this.player,
       iamHost: iamHost ?? this.iamHost,
+      skipIntro: skipIntro ?? this.skipIntro,
     );
   }
 
@@ -68,5 +74,6 @@ class GamePlayState extends Equatable {
         room,
         player,
         iamHost,
+        skipIntro,
       ];
 }

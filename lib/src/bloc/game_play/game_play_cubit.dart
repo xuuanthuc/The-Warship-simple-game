@@ -127,7 +127,7 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         _listenGameReadyStatus();
       });
     } else {
-      room.opponentPlayingData = PlayingData(
+      room.guestPlayingData = PlayingData(
         emptyBlocks: emptyBlocks,
         occupiedBlocks: occupiedBlocks,
       );
@@ -146,19 +146,36 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         state.player == null ||
         state.room.nextPlayer?.id != state.player?.id) return;
     if (square.status == BattleSquareStatus.determined) return;
+    if (state.action == GameAction.checkSunk) return;
     square.status = BattleSquareStatus.determined;
-    print("tap how many time ???");
-    print(square.hashCode);
     if (state.iamHost == true) {
       firebase
           .collection("rooms")
           .doc(state.room.code)
-          .update(state.room.actionOfOwnerPlayer(square));
+          .update(state.room.actionOfOwnerPlayer(square, nextPlayerTurn(square)));
     } else {
       firebase
           .collection("rooms")
           .doc(state.room.code)
-          .update(state.room.actionOfOccupiedPlayer(square));
+          .update(state.room.actionOfOccupiedPlayer(square, nextPlayerTurn(square)));
+    }
+  }
+
+  Player? nextPlayerTurn(EmptyBattleSquare square){
+    if(square.type == BattleSquareType.occupied){
+      emit(state.copyWith(skipIntro: true, action: GameAction.checkHit));
+      if(state.iamHost == true){
+        return state.room.ownerPlayer;
+      } else {
+        return state.room.guestPlayer;
+      }
+    } else {
+      emit(state.copyWith(skipIntro: false, action: GameAction.checkHit));
+      if(state.iamHost == true){
+        return state.room.guestPlayer;
+      } else {
+        return state.room.ownerPlayer;
+      }
     }
   }
 
@@ -175,7 +192,7 @@ class GamePlayCubit extends Cubit<GamePlayState> {
       if (room == null || player == null) return;
       final hostPlayer = room.ownerPlayer;
       final iamHost = hostPlayer != null && player.id == hostPlayer.id;
-      if (room.ownerPlayingData != null && room.opponentPlayingData != null) {
+      if (room.ownerPlayingData != null && room.guestPlayingData != null) {
         emit(state.copyWith(
           room: room,
           iamHost: iamHost,
@@ -201,7 +218,7 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         .update(state.room.playGame(
       Random().nextInt(2) == 0
           ? state.room.ownerPlayer!
-          : state.room.opponentPlayer!,
+          : state.room.guestPlayer!,
     ))
         .then((_) {
       ///Register new stream subscription game play data
@@ -222,11 +239,11 @@ class GamePlayCubit extends Cubit<GamePlayState> {
       LoggerUtils.i(roomData.data());
       state.room.nextPlayer = room?.nextPlayer;
       final nextOwnerPlayerAction = room?.nextOwnerPlayerAction;
-      final nextOpponentPlayerAction = room?.nextOpponentPlayerAction;
+      final nextGuestPlayerAction = room?.nextGuestPlayerAction;
       ///Each occupied has a list of point that is overlapping, check point tapped have contain in this list.
       /// If contain, remove point, When overlapping list empty, change state of occupied from hide to show
       if (nextOwnerPlayerAction != null) {
-        state.room.opponentPlayingData?.occupiedBlocks.forEach((ship) {
+        state.room.guestPlayingData?.occupiedBlocks.forEach((ship) {
           ship.overlappingPositions.removeWhere(
             (ps) => ListEquality().equals(
               ps.coordinates,
@@ -235,7 +252,7 @@ class GamePlayCubit extends Cubit<GamePlayState> {
           );
           LoggerUtils.i(ship.overlappingPositions);
         });
-        final block = state.room.opponentPlayingData?.emptyBlocks.firstWhere(
+        final block = state.room.guestPlayingData?.emptyBlocks.firstWhere(
           (b) => ListEquality().equals(
             b.block.coordinates,
             nextOwnerPlayerAction.block.coordinates,
@@ -243,12 +260,12 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         );
         block?.status = nextOwnerPlayerAction.status;
       }
-      if (nextOpponentPlayerAction != null) {
+      if (nextGuestPlayerAction != null) {
         state.room.ownerPlayingData?.occupiedBlocks.forEach((ship) {
           ship.overlappingPositions.removeWhere(
             (ps) => ListEquality().equals(
               ps.coordinates,
-              nextOpponentPlayerAction.block.coordinates,
+              nextGuestPlayerAction.block.coordinates,
             ),
           );
           LoggerUtils.i(ship.overlappingPositions);
@@ -256,15 +273,21 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         final block = state.room.ownerPlayingData?.emptyBlocks.firstWhere(
           (b) => ListEquality().equals(
             b.block.coordinates,
-            nextOpponentPlayerAction.block.coordinates,
+            nextGuestPlayerAction.block.coordinates,
           ),
         );
-        block?.status = nextOpponentPlayerAction.status;
+        block?.status = nextGuestPlayerAction.status;
       }
       emit(state.copyWith(action: GameAction.checkSunk));
-      Future.delayed(Duration(seconds: 3)).then((_){
-        emit(state.copyWith(action: GameAction.nextTurn));
-      });
+      print(state.skipIntro);
+      if(state.skipIntro){
+        //do some thing
+        emit(state.copyWith(action: GameAction.continueTurn));
+      } else {
+        Future.delayed(Duration(seconds: 3)).then((_){
+          emit(state.copyWith(action: GameAction.nextTurn));
+        });
+      }
     });
   }
 }

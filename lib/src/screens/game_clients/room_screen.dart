@@ -77,7 +77,7 @@ class _RoomScreenState extends State<RoomScreen> {
                       height: 100,
                       color: Colors.red,
                       child: Text(
-                        state.room?.opponentPlayer?.id ?? 'Player 2',
+                        state.room?.guestPlayer?.id ?? 'Player 2',
                         style: TextStyle(
                           color: Colors.white,
                         ),
@@ -141,7 +141,7 @@ class _RoomScreenState extends State<RoomScreen> {
             ElevatedButton(
               style: ButtonStyle(
                 backgroundColor: WidgetStateProperty.all(
-                  state.room?.opponentPlayer?.ready == true
+                  state.room?.guestPlayer?.ready == true
                       ? Colors.green
                       : Colors.grey,
                 ),
@@ -155,20 +155,20 @@ class _RoomScreenState extends State<RoomScreen> {
                     .getRoomDataToPrepareBattleGame(room, player);
                 await Future.delayed(Duration(milliseconds: 300));
                 if (iamHost) {
-                  if (room.opponentPlayer?.ready == true) {
+                  if (room.guestPlayer?.ready == true) {
                     print("start game");
                     context.read<GameClientCubit>().start();
                   } else {
                     print("opponent not Ready game");
                   }
                 } else {
-                  context.read<GameClientCubit>().opponentReady();
+                  context.read<GameClientCubit>().guestReady();
                 }
               },
               child: Text(
                 iamHost
                     ? "Start"
-                    : state.room?.opponentPlayer?.ready == true
+                    : state.room?.guestPlayer?.ready == true
                         ? "Cancel ready"
                         : "Ready",
               ),

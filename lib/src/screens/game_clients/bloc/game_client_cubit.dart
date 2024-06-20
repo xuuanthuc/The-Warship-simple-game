@@ -48,12 +48,12 @@ class GameClientCubit extends Cubit<GameClientState> {
     });
   }
 
-  void opponentReady() {
-    if (state.room?.opponentPlayer?.readyForGame == null) return;
+  void guestReady() {
+    if (state.room?.guestPlayer?.readyForGame == null) return;
     firebase
         .collection("rooms")
         .doc(state.room?.code)
-        .update(state.room!.opponentPlayer!.readyForGame());
+        .update(state.room!.guestPlayer!.readyForGame());
   }
 
   void deleteRoom() {
@@ -68,7 +68,7 @@ class GameClientCubit extends Cubit<GameClientState> {
     firebase
         .collection("rooms")
         .doc(state.room?.code)
-        .update(state.room!.opponentOutOfRoom)
+        .update(state.room!.guestOutOfRoom)
         .then((value) {
       removeRoomDataStreamSubscription();
     });
@@ -94,12 +94,12 @@ class GameClientCubit extends Cubit<GameClientState> {
   }
 
   void joinRoom({
-    required OpponentPlayer player,
+    required GuestPlayer player,
     required String code,
   }) {
     final room = RoomData(
       code: code.toUpperCase(),
-      opponentPlayer: player,
+      guestPlayer: player,
       roomState: RoomState.full,
     );
 
