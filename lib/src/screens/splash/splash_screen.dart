@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:template/src/style/app_colors.dart';
+import 'package:template/src/style/app_images.dart';
 import '../../routes/navigation_service.dart';
-import '../../../l10n/l10n.dart';
 import '../../routes/route_keys.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -11,8 +12,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  @override
-
   goToHome() async {
     await Future.delayed(const Duration(seconds: 1));
     navService.pushNamed(RouteKey.gameClient);
@@ -27,9 +26,18 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Text(AppLocalizations.of(context)!.hello('thuc')),
+      backgroundColor: Colors.orange.shade200,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: AppColors.backgroundGreen
+        ),
+        child: Center(
+          child: Image.asset(
+            AppImages.logo,
+          ),
+        ),
       ),
     );
   }

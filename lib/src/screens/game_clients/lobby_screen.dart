@@ -42,66 +42,84 @@ class LobbyScreen extends StatelessWidget {
           appToast(context, message: "No connection");
         }
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+      child: Stack(
         children: [
-          const Spacer(),
-          Align(
-            alignment: Alignment.centerRight,
-            child: SecondaryButton(
-              onPressed: () => _launchUrl(
-                "https://github.com/xuuanthuc/battleship",
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: Center(
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 120),
+                    child: Image.asset(AppImages.logo),
+                  ),
+                ),
               ),
-              text: "GITHUB",
-              icon: AppImages.github,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Align(
-            alignment: Alignment.centerRight,
-            child: SecondaryButton(
-              onPressed: () => _launchUrl(
-                "https://stackoverflow.com/users/15110149/xuuan-thuc",
-              ),
-              text: "STACK",
-              icon: AppImages.stackOverflow,
-            ),
-          ),
-          const Spacer(),
-          PrimaryButton.primary(
-            onPressed: () {
-              final connectionResult =
-                  context.read<ConnectivityBloc>().state.result;
-              if (connectionResult == ConnectivityResult.wifi ||
-                  connectionResult == ConnectivityResult.mobile) {
-                final player = OwnerPlayer(
-                  id: const Uuid().v4(),
-                  createdAt: Timestamp.now(),
-                  updatedAt: Timestamp.now(),
-                  connectivityResult: connectionResult,
-                  ready: false,
-                );
-                context.read<GameClientCubit>().createNewRoom(
-                      player: player,
-                      status: GameStatus.init,
+              PrimaryButton.primary(
+                onPressed: () {
+                  final connectionResult =
+                      context.read<ConnectivityBloc>().state.result;
+                  if (connectionResult == ConnectivityResult.wifi ||
+                      connectionResult == ConnectivityResult.mobile) {
+                    final player = OwnerPlayer(
+                      id: const Uuid().v4(),
+                      createdAt: Timestamp.now(),
+                      updatedAt: Timestamp.now(),
+                      connectivityResult: connectionResult,
+                      ready: false,
                     );
-              }
-            },
-            text: "CREATE ROOM",
-            fontSize: 30,
-            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 32),
+                    context.read<GameClientCubit>().createNewRoom(
+                          player: player,
+                          status: GameStatus.init,
+                        );
+                  }
+                },
+                text: "CREATE ROOM",
+                fontSize: 30,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 25, horizontal: 32),
+              ),
+              const SizedBox(height: 30),
+              PrimaryButton.secondary(
+                onPressed: () => _enterRoomCodeDialog(context),
+                text: "JOIN ROOM",
+                fontSize: 24,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 20,
+                  horizontal: 30,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 30),
-          PrimaryButton.secondary(
-            onPressed: () => _enterRoomCodeDialog(context),
-            text: "JOIN ROOM",
-            fontSize: 24,
-            padding: const EdgeInsets.symmetric(
-              vertical: 20,
-              horizontal: 30,
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: SecondaryButton(
+                    onPressed: () => _launchUrl(
+                      "https://github.com/xuuanthuc/battleship",
+                    ),
+                    text: "GITHUB",
+                    icon: AppImages.github,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: SecondaryButton(
+                    onPressed: () => _launchUrl(
+                      "https://stackoverflow.com/users/15110149/xuuan-thuc",
+                    ),
+                    text: "STACK",
+                    icon: AppImages.stackOverflow,
+                  ),
+                ),
+              ],
             ),
-          ),
+          )
         ],
       ),
     );
