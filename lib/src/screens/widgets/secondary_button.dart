@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:template/src/screens/widgets/primary_button.dart';
 import 'package:template/src/style/app_colors.dart';
 
-class SecondaryButton extends StatefulWidget {
+import 'bounce_button.dart';
+
+class SecondaryButton extends StatelessWidget {
   final Function onPressed;
   final Color? background;
   final Color? underground;
@@ -63,112 +66,79 @@ class SecondaryButton extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SecondaryButton> createState() => _SecondaryButtonState();
-}
-
-class _SecondaryButtonState extends State<SecondaryButton>
-    with TickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 100),
-    vsync: this,
-  );
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: Tween<double>(begin: 1, end: 1.05).animate(_controller),
-      child: GestureDetector(
-        onTap: () async {
-          await Future.delayed(const Duration(milliseconds: 100));
-          widget.onPressed();
-        },
-        onTapUp: (a) async {
-          await Future.delayed(const Duration(milliseconds: 100));
-          _controller.reverse();
-        },
-        onTapDown: (a) {
-          _controller.forward();
-        },
-        onTapCancel: () {
-          _controller.reverse();
-        },
-        child: SizedBox(
-          width: widget.width,
-          child: Stack(
-            alignment: widget.alignment,
-            children: [
-              Container(
-                height: (widget.iconHeight ?? 1) * 1.2,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(widget.radius),
-                  border: Border.all(
-                    width: widget.borderWidth,
-                    color: Colors.black,
-                  ),
-                  color: widget.underground,
+    return BounceButton(
+      child: SizedBox(
+        width: width,
+        child: Stack(
+          alignment: alignment,
+          children: [
+            Container(
+              height: (iconHeight ?? 1) * 1.2,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(radius),
+                border: Border.all(
+                  width: borderWidth,
+                  color: Colors.black,
                 ),
-                child: Container(
-                  margin: EdgeInsets.only(
-                    bottom: widget.darkSize,
-                  ),
-                  decoration: BoxDecoration(
-                    color: widget.background,
-                    borderRadius: BorderRadius.circular(widget.radius - 4),
-                  ),
+                color: underground,
+              ),
+              child: Container(
+                margin: EdgeInsets.only(
+                  bottom: darkSize,
+                ),
+                decoration: BoxDecoration(
+                  color: background,
+                  borderRadius: BorderRadius.circular(radius - 4),
                 ),
               ),
-              Column(
-                children: [
-                  SizedBox(
-                    height: widget.iconWidth,
-                    width: widget.iconHeight,
-                    child: Image.asset(widget.icon),
+            ),
+            Column(
+              children: [
+                SizedBox(
+                  height: iconWidth,
+                  width: iconHeight,
+                  child: Image.asset(icon),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    vertical: fontSize == 0 ? 0 : 5,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      vertical: widget.fontSize == 0 ? 0 : 5,
-                    ),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        Text(
-                          widget.text,
-                          style: TextStyle(
-                            fontFamily: "Mitr",
-                            fontWeight: widget.fontWeight,
-                            fontSize: widget.fontSize,
-                            letterSpacing: 2,
-                            foreground: Paint()
-                              ..style = PaintingStyle.stroke
-                              ..strokeWidth = widget.fontStroke
-                              ..color = Colors.black,
-                          ),
+                  child: Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      Text(
+                        text,
+                        style: TextStyle(
+                          fontFamily: "Mitr",
+                          fontWeight: fontWeight,
+                          fontSize: fontSize,
+                          letterSpacing: 2,
+                          foreground: Paint()
+                            ..style = PaintingStyle.stroke
+                            ..strokeWidth = fontStroke
+                            ..color = Colors.black,
                         ),
-                        Text(
-                          widget.text,
-                          style: TextStyle(
-                            fontFamily: "Mitr",
-                            letterSpacing: 2,
-                            fontWeight: widget.fontWeight,
-                            fontSize: widget.fontSize,
-                            color: Colors.white,
-                          ),
+                      ),
+                      Text(
+                        text,
+                        style: TextStyle(
+                          fontFamily: "Mitr",
+                          letterSpacing: 2,
+                          fontWeight: fontWeight,
+                          fontSize: fontSize,
+                          color: Colors.white,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              )
-            ],
-          ),
+                ),
+              ],
+            )
+          ],
         ),
       ),
+      onPressed: () => onPressed(),
     );
   }
 }

@@ -106,14 +106,23 @@ class GameClientCubit extends Cubit<GameClientState> {
       guestPlayer: player,
       roomState: RoomState.full,
     );
-
+    emit(state.copyWith(
+      room: state.room,
+      action: ClientAction.join,
+      status: ClientStatus.loading,
+      message: state.message,
+    ));
     firebase.collection("rooms").doc(code.toUpperCase()).get().then((value) {
       if (value.exists) {
         final roomData = RoomData.fromFireStore(value);
         if (roomData.roomState == RoomState.full) {
-          LoggerUtils.i("Fullll");
+          emit(state.copyWith(
+              room: state.room,
+              status: ClientStatus.error,
+              message: "The room is full"));
           return;
         }
+        emit(state.copyWith(room: state.room, status: ClientStatus.success));
         firebase
             .collection("rooms")
             .doc(code.toUpperCase())
@@ -122,10 +131,16 @@ class GameClientCubit extends Cubit<GameClientState> {
           setRoomDataStreamSubscription(code.toUpperCase(), player);
         });
       } else {
-        LoggerUtils.i("Rooom not exists");
+        emit(state.copyWith(
+            room: state.room,
+            status: ClientStatus.error,
+            message: "The room isn't exists"));
       }
     }).onError((error, s) {
-      LoggerUtils.e(error.toString());
+      emit(state.copyWith(
+          room: state.room,
+          status: ClientStatus.error,
+          message: error.toString()));
     });
   }
 

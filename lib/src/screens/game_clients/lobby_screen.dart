@@ -26,27 +26,12 @@ class LobbyScreen extends StatelessWidget {
   void _enterRoomCodeDialog(BuildContext context) {
     showDialog<String?>(
         context: context,
-        builder: (context) {
-          return const JoinRoomDialog();
-        }).then((code) {
-      if (code != null) {
-        final connectionResult = context.read<ConnectivityBloc>().state.result;
-        if (connectionResult == ConnectivityResult.wifi ||
-            connectionResult == ConnectivityResult.mobile) {
-          final player = GuestPlayer(
-            id: const Uuid().v4(),
-            createdAt: Timestamp.now(),
-            updatedAt: Timestamp.now(),
-            connectivityResult: connectionResult,
-            ready: false,
+        builder: (_) {
+          return BlocProvider.value(
+            value: context.read<GameClientCubit>(),
+            child: const JoinRoomDialog(),
           );
-          context.read<GameClientCubit>().joinRoom(
-                player: player,
-                code: code,
-              );
-        }
-      }
-    });
+        });
   }
 
   @override

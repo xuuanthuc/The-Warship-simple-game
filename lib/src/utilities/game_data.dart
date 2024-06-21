@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flame/components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,26 @@ enum GameStatus {
 
 enum BattleshipSkin { A, B }
 
+extension BattleshipStyle on BattleshipSkin {
+  RadialGradient background() {
+    switch (this) {
+      case BattleshipSkin.A:
+        return AppColors.backgroundGreen;
+      case BattleshipSkin.B:
+        return AppColors.backgroundYellow;
+    }
+  }
+
+  String preview() {
+    switch (this) {
+      case BattleshipSkin.A:
+        return "assets/images/${AppImages.previewA}";
+      case BattleshipSkin.B:
+        return "assets/images/${AppImages.previewB}";
+    }
+  }
+}
+
 class GameData {
   GameData._privateConstructor();
 
@@ -31,8 +53,6 @@ class GameData {
   static GameData get instance => _instance;
 
   static const blockLength = 10;
-
-  RadialGradient backgroundStyle = AppColors.backgroundYellow;
 
   Size get screenSize =>
       WidgetsBinding.instance.platformDispatcher.views.first.physicalSize / 2;
@@ -108,7 +128,6 @@ class GameData {
     for (OccupiedBlock block in battleOccupied) {
       switch (skin) {
         case BattleshipSkin.A:
-          backgroundStyle = AppColors.backgroundYellow;
           switch (block.size) {
             case 2:
               block.sprite = AppImages.tinyShipA;
@@ -125,7 +144,6 @@ class GameData {
           }
           break;
         case BattleshipSkin.B:
-          backgroundStyle = AppColors.backgroundBlue;
           switch (block.size) {
             case 2:
               block.sprite = AppImages.tinyShipB;
