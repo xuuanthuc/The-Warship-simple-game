@@ -33,6 +33,7 @@ class _GameClientScreenState extends State<GameClientScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: BlocListener<GameClientCubit, GameClientState>(
         listener: (context, state) {
           if (state.room?.gameStatus == GameStatus.preparing) {
@@ -46,7 +47,7 @@ class _GameClientScreenState extends State<GameClientScreen>
               duration: const Duration(seconds: 1),
               curve: Curves.ease,
               decoration: BoxDecoration(
-                gradient: GameData.instance.backgroundStyle,
+                gradient: state.skin?.background(),
               ),
               child: Stack(
                 children: [
