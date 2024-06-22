@@ -29,6 +29,7 @@ class GamePlayState extends Equatable {
   final Player? player;
   final bool? iamHost;
   final bool skipIntro;
+  final Player? currentPlayer;
 
   const GamePlayState({
     required this.status,
@@ -37,6 +38,7 @@ class GamePlayState extends Equatable {
     required this.player,
     required this.iamHost,
     required this.skipIntro,
+    required this.currentPlayer,
   });
 
   GamePlayState.empty()
@@ -47,6 +49,7 @@ class GamePlayState extends Equatable {
           player: null,
           iamHost: false,
           skipIntro: false,
+          currentPlayer: null,
         );
 
   GamePlayState copyWith({
@@ -54,6 +57,7 @@ class GamePlayState extends Equatable {
     GameAction? action,
     RoomData? room,
     Player? player,
+    Player? currentPlayer,
     bool? iamHost,
     bool? skipIntro,
   }) {
@@ -62,6 +66,7 @@ class GamePlayState extends Equatable {
       action: action ?? this.action,
       room: room ?? this.room,
       player: player ?? this.player,
+      currentPlayer: currentPlayer ?? this.currentPlayer,
       iamHost: iamHost ?? this.iamHost,
       skipIntro: skipIntro ?? this.skipIntro,
     );
@@ -75,5 +80,6 @@ class GamePlayState extends Equatable {
         player,
         iamHost,
         skipIntro,
+        currentPlayer,
       ];
 }

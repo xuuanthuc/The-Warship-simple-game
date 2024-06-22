@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flame/components.dart';
 import 'package:injectable/injectable.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:template/src/components/empty_square_component.dart';
 import 'package:template/src/models/battle.dart';
 import 'package:template/src/models/empty_block.dart';
@@ -45,25 +45,25 @@ class GamePlayCubit extends Cubit<GamePlayState> {
   }
 
   void shuffleOccupiedPosition(List<OccupiedComponent> components) async {
-    final List<EmptyBlock> _target = [];
-    _target.addAll(GameData.instance.emptyBlocks);
+    final List<EmptyBlock> target = [];
+    target.addAll(GameData.instance.emptyBlocks);
 
     /// init [_targetSea] with length = [GameData.instance.seaBlocks]
     for (final OccupiedComponent component in components) {
-      final _random = new Random();
-      component.angle = _random.nextInt(2) == 0 ? radians(90) : 0;
-      changeValidPosition(_random, component, components, _target);
+      final random = Random();
+      component.angle = random.nextInt(2) == 0 ? radians(90) : 0;
+      changeValidPosition(random, component, components, target);
     }
   }
 
   void changeValidPosition(
-    Random _random,
+    Random random,
     OccupiedComponent ship,
     List<OccupiedComponent> components,
     List<EmptyBlock> targets,
   ) {
     /// create [target] is random [BlueSea] in target list
-    final index = _random.nextInt(targets.length);
+    final index = random.nextInt(targets.length);
     var target = targets[index];
     final targetPosition = target.vector2 ?? Vector2.zero();
 
@@ -77,7 +77,7 @@ class GamePlayCubit extends Cubit<GamePlayState> {
     /// Check if one ship's overlapping list have at least one target contains with other ship. If has, create new position for ship
     if (ship.overlappingEmptyBlocks.any((sp) => components
         .any((cp) => cp != ship && cp.overlappingEmptyBlocks.contains(sp)))) {
-      changeValidPosition(_random, ship, components, targets);
+      changeValidPosition(random, ship, components, targets);
     }
   }
 
@@ -149,29 +149,25 @@ class GamePlayCubit extends Cubit<GamePlayState> {
     if (state.action == GameAction.checkSunk) return;
     square.status = BattleSquareStatus.determined;
     if (state.iamHost == true) {
-      firebase
-          .collection("rooms")
-          .doc(state.room.code)
-          .update(state.room.actionOfOwnerPlayer(square, nextPlayerTurn(square)));
+      firebase.collection("rooms").doc(state.room.code).update(
+          state.room.actionOfOwnerPlayer(square, nextPlayerTurn(square)));
     } else {
-      firebase
-          .collection("rooms")
-          .doc(state.room.code)
-          .update(state.room.actionOfOccupiedPlayer(square, nextPlayerTurn(square)));
+      firebase.collection("rooms").doc(state.room.code).update(
+          state.room.actionOfOccupiedPlayer(square, nextPlayerTurn(square)));
     }
   }
 
-  Player? nextPlayerTurn(EmptyBattleSquare square){
-    if(square.type == BattleSquareType.occupied){
+  Player? nextPlayerTurn(EmptyBattleSquare square) {
+    if (square.type == BattleSquareType.occupied) {
       emit(state.copyWith(skipIntro: true, action: GameAction.checkHit));
-      if(state.iamHost == true){
+      if (state.iamHost == true) {
         return state.room.ownerPlayer;
       } else {
         return state.room.guestPlayer;
       }
     } else {
       emit(state.copyWith(skipIntro: false, action: GameAction.checkHit));
-      if(state.iamHost == true){
+      if (state.iamHost == true) {
         return state.room.guestPlayer;
       } else {
         return state.room.ownerPlayer;
@@ -199,6 +195,7 @@ class GamePlayCubit extends Cubit<GamePlayState> {
           action: GameAction.ready,
           status: ReadyStatus.ready,
         ));
+
         ///Cancel stream subscription ready game state
         removeRoomDataStreamSubscription();
       }
@@ -210,16 +207,16 @@ class GamePlayCubit extends Cubit<GamePlayState> {
     _roomStream = null;
   }
 
-  void startGame(){
+  void startGame() {
     emit(state.copyWith(action: GameAction.play));
     firebase
         .collection("rooms")
         .doc(state.room.code)
         .update(state.room.playGame(
-      Random().nextInt(2) == 0
-          ? state.room.ownerPlayer!
-          : state.room.guestPlayer!,
-    ))
+          Random().nextInt(2) == 0
+              ? state.room.ownerPlayer!
+              : state.room.guestPlayer!,
+        ))
         .then((_) {
       ///Register new stream subscription game play data
       setRoomDataStreamSubscription();
@@ -233,27 +230,34 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         .doc(state.room.code)
         .snapshots()
         .listen((roomData) async {
-      emit(state.copyWith(action: GameAction.shoot));
+      LoggerUtils.i("Shoot");
       final room =
           roomData.data() != null ? RoomData.fromFireStore(roomData) : null;
-      LoggerUtils.i(roomData.data());
-      state.room.nextPlayer = room?.nextPlayer;
+      ///Check if next player is current player, skip intro next turn
+      if (state.room.nextPlayer != null &&
+          room?.nextPlayer != null &&
+          state.room.nextPlayer?.id == room?.nextPlayer?.id) {
+        emit(state.copyWith(skipIntro: true, action: GameAction.shoot));
+      } else {
+        state.room.nextPlayer = room?.nextPlayer;
+        emit(state.copyWith(skipIntro: false, action: GameAction.shoot));
+      }
       final nextOwnerPlayerAction = room?.nextOwnerPlayerAction;
       final nextGuestPlayerAction = room?.nextGuestPlayerAction;
+
       ///Each occupied has a list of point that is overlapping, check point tapped have contain in this list.
       /// If contain, remove point, When overlapping list empty, change state of occupied from hide to show
       if (nextOwnerPlayerAction != null) {
         state.room.guestPlayingData?.occupiedBlocks.forEach((ship) {
           ship.overlappingPositions.removeWhere(
-            (ps) => ListEquality().equals(
+            (ps) => const ListEquality().equals(
               ps.coordinates,
               nextOwnerPlayerAction.block.coordinates,
             ),
           );
-          LoggerUtils.i(ship.overlappingPositions);
         });
         final block = state.room.guestPlayingData?.emptyBlocks.firstWhere(
-          (b) => ListEquality().equals(
+          (b) => const ListEquality().equals(
             b.block.coordinates,
             nextOwnerPlayerAction.block.coordinates,
           ),
@@ -263,15 +267,14 @@ class GamePlayCubit extends Cubit<GamePlayState> {
       if (nextGuestPlayerAction != null) {
         state.room.ownerPlayingData?.occupiedBlocks.forEach((ship) {
           ship.overlappingPositions.removeWhere(
-            (ps) => ListEquality().equals(
+            (ps) => const ListEquality().equals(
               ps.coordinates,
               nextGuestPlayerAction.block.coordinates,
             ),
           );
-          LoggerUtils.i(ship.overlappingPositions);
         });
         final block = state.room.ownerPlayingData?.emptyBlocks.firstWhere(
-          (b) => ListEquality().equals(
+          (b) => const ListEquality().equals(
             b.block.coordinates,
             nextGuestPlayerAction.block.coordinates,
           ),
@@ -279,12 +282,11 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         block?.status = nextGuestPlayerAction.status;
       }
       emit(state.copyWith(action: GameAction.checkSunk));
-      print(state.skipIntro);
-      if(state.skipIntro){
+      if (state.skipIntro) {
         //do some thing
         emit(state.copyWith(action: GameAction.continueTurn));
       } else {
-        await Future.delayed(Duration(seconds: 3)).then((_){
+        await Future.delayed(const Duration(seconds: 3)).then((_) {
           emit(state.copyWith(action: GameAction.nextTurn));
         });
       }
