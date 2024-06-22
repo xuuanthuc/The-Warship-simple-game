@@ -88,7 +88,7 @@ class _JoinRoomDialogState extends State<JoinRoomDialog>
                       padding: const EdgeInsets.all(8),
                       child: Stack(
                         children: [
-                          Positioned.fill(
+                          const Positioned.fill(
                             child: Center(
                               child: Text(
                                 "Join with Room ID",
