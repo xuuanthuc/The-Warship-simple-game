@@ -282,14 +282,23 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         block?.status = nextGuestPlayerAction.status;
       }
       emit(state.copyWith(action: GameAction.checkSunk));
-      if (state.skipIntro) {
+      checkGameOverStatus();
+      if (state.skipIntro && state.status == ReadyStatus.playing) {
         //do some thing
         emit(state.copyWith(action: GameAction.continueTurn));
       } else {
         await Future.delayed(const Duration(seconds: 3)).then((_) {
-          emit(state.copyWith(action: GameAction.nextTurn));
+          emit(state.copyWith(action: GameAction.nextTurn, status: ReadyStatus.playing));
         });
       }
     });
+  }
+
+  void checkGameOverStatus(){
+    if((!state.room.guestPlayingData!.occupiedBlocks.any((s) => s.overlappingPositions.isNotEmpty)) || (!state.room.ownerPlayingData!.occupiedBlocks.any((s) => s.overlappingPositions.isNotEmpty))){
+      /// Owner win when have no block of guest's occupied overlapping, if any a ship have at least 1 block is overlapping => false (game continue)
+      /// Guest win when have no block of owner's occupied overlapping, if any a ship have at least 1 block is overlapping => false (game continue)
+      emit(state.copyWith(action: GameAction.end));
+    };
   }
 }

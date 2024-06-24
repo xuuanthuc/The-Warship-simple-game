@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/components/occupied_component.dart';
 import 'package:template/src/components/empty_square_component.dart';
+import 'package:template/src/routes/route_keys.dart';
+import 'package:template/src/screens/game_play/widget/game_over.dart';
 import 'package:template/src/style/app_colors.dart';
 import 'package:template/src/utilities/game_data.dart';
 import '../../bloc/game_play/game_play_cubit.dart';
@@ -29,6 +31,11 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       game: BattleGameFlame(
         cubit: context.read<GamePlayCubit>(),
       ),
+      overlayBuilderMap: {
+        RouteKey.gameOver: (_, BattleGameFlame game) {
+          return GameOverOverlay();
+        }
+      },
       backgroundBuilder: (context) =>
           BlocBuilder<GamePlayCubit, GamePlayState>(
             buildWhen: (_, cur) => cur.action == GameAction.nextTurn,
@@ -37,7 +44,8 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 duration: Duration(seconds: 1),
                 curve: Curves.ease,
                 decoration: BoxDecoration(
-                  gradient: state.room.nextPlayer?.skin?.background() ??  AppColors.backgroundBlue,
+                  gradient: state.room.nextPlayer?.skin?.background() ??
+                      AppColors.backgroundBlue,
                 ),
               );
             },
@@ -75,6 +83,7 @@ class BattleGameFlame extends FlameGame with HasCollisionDetection {
 
 class BattlegroundWorld extends World
     with
+        HasGameRef<BattleGameFlame>,
         FlameBlocReader<GamePlayCubit, GamePlayState>,
         FlameBlocListenable<GamePlayCubit, GamePlayState> {
   final ready = ReadyBattleWorld();
@@ -92,7 +101,7 @@ class BattlegroundWorld extends World
   void onNewState(GamePlayState state) async {
     print("Game plat world changed state");
     if (state.action == GameAction.ready) {
-      if (ready.isLoaded) {
+      if (ready.isLoaded && ready.isMounted) {
         remove(ready);
       }
       _guest = GuestBattleWorld(
@@ -119,6 +128,9 @@ class BattlegroundWorld extends World
         }
       }
     }
+    if (state.action == GameAction.end) {
+      gameRef.overlays.add(RouteKey.gameOver);
+    }
     super.onNewState(state);
   }
 
@@ -126,7 +138,8 @@ class BattlegroundWorld extends World
   bool listenWhen(GamePlayState previousState,
       GamePlayState newState,) {
     return newState.action == GameAction.nextTurn ||
-        newState.action == GameAction.ready;
+        newState.action == GameAction.ready ||
+        newState.action == GameAction.end;
   }
 }
 
