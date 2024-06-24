@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/screens/widgets/primary_button.dart';
 import 'package:template/src/style/app_colors.dart';
 import 'package:template/src/style/app_images.dart';
+import 'package:template/src/utilities/game_data.dart';
 import 'package:uuid/uuid.dart';
 import '../../../bloc/connectivity/connectivity_bloc.dart';
 import '../../../models/player.dart';
@@ -191,6 +192,7 @@ class _JoinRoomDialogState extends State<JoinRoomDialog>
                               updatedAt: Timestamp.now(),
                               connectivityResult: connectionResult,
                               ready: false,
+                              skin: context.read<GameClientCubit>().state.skin
                             );
                             context.read<GameClientCubit>().joinRoom(
                                   player: player,
