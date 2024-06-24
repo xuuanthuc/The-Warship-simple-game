@@ -6,7 +6,7 @@ abstract class AppImages {
   static const String nonShip = "non_ship.png";
   static const String hasShip = "has_ship.png";
   static const String background = "background2.png";
-  static const String parallax = "parallax.png";
+  static const String parallax = "lobby.png";
   static const String lobby = "assets/images/lobby.png";
   static const String github = "assets/images/github.png";
   static const String stackOverflow = "assets/images/stack_overflow.png";

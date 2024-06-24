@@ -34,8 +34,7 @@ class RoomData {
   });
 
   factory RoomData.fromFireStore(
-    DocumentSnapshot<Map<String, dynamic>> snapshot,
-  ) {
+      DocumentSnapshot<Map<String, dynamic>> snapshot,) {
     final data = snapshot.data() as Map<String, dynamic>;
     return RoomData(
       guestPlayer: data['guestPlayer'] != null
@@ -89,23 +88,36 @@ class RoomData {
     "roomState": RoomState.empty.name,
   };
 
+  Map<String, dynamic> guestSkinSelected(BattleshipSkin skin) {
+    return {"guestPlayer.skin": skin.name};
+  }
+
+  Map<String, dynamic> ownerSkinSelected(BattleshipSkin skin) {
+    return {"ownerPlayer.skin": skin.name};
+  }
+
   Map<String, dynamic> startPreparing = {
     "gameStatus": GameStatus.preparing.name,
   };
 
-  Map<String, dynamic> playGame(Player firstTurn) => {
-    "gameStatus": GameStatus.started.name,
-    "nextPlayer": firstTurn.toJson(),
-  };
+  Map<String, dynamic> playGame(Player firstTurn) =>
+      {
+        "gameStatus": GameStatus.started.name,
+        "nextPlayer": firstTurn.toJson(),
+      };
 
-  Map<String, dynamic> actionOfOwnerPlayer(EmptyBattleSquare square, Player? player) => {
+  Map<String, dynamic> actionOfOwnerPlayer(EmptyBattleSquare square,
+      Player? player) =>
+      {
         "nextOwnerPlayerAction": square.toJson(),
         "guestPlayingData": guestPlayingData?.toJson(),
         "nextGuestPlayerAction": null,
         if (player != null) "nextPlayer": player.toJson(),
       };
 
-  Map<String, dynamic> actionOfOccupiedPlayer(EmptyBattleSquare square, Player? player) => {
+  Map<String, dynamic> actionOfOccupiedPlayer(EmptyBattleSquare square,
+      Player? player) =>
+      {
         "nextGuestPlayerAction": square.toJson(),
         "ownerPlayingData": ownerPlayingData?.toJson(),
         "nextOwnerPlayerAction": null,
@@ -127,17 +139,19 @@ class PlayingData {
     final List<OccupiedBattleSquare> occupiedBlocks = [];
     if (json['emptyBlocks'] != null) {
       json['emptyBlocks'].forEach(
-        (b) => emptyBlocks.add(
-          EmptyBattleSquare.fromJson(b),
-        ),
+            (b) =>
+            emptyBlocks.add(
+              EmptyBattleSquare.fromJson(b),
+            ),
       );
     }
 
     if (json['occupiedBlocks'] != null) {
       json['occupiedBlocks'].forEach(
-        (o) => occupiedBlocks.add(
-          OccupiedBattleSquare.fromJson(o),
-        ),
+            (o) =>
+            occupiedBlocks.add(
+              OccupiedBattleSquare.fromJson(o),
+            ),
       );
     }
 

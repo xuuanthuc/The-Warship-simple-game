@@ -68,6 +68,7 @@ class LobbyScreen extends StatelessWidget {
                       updatedAt: Timestamp.now(),
                       connectivityResult: connectionResult,
                       ready: false,
+                      skin: context.read<GameClientCubit>().state.skin
                     );
                     context.read<GameClientCubit>().createNewRoom(
                           player: player,

@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/components/occupied_component.dart';
 import 'package:template/src/components/empty_square_component.dart';
+import 'package:template/src/style/app_colors.dart';
 import 'package:template/src/utilities/game_data.dart';
 import '../../bloc/game_play/game_play_cubit.dart';
 import '../../components/battle_component.dart';
-import '../../components/terrain_component.dart';
 import '../../components/parallax_background_component.dart';
+import '../../components/terrain_component.dart';
 import '../../components/ready_button_component.dart';
 import '../../components/turn_info_component.dart';
 
@@ -23,12 +24,24 @@ class GamePlayScreen extends StatefulWidget {
 
 class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
-  @override
   Widget build(BuildContext context) {
     return GameWidget(
       game: BattleGameFlame(
         cubit: context.read<GamePlayCubit>(),
       ),
+      backgroundBuilder: (context) =>
+          BlocBuilder<GamePlayCubit, GamePlayState>(
+            buildWhen: (_, cur) => cur.action == GameAction.nextTurn,
+            builder: (context, state) {
+              return AnimatedContainer(
+                duration: Duration(seconds: 1),
+                curve: Curves.ease,
+                decoration: BoxDecoration(
+                  gradient: state.room.nextPlayer?.skin?.background() ??  AppColors.backgroundBlue,
+                ),
+              );
+            },
+          ),
     );
   }
 }
@@ -40,7 +53,7 @@ class BattleGameFlame extends FlameGame with HasCollisionDetection {
 
   @override
   Color backgroundColor() {
-    return Colors.blue.shade200;
+    return Colors.blue;
   }
 
   @override
@@ -51,8 +64,8 @@ class BattleGameFlame extends FlameGame with HasCollisionDetection {
       FlameBlocProvider<GamePlayCubit, GamePlayState>.value(
         value: cubit,
         children: [
-          world,
           parallax,
+          world,
         ],
       ),
     );
@@ -84,8 +97,7 @@ class BattlegroundWorld extends World
       }
       _guest = GuestBattleWorld(
         emptySquares: bloc.state.room.guestPlayingData?.emptyBlocks ?? [],
-        occupiedSquares:
-            bloc.state.room.guestPlayingData?.occupiedBlocks ?? [],
+        occupiedSquares: bloc.state.room.guestPlayingData?.occupiedBlocks ?? [],
       );
       _owner = OwnerBattleWorld(
         emptySquares: bloc.state.room.ownerPlayingData?.emptyBlocks ?? [],
@@ -111,10 +123,8 @@ class BattlegroundWorld extends World
   }
 
   @override
-  bool listenWhen(
-    GamePlayState previousState,
-    GamePlayState newState,
-  ) {
+  bool listenWhen(GamePlayState previousState,
+      GamePlayState newState,) {
     return newState.action == GameAction.nextTurn ||
         newState.action == GameAction.ready;
   }

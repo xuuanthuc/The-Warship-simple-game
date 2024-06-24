@@ -151,9 +151,25 @@ class GameClientCubit extends Cubit<GameClientState> {
         .update(state.room!.startPreparing);
   }
 
-  void setSkin(BattleshipSkin skin) {
+  void setSkin(BattleshipSkin skin, bool iamHost) {
     GameData.instance.setOccupiedSkin(skin);
-    emit(state.copyWith(room: state.room, skin: skin));
+    if (iamHost) {
+      firebase
+          .collection("rooms")
+          .doc(state.room?.code)
+          .update(state.room!.ownerSkinSelected(skin))
+          .then((_) {
+        emit(state.copyWith(room: state.room, skin: skin));
+      });
+    } else {
+      firebase
+          .collection("rooms")
+          .doc(state.room?.code)
+          .update(state.room!.guestSkinSelected(skin))
+          .then((_) {
+        emit(state.copyWith(room: state.room, skin: skin));
+      });
+    }
   }
 
   @override
