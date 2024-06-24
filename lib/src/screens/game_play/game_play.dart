@@ -27,29 +27,31 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
   Widget build(BuildContext context) {
-    return GameWidget(
-      game: BattleGameFlame(
-        cubit: context.read<GamePlayCubit>(),
+    return Scaffold(
+      body: GameWidget(
+        game: BattleGameFlame(
+          cubit: context.read<GamePlayCubit>(),
+        ),
+        overlayBuilderMap: {
+          RouteKey.gameOver: (_, BattleGameFlame game) {
+            return GameOverOverlay();
+          }
+        },
+        backgroundBuilder: (context) =>
+            BlocBuilder<GamePlayCubit, GamePlayState>(
+              buildWhen: (_, cur) => cur.action == GameAction.nextTurn,
+              builder: (context, state) {
+                return AnimatedContainer(
+                  duration: Duration(seconds: 1),
+                  curve: Curves.ease,
+                  decoration: BoxDecoration(
+                    gradient: state.room.nextPlayer?.skin?.background() ??
+                        AppColors.backgroundBlue,
+                  ),
+                );
+              },
+            ),
       ),
-      overlayBuilderMap: {
-        RouteKey.gameOver: (_, BattleGameFlame game) {
-          return GameOverOverlay();
-        }
-      },
-      backgroundBuilder: (context) =>
-          BlocBuilder<GamePlayCubit, GamePlayState>(
-            buildWhen: (_, cur) => cur.action == GameAction.nextTurn,
-            builder: (context, state) {
-              return AnimatedContainer(
-                duration: Duration(seconds: 1),
-                curve: Curves.ease,
-                decoration: BoxDecoration(
-                  gradient: state.room.nextPlayer?.skin?.background() ??
-                      AppColors.backgroundBlue,
-                ),
-              );
-            },
-          ),
     );
   }
 }
