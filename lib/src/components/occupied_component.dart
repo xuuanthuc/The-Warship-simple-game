@@ -78,14 +78,14 @@ class OccupiedComponent extends SpriteComponent
   }
 
   Vector2 findClosestVector(List<EmptyBlock> vectors, Vector2 target) {
-    Vector2 closestVector = vectors.first.vector2!;
+    Vector2 closestVector = vectors.first.vector2 ?? Vector2.zero();
     double minDistance = double.infinity;
 
     for (EmptyBlock vector in vectors) {
-      double distance = (vector.vector2! - target).length;
+      double distance = ((vector.vector2 ?? Vector2.zero()) - target).length;
       if (distance < minDistance) {
         minDistance = distance;
-        closestVector = vector.vector2!;
+        closestVector = vector.vector2 ?? Vector2.zero();
         targetPoint = vector;
       }
     }
@@ -159,7 +159,11 @@ class OccupiedComponent extends SpriteComponent
 
   void onCollisionCheck() {
     bloc.checkCollisionBlocks(
-      gameRef.world.children.query<ReadyBattleWorld>().first.children.query<OccupiedComponent>(),
+      gameRef.world.children
+          .query<ReadyBattleWorld>()
+          .first
+          .children
+          .query<OccupiedComponent>(),
     );
   }
 
