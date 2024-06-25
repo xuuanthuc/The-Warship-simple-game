@@ -29,14 +29,13 @@ class _GameClientScreenState extends State<GameClientScreen>
 
   @override
   void initState() {
-    FlameAudio.bgm.play(AppAudio.gamePlay, volume: 0.5);
+    FlameAudio.bgm.play(AppAudio.background, volume: 0.5);
     super.initState();
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    FlameAudio.bgm.pause();
     super.dispose();
   }
 

@@ -48,12 +48,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   @override
-  void dispose() {
-    FlameAudio.bgm.pause();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final game = BattleGameFlame(
       cubit: context.read<GamePlayCubit>(),
