@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ import 'package:template/src/models/room_data.dart';
 import 'package:template/src/routes/route_keys.dart';
 import 'package:template/src/screens/game_play/widget/game_exit.dart';
 import 'package:template/src/screens/game_play/widget/game_over.dart';
+import 'package:template/src/style/app_audio.dart';
 import 'package:template/src/style/app_colors.dart';
 import 'package:template/src/utilities/game_data.dart';
 import '../../bloc/game_play/game_play_cubit.dart';
@@ -37,11 +39,18 @@ class GamePlayScreen extends StatefulWidget {
 class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
   void initState() {
+    FlameAudio.bgm.play(AppAudio.gamePlay, volume: 0.5);
     context.read<GamePlayCubit>().getRoomDataToPrepareBattleGame(
           widget.room,
           widget.player,
         );
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    FlameAudio.bgm.pause();
+    super.dispose();
   }
 
   @override

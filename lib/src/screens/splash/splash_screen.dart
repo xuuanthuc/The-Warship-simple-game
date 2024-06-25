@@ -19,6 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
       AppAudio.shoot,
       AppAudio.background,
       AppAudio.defeat,
+      AppAudio.gamePlay,
       AppAudio.victory,
       AppAudio.sunk,
       AppAudio.waterSplash,
