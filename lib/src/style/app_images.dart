@@ -2,7 +2,6 @@ abstract class AppImages {
   const AppImages();
 
   static const String blueSea = "blue_sea.png";
-  static const String readyButton = "ready_button.png";
   static const String nonShip = "non_ship.png";
   static const String hasShip = "has_ship.png";
   static const String background = "background2.png";

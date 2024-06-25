@@ -13,13 +13,13 @@ import 'package:template/src/routes/route_keys.dart';
 import 'package:template/src/screens/game_play/widget/game_exit.dart';
 import 'package:template/src/screens/game_play/widget/game_over.dart';
 import 'package:template/src/style/app_audio.dart';
+import 'package:template/src/screens/game_play/widget/ready_button.dart';
 import 'package:template/src/style/app_colors.dart';
 import 'package:template/src/utilities/game_data.dart';
 import '../../bloc/game_play/game_play_cubit.dart';
 import '../../components/battle_component.dart';
 import '../../components/parallax_background_component.dart';
 import '../../components/terrain_component.dart';
-import '../../components/ready_button_component.dart';
 import '../../components/turn_info_component.dart';
 
 class GamePlayScreen extends StatefulWidget {
@@ -61,6 +61,9 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           },
           RouteKey.gameExit: (_, BattleGameFlame game) {
             return GameExitButton();
+          },
+          RouteKey.readyButton: (_, BattleGameFlame game) {
+            return GameReadyButton(game: game);
           }
         },
         backgroundBuilder: (context) =>
@@ -106,6 +109,7 @@ class BattleGameFlame extends FlameGame with HasCollisionDetection {
       ),
     );
     overlays.add(RouteKey.gameExit);
+    overlays.add(RouteKey.readyButton);
     return super.onLoad();
   }
 }
@@ -199,7 +203,6 @@ class ReadyBattleWorld extends PositionComponent
         ),
       );
     }
-    await add(ReadyButtonComponent());
     Future.delayed(Duration(milliseconds: 300)).then((onValue) {
       bloc.shuffleOccupiedPosition(children.query<OccupiedComponent>());
     });

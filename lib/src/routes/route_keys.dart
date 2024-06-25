@@ -4,5 +4,6 @@ abstract class RouteKey {
   static const String gameClient = "/client";
   static const String gameOver = "game_over";
   static const String gameExit = "game_exit";
+  static const String readyButton = "game_ready_button";
 }
 
