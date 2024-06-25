@@ -13,8 +13,10 @@ import 'package:template/src/models/empty_block.dart';
 import 'package:collection/collection.dart';
 import 'package:template/src/models/player.dart';
 import 'package:template/src/models/room_data.dart';
+import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/utilities/logger.dart';
 import '../../components/occupied_component.dart';
+import '../../routes/route_keys.dart';
 import '../../utilities/game_data.dart';
 
 part 'game_play_state.dart';
@@ -233,6 +235,7 @@ class GamePlayCubit extends Cubit<GamePlayState> {
       LoggerUtils.i("Shoot");
       final room =
           roomData.data() != null ? RoomData.fromFireStore(roomData) : null;
+
       ///Check if next player is current player, skip intro next turn
       if (state.room.nextPlayer != null &&
           room?.nextPlayer != null &&
@@ -282,23 +285,41 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         block?.status = nextGuestPlayerAction.status;
       }
       emit(state.copyWith(action: GameAction.checkSunk));
-      checkGameOverStatus();
-      if (state.skipIntro && state.status == ReadyStatus.playing) {
-        //do some thing
-        emit(state.copyWith(action: GameAction.continueTurn));
+      if (gameOverStatus()) {
+        emit(state.copyWith(action: GameAction.end));
       } else {
-        await Future.delayed(const Duration(seconds: 3)).then((_) {
-          emit(state.copyWith(action: GameAction.nextTurn, status: ReadyStatus.playing));
-        });
+        if (state.skipIntro && state.status == ReadyStatus.playing) {
+          //do some thing
+          emit(state.copyWith(action: GameAction.continueTurn));
+        } else {
+          await Future.delayed(const Duration(seconds: 3)).then((_) {
+            emit(state.copyWith(
+                action: GameAction.nextTurn, status: ReadyStatus.playing));
+          });
+        }
       }
     });
   }
 
-  void checkGameOverStatus(){
-    if((!state.room.guestPlayingData!.occupiedBlocks.any((s) => s.overlappingPositions.isNotEmpty)) || (!state.room.ownerPlayingData!.occupiedBlocks.any((s) => s.overlappingPositions.isNotEmpty))){
+  bool gameOverStatus() {
+    if(state.room.guestPlayingData == null || state.room.ownerPlayingData == null) return true;
+    if ((!state.room.guestPlayingData!.occupiedBlocks
+            .any((s) => s.overlappingPositions.isNotEmpty)) ||
+        (!state.room.ownerPlayingData!.occupiedBlocks
+            .any((s) => s.overlappingPositions.isNotEmpty))) {
       /// Owner win when have no block of guest's occupied overlapping, if any a ship have at least 1 block is overlapping => false (game continue)
       /// Guest win when have no block of owner's occupied overlapping, if any a ship have at least 1 block is overlapping => false (game continue)
-      emit(state.copyWith(action: GameAction.end));
-    };
+      return true;
+    }
+    return false;
+  }
+
+  void exitGame() {
+    removeRoomDataStreamSubscription();
+    firebase
+        .collection("rooms")
+        .doc(state.room.code).delete();
+    emit(GamePlayState.empty());
+    navService.pushReplacementNamed(RouteKey.gameClient);
   }
 }

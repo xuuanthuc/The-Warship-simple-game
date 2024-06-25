@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => getIt.get<ConnectivityBloc>()),
-        BlocProvider(create: (context) => getIt.get<GamePlayCubit>()),
       ],
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),

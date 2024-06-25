@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/di/dependencies.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
 import 'package:template/src/screens/game_clients/lobby_screen.dart';
@@ -15,7 +16,17 @@ class AppRoutes {
       case RouteKey.splash:
         return _materialRoute(routeSettings, const SplashScreen());
       case RouteKey.gamePlay:
-        return _materialRoute(routeSettings, const GamePlayScreen());
+        final args = settings.arguments as Map<String, dynamic>;
+        return _materialRoute(
+          routeSettings,
+          BlocProvider(
+            create: (_) => getIt.get<GamePlayCubit>(),
+            child: GamePlayScreen(
+              room: args['room'],
+              player: args['player'],
+            ),
+          ),
+        );
       case RouteKey.gameClient:
         return _materialRoute(
           routeSettings,

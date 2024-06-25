@@ -16,6 +16,8 @@ abstract class AppImages {
   static const String copy = "assets/images/copy.png";
   static const String connect = "assets/images/connect.png";
   static const String logo = "assets/images/logo.png";
+  static const String victory = "assets/images/victory.png";
+  static const String defeat = "assets/images/defeat.png";
   //type A
   static const String previewA = "battleships/type_a_preview.png";
   static const String mediumShipA = "battleships/medium_ship_a.png";
