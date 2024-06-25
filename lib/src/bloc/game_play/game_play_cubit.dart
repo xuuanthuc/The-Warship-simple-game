@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -14,6 +15,7 @@ import 'package:collection/collection.dart';
 import 'package:template/src/models/player.dart';
 import 'package:template/src/models/room_data.dart';
 import 'package:template/src/routes/navigation_service.dart';
+import 'package:template/src/style/app_audio.dart';
 import 'package:template/src/utilities/logger.dart';
 import '../../components/occupied_component.dart';
 import '../../routes/route_keys.dart';
@@ -272,6 +274,11 @@ class GamePlayCubit extends Cubit<GamePlayState> {
           nextOwnerPlayerAction.block.coordinates,
         ),
       );
+      FlameAudio.play(
+        block?.type == BattleSquareType.occupied
+            ? AppAudio.shoot
+            : AppAudio.waterSplash,
+      );
       block?.status = nextOwnerPlayerAction.status;
     }
     if (nextGuestPlayerAction != null) {
@@ -289,11 +296,18 @@ class GamePlayCubit extends Cubit<GamePlayState> {
           nextGuestPlayerAction.block.coordinates,
         ),
       );
+      FlameAudio.play(
+        block?.type == BattleSquareType.occupied
+            ? AppAudio.shoot
+            : AppAudio.waterSplash,
+      );
       block?.status = nextGuestPlayerAction.status;
     }
     emit(state.copyWith(action: GameAction.checkSunk));
     if (gameOverStatus()) {
-      emit(state.copyWith(action: GameAction.end));
+      await Future.delayed(const Duration(seconds: 2)).then((_) {
+        emit(state.copyWith(action: GameAction.end));
+      });
     } else {
       if (state.skipIntro && state.status == ReadyStatus.playing) {
         //do some thing

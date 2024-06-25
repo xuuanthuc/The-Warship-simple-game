@@ -1,12 +1,12 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template/src/bloc/game_play/game_play_cubit.dart';
-import 'package:template/src/di/dependencies.dart';
 import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/routes/route_keys.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
 import 'package:template/src/screens/game_clients/lobby_screen.dart';
 import 'package:template/src/screens/game_clients/room_screen.dart';
+import 'package:template/src/style/app_audio.dart';
 import 'package:template/src/utilities/game_data.dart';
 
 import '../../style/app_images.dart';
@@ -26,9 +26,17 @@ class _GameClientScreenState extends State<GameClientScreen>
     vsync: this,
   )..repeat(reverse: true);
 
+
+  @override
+  void initState() {
+    super.initState();
+    FlameAudio.bgm.play(AppAudio.background);
+  }
+
   @override
   void dispose() {
     _controller.dispose();
+    FlameAudio.bgm.pause();
     super.dispose();
   }
 
