@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:template/src/bloc/game_play/game_play_cubit.dart';
+import 'package:template/src/di/dependencies.dart';
 import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/routes/route_keys.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
@@ -37,8 +39,14 @@ class _GameClientScreenState extends State<GameClientScreen>
       body: BlocListener<GameClientCubit, GameClientState>(
         listener: (context, state) {
           if (state.room?.gameStatus == GameStatus.preparing) {
-            context.read<GameClientCubit>().close();
-            navService.pushReplacementNamed(RouteKey.gamePlay);
+            final room = state.room;
+            final player = state.player;
+            if (room == null || player == null) return;
+            context.read<GameClientCubit>().removeRoomDataStreamSubscription();
+            navService.pushReplacementNamed(RouteKey.gamePlay, args: {
+              "room": room,
+              "player": player,
+            });
           }
         },
         child: BlocBuilder<GameClientCubit, GameClientState>(

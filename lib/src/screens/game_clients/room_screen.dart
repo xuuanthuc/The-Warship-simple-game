@@ -1,15 +1,12 @@
-import 'package:flame/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
 import 'package:template/src/screens/widgets/bounce_button.dart';
 import 'package:template/src/style/app_colors.dart';
 import 'package:template/src/style/app_images.dart';
 import 'package:template/src/utilities/game_data.dart';
 import 'package:template/src/utilities/toast.dart';
-
 import '../widgets/primary_button.dart';
 import '../widgets/secondary_button.dart';
 
@@ -33,6 +30,12 @@ class _RoomScreenState extends State<RoomScreen>
     parent: _controller,
     curve: Curves.linear,
   ));
+
+  @override
+  void initState() {
+    super.initState();
+    GameData.instance.setOccupiedSkin(BattleshipSkin.A);
+  }
 
   @override
   void dispose() {
@@ -80,7 +83,7 @@ class _RoomScreenState extends State<RoomScreen>
                         children: [
                           SlideTransition(
                             position: _offsetAnimation,
-                            child:  Transform.scale(
+                            child: Transform.scale(
                               scale: iamHost ? 1 : 0.75,
                               child: Stack(
                                 children: [
@@ -132,7 +135,7 @@ class _RoomScreenState extends State<RoomScreen>
                             visible: state.room?.guestPlayer != null,
                             child: SlideTransition(
                               position: _offsetAnimation,
-                              child:   Transform.scale(
+                              child: Transform.scale(
                                 scale: iamHost ? 0.75 : 1,
                                 child: Stack(
                                   children: [
@@ -323,9 +326,6 @@ class _RoomScreenState extends State<RoomScreen>
                     final room = state.room;
                     final player = state.player;
                     if (room == null || player == null) return;
-                    context
-                        .read<GamePlayCubit>()
-                        .getRoomDataToPrepareBattleGame(room, player);
                     await Future.delayed(const Duration(milliseconds: 300));
                     if (iamHost) {
                       if (room.guestPlayer?.ready == true) {

@@ -13,6 +13,7 @@ import 'package:uuid/uuid.dart';
 import '../../bloc/connectivity/connectivity_bloc.dart';
 import '../../models/player.dart';
 import '../../utilities/toast.dart';
+import '../game_play/widget/game_exit.dart';
 
 class LobbyScreen extends StatelessWidget {
   const LobbyScreen({super.key});

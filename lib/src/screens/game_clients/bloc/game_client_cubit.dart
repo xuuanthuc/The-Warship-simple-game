@@ -171,10 +171,4 @@ class GameClientCubit extends Cubit<GameClientState> {
       });
     }
   }
-
-  @override
-  Future<void> close() {
-    removeRoomDataStreamSubscription();
-    return super.close();
-  }
 }

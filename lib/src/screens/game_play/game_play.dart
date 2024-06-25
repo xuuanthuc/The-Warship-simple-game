@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/components/occupied_component.dart';
 import 'package:template/src/components/empty_square_component.dart';
+import 'package:template/src/models/player.dart';
+import 'package:template/src/models/room_data.dart';
 import 'package:template/src/routes/route_keys.dart';
+import 'package:template/src/screens/game_play/widget/game_exit.dart';
 import 'package:template/src/screens/game_play/widget/game_over.dart';
 import 'package:template/src/style/app_colors.dart';
 import 'package:template/src/utilities/game_data.dart';
@@ -18,7 +21,14 @@ import '../../components/ready_button_component.dart';
 import '../../components/turn_info_component.dart';
 
 class GamePlayScreen extends StatefulWidget {
-  const GamePlayScreen({Key? key}) : super(key: key);
+  final RoomData room;
+  final Player player;
+
+  const GamePlayScreen({
+    Key? key,
+    required this.room,
+    required this.player,
+  }) : super(key: key);
 
   @override
   State<GamePlayScreen> createState() => _GamePlayScreenState();
@@ -26,31 +36,44 @@ class GamePlayScreen extends StatefulWidget {
 
 class _GamePlayScreenState extends State<GamePlayScreen> {
   @override
+  void initState() {
+    context.read<GamePlayCubit>().getRoomDataToPrepareBattleGame(
+          widget.room,
+          widget.player,
+        );
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final game = BattleGameFlame(
+      cubit: context.read<GamePlayCubit>(),
+    );
     return Scaffold(
       body: GameWidget(
-        game: BattleGameFlame(
-          cubit: context.read<GamePlayCubit>(),
-        ),
+        game: game,
         overlayBuilderMap: {
           RouteKey.gameOver: (_, BattleGameFlame game) {
             return GameOverOverlay();
+          },
+          RouteKey.gameExit: (_, BattleGameFlame game) {
+            return GameExitButton();
           }
         },
         backgroundBuilder: (context) =>
             BlocBuilder<GamePlayCubit, GamePlayState>(
-              buildWhen: (_, cur) => cur.action == GameAction.nextTurn,
-              builder: (context, state) {
-                return AnimatedContainer(
-                  duration: Duration(seconds: 1),
-                  curve: Curves.ease,
-                  decoration: BoxDecoration(
-                    gradient: state.room.nextPlayer?.skin?.background() ??
-                        AppColors.backgroundBlue,
-                  ),
-                );
-              },
-            ),
+          buildWhen: (_, cur) => cur.action == GameAction.nextTurn,
+          builder: (context, state) {
+            return AnimatedContainer(
+              duration: Duration(seconds: 1),
+              curve: Curves.ease,
+              decoration: BoxDecoration(
+                gradient: state.room.nextPlayer?.skin?.background() ??
+                    AppColors.backgroundBlue,
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -79,6 +102,7 @@ class BattleGameFlame extends FlameGame with HasCollisionDetection {
         ],
       ),
     );
+    overlays.add(RouteKey.gameExit);
     return super.onLoad();
   }
 }
@@ -114,8 +138,8 @@ class BattlegroundWorld extends World
         emptySquares: bloc.state.room.ownerPlayingData?.emptyBlocks ?? [],
         occupiedSquares: bloc.state.room.ownerPlayingData?.occupiedBlocks ?? [],
       );
-      add(TurnInfoComponent());
-      bloc.startGame();
+      await add(TurnInfoComponent());
+      await Future.delayed(Duration(seconds: 2)).then((_) => bloc.startGame());
     }
     if (state.action == GameAction.nextTurn) {
       if (state.room.nextPlayer?.id == state.room.ownerPlayer?.id) {
@@ -137,8 +161,10 @@ class BattlegroundWorld extends World
   }
 
   @override
-  bool listenWhen(GamePlayState previousState,
-      GamePlayState newState,) {
+  bool listenWhen(
+    GamePlayState previousState,
+    GamePlayState newState,
+  ) {
     return newState.action == GameAction.nextTurn ||
         newState.action == GameAction.ready ||
         newState.action == GameAction.end;
