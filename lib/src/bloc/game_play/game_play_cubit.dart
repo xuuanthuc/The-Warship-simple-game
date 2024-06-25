@@ -232,75 +232,81 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         .doc(state.room.code)
         .snapshots()
         .listen((roomData) async {
-      LoggerUtils.i("Shoot");
-      final room =
-          roomData.data() != null ? RoomData.fromFireStore(roomData) : null;
+      await updateGameRoomData(roomData);
+    });
+  }
 
-      ///Check if next player is current player, skip intro next turn
-      if (state.room.nextPlayer != null &&
-          room?.nextPlayer != null &&
-          state.room.nextPlayer?.id == room?.nextPlayer?.id) {
-        emit(state.copyWith(skipIntro: true, action: GameAction.shoot));
-      } else {
-        state.room.nextPlayer = room?.nextPlayer;
-        emit(state.copyWith(skipIntro: false, action: GameAction.shoot));
-      }
-      final nextOwnerPlayerAction = room?.nextOwnerPlayerAction;
-      final nextGuestPlayerAction = room?.nextGuestPlayerAction;
+  Future<void> updateGameRoomData(
+    DocumentSnapshot<Map<String, dynamic>> roomData,
+  ) async {
+    LoggerUtils.i("Shoot");
+    final room =
+        roomData.data() != null ? RoomData.fromFireStore(roomData) : null;
 
-      ///Each occupied has a list of point that is overlapping, check point tapped have contain in this list.
-      /// If contain, remove point, When overlapping list empty, change state of occupied from hide to show
-      if (nextOwnerPlayerAction != null) {
-        state.room.guestPlayingData?.occupiedBlocks.forEach((ship) {
-          ship.overlappingPositions.removeWhere(
-            (ps) => const ListEquality().equals(
-              ps.coordinates,
-              nextOwnerPlayerAction.block.coordinates,
-            ),
-          );
-        });
-        final block = state.room.guestPlayingData?.emptyBlocks.firstWhere(
-          (b) => const ListEquality().equals(
-            b.block.coordinates,
+    ///Check if next player is current player, skip intro next turn
+    if (state.room.nextPlayer != null &&
+        room?.nextPlayer != null &&
+        state.room.nextPlayer?.id == room?.nextPlayer?.id) {
+      emit(state.copyWith(skipIntro: true, action: GameAction.shoot));
+    } else {
+      state.room.nextPlayer = room?.nextPlayer;
+      emit(state.copyWith(skipIntro: false, action: GameAction.shoot));
+    }
+    final nextOwnerPlayerAction = room?.nextOwnerPlayerAction;
+    final nextGuestPlayerAction = room?.nextGuestPlayerAction;
+
+    ///Each occupied has a list of point that is overlapping, check point tapped have contain in this list.
+    /// If contain, remove point, When overlapping list empty, change state of occupied from hide to show
+    if (nextOwnerPlayerAction != null) {
+      state.room.guestPlayingData?.occupiedBlocks.forEach((ship) {
+        ship.overlappingPositions.removeWhere(
+          (ps) => const ListEquality().equals(
+            ps.coordinates,
             nextOwnerPlayerAction.block.coordinates,
           ),
         );
-        block?.status = nextOwnerPlayerAction.status;
-      }
-      if (nextGuestPlayerAction != null) {
-        state.room.ownerPlayingData?.occupiedBlocks.forEach((ship) {
-          ship.overlappingPositions.removeWhere(
-            (ps) => const ListEquality().equals(
-              ps.coordinates,
-              nextGuestPlayerAction.block.coordinates,
-            ),
-          );
-        });
-        final block = state.room.ownerPlayingData?.emptyBlocks.firstWhere(
-          (b) => const ListEquality().equals(
-            b.block.coordinates,
+      });
+      final block = state.room.guestPlayingData?.emptyBlocks.firstWhere(
+        (b) => const ListEquality().equals(
+          b.block.coordinates,
+          nextOwnerPlayerAction.block.coordinates,
+        ),
+      );
+      block?.status = nextOwnerPlayerAction.status;
+    }
+    if (nextGuestPlayerAction != null) {
+      state.room.ownerPlayingData?.occupiedBlocks.forEach((ship) {
+        ship.overlappingPositions.removeWhere(
+          (ps) => const ListEquality().equals(
+            ps.coordinates,
             nextGuestPlayerAction.block.coordinates,
           ),
         );
-        block?.status = nextGuestPlayerAction.status;
-      }
-      emit(state.copyWith(action: GameAction.checkSunk));
-      if (gameOverStatus()) {
-        emit(state.copyWith(action: GameAction.end));
+      });
+      final block = state.room.ownerPlayingData?.emptyBlocks.firstWhere(
+        (b) => const ListEquality().equals(
+          b.block.coordinates,
+          nextGuestPlayerAction.block.coordinates,
+        ),
+      );
+      block?.status = nextGuestPlayerAction.status;
+    }
+    emit(state.copyWith(action: GameAction.checkSunk));
+    if (gameOverStatus()) {
+      emit(state.copyWith(action: GameAction.end));
+    } else {
+      if (state.skipIntro && state.status == ReadyStatus.playing) {
+        //do some thing
+        emit(state.copyWith(action: GameAction.continueTurn));
       } else {
-        if (state.skipIntro && state.status == ReadyStatus.playing) {
-          //do some thing
-          emit(state.copyWith(action: GameAction.continueTurn));
-        } else {
-          await Future.delayed(const Duration(seconds: 3)).then((_) {
-            emit(state.copyWith(
-              action: GameAction.nextTurn,
-              status: ReadyStatus.playing,
-            ));
-          });
-        }
+        await Future.delayed(const Duration(seconds: 3)).then((_) {
+          emit(state.copyWith(
+            action: GameAction.nextTurn,
+            status: ReadyStatus.playing,
+          ));
+        });
       }
-    });
+    }
   }
 
   bool gameOverStatus() {
