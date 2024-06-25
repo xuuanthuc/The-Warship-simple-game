@@ -294,7 +294,9 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         } else {
           await Future.delayed(const Duration(seconds: 3)).then((_) {
             emit(state.copyWith(
-                action: GameAction.nextTurn, status: ReadyStatus.playing));
+              action: GameAction.nextTurn,
+              status: ReadyStatus.playing,
+            ));
           });
         }
       }
@@ -302,7 +304,8 @@ class GamePlayCubit extends Cubit<GamePlayState> {
   }
 
   bool gameOverStatus() {
-    if(state.room.guestPlayingData == null || state.room.ownerPlayingData == null) return true;
+    if (state.room.guestPlayingData == null ||
+        state.room.ownerPlayingData == null) return true;
     if ((!state.room.guestPlayingData!.occupiedBlocks
             .any((s) => s.overlappingPositions.isNotEmpty)) ||
         (!state.room.ownerPlayingData!.occupiedBlocks
@@ -316,9 +319,7 @@ class GamePlayCubit extends Cubit<GamePlayState> {
 
   void exitGame() {
     removeRoomDataStreamSubscription();
-    firebase
-        .collection("rooms")
-        .doc(state.room.code).delete();
+    firebase.collection("rooms").doc(state.room.code).delete();
     emit(GamePlayState.empty());
     navService.pushReplacementNamed(RouteKey.gameClient);
   }

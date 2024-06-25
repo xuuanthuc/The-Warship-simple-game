@@ -49,14 +49,15 @@ class OccupiedBattleSquareComponent extends SpriteComponent
   }
 
   Vector2 findClosestVector(List<EmptyBattleSquare> vectors, Vector2 target) {
-    Vector2 closestVector = vectors.first.block.vector2!;
+    Vector2 closestVector = vectors.first.block.vector2 ?? Vector2.zero();
     double minDistance = double.infinity;
 
     for (EmptyBattleSquare vector in vectors) {
-      double distance = (vector.block.vector2! - target).length;
+      double distance =
+          ((vector.block.vector2 ?? Vector2.zero()) - target).length;
       if (distance < minDistance) {
         minDistance = distance;
-        closestVector = vector.block.vector2!;
+        closestVector = vector.block.vector2 ?? Vector2.zero();
       }
     }
     return closestVector;
