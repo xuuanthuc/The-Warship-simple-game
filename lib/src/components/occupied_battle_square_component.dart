@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:flame/components.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:template/src/utilities/game_data.dart';
 import 'package:template/src/models/battle.dart';
 import 'package:template/src/models/empty_block.dart';
 import '../bloc/game_play/game_play_cubit.dart';
+import '../style/app_audio.dart';
 
 class OccupiedBattleSquareComponent extends SpriteComponent
     with
@@ -29,6 +31,8 @@ class OccupiedBattleSquareComponent extends SpriteComponent
 
   List<PositionComponent> collisions = [];
   List<EmptyBlock> overlappingEmptyBlocks = [];
+
+  bool _isSoundPlayed = false;
 
   @override
   Future<void> onLoad() async {
@@ -106,8 +110,14 @@ class OccupiedBattleSquareComponent extends SpriteComponent
 
   @override
   void onNewState(GamePlayState state) {
-    if (square.overlappingPositions.isEmpty) {
-      isVisible = true;
+    if (square.overlappingPositions.isEmpty && !_isSoundPlayed) {
+      _isSoundPlayed = true;
+      Future.delayed(const Duration(milliseconds: 500)).then(
+        (_) {
+          FlameAudio.play(AppAudio.sunk);
+          isVisible = true;
+        },
+      );
     }
     super.onNewState(state);
   }

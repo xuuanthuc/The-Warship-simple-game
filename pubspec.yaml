@@ -54,6 +54,7 @@ dependencies:
   uuid: ^4.4.0
   collection: ^1.18.0
   url_launcher: ^6.3.0
+  flame_audio: ^2.10.2
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +84,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/audio/
     - assets/images/battleships/
   #   - images/a_dot_ham.jpeg
 

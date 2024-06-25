@@ -1,6 +1,8 @@
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/bloc/game_play/game_play_cubit.dart';
+import 'package:template/src/style/app_audio.dart';
 import 'package:template/src/style/app_images.dart';
 
 class GameOverOverlay extends StatelessWidget {
@@ -32,23 +34,27 @@ class GameOverOverlay extends StatelessWidget {
                   if (!state.room.guestPlayingData!.occupiedBlocks
                       .any((s) => s.overlappingPositions.isNotEmpty)) {
                     if (iamHost) {
-                      return VictoryComponent();
+                      FlameAudio.play(AppAudio.victory);
+                      return const VictoryComponent();
                     } else {
-                      return DefeatComponent();
+                      FlameAudio.play(AppAudio.defeat);
+                      return const DefeatComponent();
                     }
                   }
                   if (!state.room.ownerPlayingData!.occupiedBlocks
                       .any((s) => s.overlappingPositions.isNotEmpty)) {
                     if (iamHost) {
-                      return DefeatComponent();
+                      FlameAudio.play(AppAudio.defeat);
+                      return const DefeatComponent();
                     } else {
-                      return VictoryComponent();
+                      FlameAudio.play(AppAudio.victory);
+                      return const VictoryComponent();
                     }
                   }
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 },
               ),
-              Center(
+              const Center(
                 child: Text(
                   "Tap to continue",
                   style: TextStyle(
