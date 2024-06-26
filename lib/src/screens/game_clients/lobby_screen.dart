@@ -52,7 +52,6 @@ class LobbyScreen extends StatelessWidget {
               Expanded(
                 child: Center(
                   child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 120),
                     child: Image.asset(AppImages.logo),
                   ),
                 ),

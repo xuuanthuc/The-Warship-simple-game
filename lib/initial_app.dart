@@ -38,5 +38,6 @@ Future<void> initialApp(FutureOr<Widget> Function() builder) async {
   //   DeviceOrientation.landscapeRight,
   //   DeviceOrientation.landscapeLeft,
   // ]);
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   runApp(await builder());
 }

@@ -84,19 +84,19 @@ class _GameClientScreenState extends State<GameClientScreen>
                         ? const RoomScreen()
                         : const LobbyScreen(),
                   ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(30).copyWith(bottom: 50),
-                      child: SizedBox(
-                        height: 80,
-                        child: SecondaryButton.icon(
-                          onPressed: () {},
-                          icon: AppImages.menu,
-                        ),
-                      ),
-                    ),
-                  ),
+                  // Align(
+                  //   alignment: Alignment.topRight,
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.all(30).copyWith(bottom: 50),
+                  //     child: SizedBox(
+                  //       height: 80,
+                  //       child: SecondaryButton.icon(
+                  //         onPressed: () {},
+                  //         icon: AppImages.menu,
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             );

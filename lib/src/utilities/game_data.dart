@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -55,12 +53,13 @@ class GameData {
 
   static const blockLength = 10;
 
-  Size get screenSize => kIsWeb ? Size(1000, 1000) :
-      WidgetsBinding.instance.platformDispatcher.views.first.physicalSize / 2;
+  double blockSize = 0;
 
-  double get blockSize => screenSize.width < screenSize.height
-      ? screenSize.width / 15
-      : screenSize.height / 15;
+  void setBlockSize(Size screenSize) {
+    blockSize = screenSize.width < screenSize.height
+        ? screenSize.width / (kIsWeb ? 15 : 12)
+        : screenSize.height / (kIsWeb ? 15 : 12);
+  }
 
   List<OccupiedBlock> battleOccupied = [
     OccupiedBlock(
