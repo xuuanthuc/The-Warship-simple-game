@@ -40,7 +40,7 @@ class GuestBattleWorld extends PositionComponent
           square: ship,
           index: i,
           isGuest: true,
-          initialAngle: ship.angle,
+          initialAngle: ship.angle.toDouble(),
           initialPosition: GameData.instance.setBlockVector2(
             ship.targetPoint!.coordinates!.last,
             ship.targetPoint!.coordinates!.first,
@@ -84,7 +84,7 @@ class OwnerBattleWorld extends PositionComponent
           key: ComponentKey.unique(),
           square: ship,
           index: i,
-          initialAngle: ship.angle,
+          initialAngle: ship.angle.toDouble(),
           isGuest: false,
           initialPosition: GameData.instance.setBlockVector2(
             ship.targetPoint!.coordinates!.last,

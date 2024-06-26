@@ -67,7 +67,7 @@ class LobbyScreen extends StatelessWidget {
                       id: const Uuid().v4(),
                       createdAt: Timestamp.now(),
                       updatedAt: Timestamp.now(),
-                      connectivityResult: connectionResult,
+                      connectivityResult: ConnectivityResult.wifi,
                       ready: false,
                       skin: context.read<GameClientCubit>().state.skin
                     );

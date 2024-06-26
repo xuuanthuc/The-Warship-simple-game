@@ -15,7 +15,7 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   ConnectivityBloc()
-      : super(const ConnectivityState(result: ConnectivityResult.none)) {
+      : super(const ConnectivityState(result: ConnectivityResult.wifi)) {
     on<ConnectivityChangedEvent>(_onConnectivityChanged);
     _connectivitySubscription = Connectivity()
         .onConnectivityChanged

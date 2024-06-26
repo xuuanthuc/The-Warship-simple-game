@@ -55,7 +55,7 @@ class EmptyBattleSquare {
 class OccupiedBattleSquare {
   final OccupiedBlock block;
   final EmptyBlock? targetPoint;
-  final double angle;
+  final num angle;
   final List<EmptyBlock> overlappingPositions;
 
   OccupiedBattleSquare({
