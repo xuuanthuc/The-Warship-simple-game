@@ -112,7 +112,7 @@ class OccupiedBattleSquareComponent extends SpriteComponent
   void onNewState(GamePlayState state) {
     if (square.overlappingPositions.isEmpty && !_isSoundPlayed) {
       _isSoundPlayed = true;
-      Future.delayed(const Duration(milliseconds: 500)).then(
+      Future.delayed(const Duration(seconds: 1)).then(
         (_) {
           FlameAudio.play(AppAudio.sunk);
           isVisible = true;
@@ -124,6 +124,6 @@ class OccupiedBattleSquareComponent extends SpriteComponent
 
   @override
   bool listenWhen(GamePlayState previousState, GamePlayState newState) {
-    return newState.action == GameAction.checkSunk;
+    return newState.action == GameAction.checkSunk && !_isSoundPlayed;
   }
 }

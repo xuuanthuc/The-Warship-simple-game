@@ -1,9 +1,10 @@
 abstract class AppImages {
   const AppImages();
 
-  static const String blueSea = "blue_sea.png";
+  static const String blueSea = "blue_sea2.png";
   static const String nonShip = "non_ship.png";
   static const String hasShip = "has_ship.png";
+  static const String invisibleShip = "invisible_ship.png";
   static const String background = "background2.png";
   static const String ruler = "background_ruler.png";
   static const String parallax = "lobby.png";
@@ -30,4 +31,7 @@ abstract class AppImages {
   static const String smallShipB = "battleships/small_ship_b.png";
   static const String tinyShipB = "battleships/tiny_ship_b.png";
   static const String largeShipB = "battleships/large_ship_b.png";
+
+  static const String explode = "assets/lottie/explode.json";
+  static const String water = "assets/lottie/water.json";
 }

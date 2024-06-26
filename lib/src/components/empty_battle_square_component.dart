@@ -2,6 +2,7 @@ import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/text.dart';
 import 'package:flame_bloc/flame_bloc.dart';
+import 'package:flame_lottie/flame_lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:template/src/models/battle.dart';
 import '../bloc/game_play/game_play_cubit.dart';
@@ -43,30 +44,62 @@ class EmptyBattleSquareComponent extends SpriteComponent
   }
 
   @override
-  void onTapUp(TapUpEvent event) {
+  void onTapUp(TapUpEvent event) async {
     bloc.shootEnemy(battle);
     super.onTapUp(event);
   }
 }
 
-class ShootPointSprite extends SpriteComponent with HasVisibility {
+class ShootPointSprite extends SpriteComponent
+    with HasVisibility, FlameBlocListenable<GamePlayCubit, GamePlayState> {
   final EmptyBattleSquare battle;
 
   ShootPointSprite({required this.battle});
 
+  bool _isDetermined = false;
+
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load(battle.type == BattleSquareType.occupied
-        ? AppImages.hasShip
-        : AppImages.nonShip);
+    isVisible = false;
+    sprite = await Sprite.load(AppImages.invisibleShip);
     size = Vector2.all(GameData.instance.blockSize);
     position = Vector2.zero();
     return super.onLoad();
   }
 
   @override
-  void update(double dt) {
-    isVisible = battle.status == BattleSquareStatus.determined;
-    super.update(dt);
+  void onNewState(GamePlayState state) async {
+    if (battle.status == BattleSquareStatus.determined &&
+        _isDetermined == false) {
+      _isDetermined = true;
+      isVisible = battle.status == BattleSquareStatus.determined;
+      final asset = Lottie.asset(
+        battle.type == BattleSquareType.empty
+            ? AppImages.water
+            : AppImages.explode,
+      );
+      final animation = await loadLottie(asset);
+      await add(
+        LottieComponent(
+          animation,
+          repeating: false, // continuously loop the animation
+          size: Vector2.all(GameData.instance.blockSize),
+        ),
+      );
+
+      Future.delayed(Duration(seconds: 1)).then(
+        (_) async => sprite = await Sprite.load(
+          battle.type == BattleSquareType.occupied
+              ? AppImages.hasShip
+              : AppImages.nonShip,
+        ),
+      );
+    }
+    super.onNewState(state);
+  }
+
+  @override
+  bool listenWhen(GamePlayState previousState, GamePlayState newState) {
+    return newState.action == GameAction.checkSunk && _isDetermined == false;
   }
 }
