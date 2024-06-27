@@ -17,6 +17,16 @@ class TerrainComponent extends SpriteComponent
     add(TerrainForegroundComponent());
     return super.onLoad();
   }
+
+  @override
+  void onNewState(GamePlayState state) {
+    super.onNewState(state);
+  }
+
+  @override
+  bool listenWhen(GamePlayState previousState, GamePlayState newState) {
+    return super.listenWhen(previousState, newState);
+  }
 }
 
 class TerrainForegroundComponent extends SpriteComponent

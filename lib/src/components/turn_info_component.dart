@@ -35,23 +35,27 @@ class TurnInfoComponent extends TextComponent
   @override
   void onNewState(GamePlayState state) {
     if (state.player?.id == state.room.nextPlayer?.id) {
-      _playerTurn.text = "Your turn";
-      position = Vector2(-(GameData.blockLength * GameData.instance.blockSize),
-          -(GameData.blockLength * GameData.instance.blockSize / 2));
+      _playerTurn.text = "Your\nTurn";
+      anchor = Anchor.centerLeft;
       gameRef.overlays.add(RouteKey.yourTurn);
       Future.delayed(Duration(seconds: 2)).then((_) {
         gameRef.overlays.remove(RouteKey.yourTurn);
       });
     } else {
-      _playerTurn.text = "Opponent turn";
-      position = Vector2(GameData.blockLength * (GameData.instance.blockSize / 1.5),
-          -(GameData.blockLength * GameData.instance.blockSize / 2));
+      _playerTurn.text = "Opponent's\nTurn";
+      anchor = Anchor.centerLeft;
       gameRef.overlays.add(RouteKey.opponentTurn);
       Future.delayed(Duration(seconds: 2)).then((_) {
         gameRef.overlays.remove(RouteKey.opponentTurn);
       });
     }
     super.onNewState(state);
+  }
+
+  @override
+  void onGameResize(Vector2 size) {
+    position = Vector2(-size.x / 2 + 30, -50);
+    super.onGameResize(size);
   }
 
   @override

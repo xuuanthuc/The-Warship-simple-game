@@ -1,32 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:template/src/style/app_colors.dart';
 
-void appToast(
-  BuildContext context, {
+void appToast({
   required String message,
   ToastGravity? gravity = ToastGravity.BOTTOM,
 }) {
-  FToast fToast = FToast();
-  fToast.init(context);
-  Widget toast = Container(
-    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.circular(8),
-      color: Colors.grey.shade800,
-    ),
-    child: Text(
-      message,
-      style: const TextStyle(
-        fontWeight: FontWeight.w500,
-        color: Colors.white,
-        fontSize: 14,
-      ),
-    ),
-  );
-
-  fToast.showToast(
-    child: toast,
+  Fluttertoast.showToast(
+    msg: message,
+    fontSize: 16,
+    textColor: Colors.white,
     gravity: gravity,
-    toastDuration: const Duration(seconds: 5),
+    timeInSecForIosWeb: 2,
+    backgroundColor: AppColors.grayDark,
+    webPosition: "center",
+    webShowClose: true,
+    webBgColor: "linear-gradient(to right, #28323F, #28323F)"
   );
 }

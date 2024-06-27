@@ -17,6 +17,7 @@ import 'package:template/src/models/room_data.dart';
 import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/style/app_audio.dart';
 import 'package:template/src/utilities/logger.dart';
+import 'package:template/src/utilities/toast.dart';
 import '../../components/occupied_component.dart';
 import '../../routes/route_keys.dart';
 import '../../utilities/game_data.dart';
@@ -26,6 +27,7 @@ part 'game_play_state.dart';
 @injectable
 class GamePlayCubit extends Cubit<GamePlayState> {
   GamePlayCubit() : super(GamePlayState.empty());
+
   final firebase = FirebaseFirestore.instance;
   StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>? _roomStream;
 
@@ -129,6 +131,8 @@ class GamePlayCubit extends Cubit<GamePlayState> {
           .set(room.toFireStore(), SetOptions(merge: true))
           .then((_) {
         _listenGameReadyStatus();
+      }).onError((error, _) {
+        appToast(message: error.toString());
       });
     } else {
       room.guestPlayingData = PlayingData(
@@ -141,6 +145,8 @@ class GamePlayCubit extends Cubit<GamePlayState> {
           .set(room.toFireStore(), SetOptions(merge: true))
           .then((_) {
         _listenGameReadyStatus();
+      }).onError((error, _) {
+        appToast(message: error.toString());
       });
     }
   }
@@ -153,11 +159,23 @@ class GamePlayCubit extends Cubit<GamePlayState> {
     if (state.action == GameAction.checkSunk) return;
     square.status = BattleSquareStatus.determined;
     if (state.iamHost == true) {
-      firebase.collection("rooms").doc(state.room.code).update(
-          state.room.actionOfOwnerPlayer(square, nextPlayerTurn(square)));
+      firebase
+          .collection("rooms")
+          .doc(state.room.code)
+          .update(
+              state.room.actionOfOwnerPlayer(square, nextPlayerTurn(square)))
+          .onError((error, _) {
+        appToast(message: error.toString());
+      });
     } else {
-      firebase.collection("rooms").doc(state.room.code).update(
-          state.room.actionOfOccupiedPlayer(square, nextPlayerTurn(square)));
+      firebase
+          .collection("rooms")
+          .doc(state.room.code)
+          .update(
+              state.room.actionOfOccupiedPlayer(square, nextPlayerTurn(square)))
+          .onError((error, _) {
+        appToast(message: error.toString());
+      });
     }
   }
 
@@ -224,6 +242,8 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         .then((_) {
       ///Register new stream subscription game play data
       setRoomDataStreamSubscription();
+    }).onError((error, _) {
+      appToast(message: error.toString());
     });
   }
 
@@ -339,7 +359,13 @@ class GamePlayCubit extends Cubit<GamePlayState> {
 
   void exitGame() {
     removeRoomDataStreamSubscription();
-    firebase.collection("rooms").doc(state.room.code).delete();
+    firebase
+        .collection("rooms")
+        .doc(state.room.code)
+        .delete()
+        .onError((error, _) {
+      appToast(message: error.toString());
+    });
     emit(GamePlayState.empty());
     navService.pushReplacementNamed(RouteKey.gameClient);
   }

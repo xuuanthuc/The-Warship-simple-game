@@ -11,6 +11,8 @@ import 'package:template/src/models/room_data.dart';
 import 'package:template/src/utilities/game_data.dart';
 import 'package:template/src/utilities/logger.dart';
 
+import '../../../utilities/toast.dart';
+
 part 'game_client_state.dart';
 
 const _chars = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
@@ -49,6 +51,8 @@ class GameClientCubit extends Cubit<GameClientState> {
         .set(room.toFireStore(), SetOptions(merge: true))
         .then((value) {
       setRoomDataStreamSubscription(newCodeGenerated, player);
+    }).onError((error, _) {
+      appToast(message: error.toString());
     });
   }
 
@@ -57,13 +61,18 @@ class GameClientCubit extends Cubit<GameClientState> {
     firebase
         .collection("rooms")
         .doc(state.room?.code)
-        .update(state.room!.guestPlayer!.readyForGame());
+        .update(state.room!.guestPlayer!.readyForGame())
+        .onError((error, _) {
+      appToast(message: error.toString());
+    });
   }
 
   void deleteRoom() {
     LoggerUtils.i("Delete Room");
     firebase.collection("rooms").doc(state.room?.code).delete().then((value) {
       removeRoomDataStreamSubscription();
+    }).onError((error, _) {
+      appToast(message: error.toString());
     });
   }
 
@@ -75,6 +84,8 @@ class GameClientCubit extends Cubit<GameClientState> {
         .update(state.room!.guestOutOfRoom)
         .then((value) {
       removeRoomDataStreamSubscription();
+    }).onError((error, _) {
+      appToast(message: error.toString());
     });
   }
 
@@ -129,6 +140,8 @@ class GameClientCubit extends Cubit<GameClientState> {
             .set(room.toFireStore(), SetOptions(merge: true))
             .then((onValue) {
           setRoomDataStreamSubscription(code.toUpperCase(), player);
+        }).onError((error, _) {
+          appToast(message: error.toString());
         });
       } else {
         emit(state.copyWith(
@@ -148,7 +161,10 @@ class GameClientCubit extends Cubit<GameClientState> {
     firebase
         .collection("rooms")
         .doc(state.room?.code)
-        .update(state.room!.startPreparing);
+        .update(state.room!.startPreparing)
+        .onError((error, _) {
+      appToast(message: error.toString());
+    });
   }
 
   void setSkin(BattleshipSkin skin, bool iamHost) {
@@ -160,6 +176,8 @@ class GameClientCubit extends Cubit<GameClientState> {
           .update(state.room!.ownerSkinSelected(skin))
           .then((_) {
         emit(state.copyWith(room: state.room, skin: skin));
+      }).onError((error, _) {
+        appToast(message: error.toString());
       });
     } else {
       firebase
@@ -168,6 +186,8 @@ class GameClientCubit extends Cubit<GameClientState> {
           .update(state.room!.guestSkinSelected(skin))
           .then((_) {
         emit(state.copyWith(room: state.room, skin: skin));
+      }).onError((error, _) {
+        appToast(message: error.toString());
       });
     }
   }

@@ -7,7 +7,6 @@ import 'package:template/src/screens/widgets/primary_button.dart';
 import 'package:template/src/screens/widgets/primary_dialog.dart';
 import 'package:template/src/style/app_colors.dart';
 import 'package:uuid/uuid.dart';
-import '../../../bloc/connectivity/connectivity_bloc.dart';
 import '../../../models/player.dart';
 import '../../../routes/navigation_service.dart';
 import '../bloc/game_client_cubit.dart';
@@ -91,22 +90,17 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
             onPressed: () {
               final code = _editingController.text;
               if (code.isNotEmpty) {
-                final connectionResult =
-                    context.read<ConnectivityBloc>().state.result;
-                if (connectionResult == ConnectivityResult.wifi ||
-                    connectionResult == ConnectivityResult.mobile) {
-                  final player = GuestPlayer(
-                      id: const Uuid().v4(),
-                      createdAt: Timestamp.now(),
-                      updatedAt: Timestamp.now(),
-                      connectivityResult: connectionResult,
-                      ready: false,
-                      skin: context.read<GameClientCubit>().state.skin);
-                  context.read<GameClientCubit>().joinRoom(
-                        player: player,
-                        code: code,
-                      );
-                }
+                final player = GuestPlayer(
+                    id: const Uuid().v4(),
+                    createdAt: Timestamp.now(),
+                    updatedAt: Timestamp.now(),
+                    connectivityResult: ConnectivityResult.wifi,
+                    ready: false,
+                    skin: context.read<GameClientCubit>().state.skin);
+                context.read<GameClientCubit>().joinRoom(
+                      player: player,
+                      code: code,
+                    );
               }
             },
             text: "Join",

@@ -19,7 +19,7 @@ enum ReadyStatus {
   preparing,
   prepared,
   ready,
-  playing
+  playing,
 }
 
 @immutable

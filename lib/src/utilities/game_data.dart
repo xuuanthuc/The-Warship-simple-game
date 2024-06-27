@@ -57,8 +57,8 @@ class GameData {
 
   void setBlockSize(Size screenSize) {
     blockSize = screenSize.width < screenSize.height
-        ? screenSize.width / (kIsWeb ? 15 : 12)
-        : screenSize.height / (kIsWeb ? 15 : 12);
+        ? screenSize.width / (kIsWeb ? 15 : 13)
+        : screenSize.height / (kIsWeb ? 15 : 13);
   }
 
   List<OccupiedBlock> battleOccupied = [

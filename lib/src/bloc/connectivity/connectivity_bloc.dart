@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../utilities/toast.dart';
+
 part 'connectivity_event.dart';
 
 part 'connectivity_state.dart';
@@ -28,6 +30,9 @@ class ConnectivityBloc extends Bloc<ConnectivityEvent, ConnectivityState> {
     ConnectivityChangedEvent event,
     Emitter<ConnectivityState> emit,
   ) {
+    if (event.result == ConnectivityResult.none) {
+      appToast(message: "No connection");
+    }
     emit(ConnectivityState(result: event.result));
   }
 

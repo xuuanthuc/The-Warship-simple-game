@@ -37,92 +37,78 @@ class LobbyScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ConnectivityBloc, ConnectivityState>(
-      listener: (context, state) {
-        if (state.result == ConnectivityResult.none) {
-          appToast(context, message: "No connection");
-        }
-      },
-      child: Stack(
-        children: [
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Center(
-                  child: Container(
-                    child: Image.asset(AppImages.logo),
-                  ),
+    return Stack(
+      children: [
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: Center(
+                child: Container(
+                  child: Image.asset(AppImages.logo),
                 ),
               ),
-              PrimaryButton.primary(
-                onPressed: () {
-                  final connectionResult =
-                      context.read<ConnectivityBloc>().state.result;
-                  if (connectionResult == ConnectivityResult.wifi ||
-                      connectionResult == ConnectivityResult.mobile) {
-                    final player = OwnerPlayer(
-                      id: const Uuid().v4(),
-                      createdAt: Timestamp.now(),
-                      updatedAt: Timestamp.now(),
-                      connectivityResult: ConnectivityResult.wifi,
-                      ready: false,
-                      skin: context.read<GameClientCubit>().state.skin
+            ),
+            PrimaryButton.primary(
+              onPressed: () {
+                final player = OwnerPlayer(
+                    id: const Uuid().v4(),
+                    createdAt: Timestamp.now(),
+                    updatedAt: Timestamp.now(),
+                    connectivityResult: ConnectivityResult.wifi,
+                    ready: false,
+                    skin: context.read<GameClientCubit>().state.skin);
+                context.read<GameClientCubit>().createNewRoom(
+                      player: player,
+                      status: GameStatus.init,
                     );
-                    context.read<GameClientCubit>().createNewRoom(
-                          player: player,
-                          status: GameStatus.init,
-                        );
-                  }
-                },
-                text: "CREATE ROOM",
-                fontSize: 30,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 25, horizontal: 32),
+              },
+              text: "CREATE ROOM",
+              fontSize: 30,
+              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 32),
+            ),
+            const SizedBox(height: 30),
+            PrimaryButton.secondary(
+              onPressed: () => _enterRoomCodeDialog(context),
+              text: "JOIN ROOM",
+              fontSize: 24,
+              padding: const EdgeInsets.symmetric(
+                vertical: 20,
+                horizontal: 30,
               ),
-              const SizedBox(height: 30),
-              PrimaryButton.secondary(
-                onPressed: () => _enterRoomCodeDialog(context),
-                text: "JOIN ROOM",
-                fontSize: 24,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 20,
-                  horizontal: 30,
+            ),
+          ],
+        ),
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Align(
+                alignment: Alignment.centerRight,
+                child: SecondaryButton(
+                  onPressed: () => _launchUrl(
+                    "https://github.com/xuuanthuc/battleship",
+                  ),
+                  text: "GITHUB",
+                  icon: AppImages.github,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: SecondaryButton(
+                  onPressed: () => _launchUrl(
+                    "https://stackoverflow.com/users/15110149/xuuan-thuc",
+                  ),
+                  text: "STACK",
+                  icon: AppImages.stackOverflow,
                 ),
               ),
             ],
           ),
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: SecondaryButton(
-                    onPressed: () => _launchUrl(
-                      "https://github.com/xuuanthuc/battleship",
-                    ),
-                    text: "GITHUB",
-                    icon: AppImages.github,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: SecondaryButton(
-                    onPressed: () => _launchUrl(
-                      "https://stackoverflow.com/users/15110149/xuuan-thuc",
-                    ),
-                    text: "STACK",
-                    icon: AppImages.stackOverflow,
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 }

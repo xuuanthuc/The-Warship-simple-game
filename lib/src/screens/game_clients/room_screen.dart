@@ -258,7 +258,7 @@ class _RoomScreenState extends State<RoomScreen>
                     await Clipboard.setData(
                         ClipboardData(text: state.room!.code!));
                     if (context.mounted) {
-                      appToast(context, message: "Copied to clipboard!");
+                      appToast(message: "Copied to clipboard!");
                     }
                   },
                   child: Container(
