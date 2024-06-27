@@ -25,3 +25,4 @@ However, as for local bloc, the event and state are in the same screen, so it re
 - flutter build android flavor dev -t lib/main_dev.dart
 - flutter gen-l10n
 - flutter packages pub run build_runner build
+- flutter build web --release -t lib/main.dart
