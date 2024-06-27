@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/screens/widgets/primary_button.dart';
@@ -25,14 +26,21 @@ class GameExitButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(30),
-      height: 80,
-      child: SecondaryButton.icon(
-        onPressed: () {
-          _confirmExit(context);
-        },
-        icon: AppImages.arrowBack,
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 30.w,
+        vertical: 30.h,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SecondaryButton.icon(
+            onPressed: () {
+              _confirmExit(context);
+            },
+            icon: AppImages.arrowBack,
+          ),
+        ],
       ),
     );
   }
@@ -46,14 +54,14 @@ class ConfirmExitGameDialog extends StatelessWidget {
     return PrimaryDialog(
       children: [
         Container(
-          height: 120,
+          height: 150.h,
           child: Center(
             child: Text(
               "Do you want to exit the game?",
               style: TextStyle(
                 fontFamily: "Mitr",
                 fontWeight: FontWeight.w500,
-                fontSize: 22,
+                fontSize: 22.sp,
                 color: Colors.white,
               ),
             ),
@@ -67,21 +75,19 @@ class ConfirmExitGameDialog extends StatelessWidget {
                 navService.pop();
               },
               text: "Cancel",
-              fontSize: 18,
+              fontSize: 22.sp,
               fontWeight: FontWeight.w600,
               background: AppColors.gray,
               underground: AppColors.grayDark,
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
             ),
-            const SizedBox(width: 30),
+            SizedBox(width: 30.w),
             PrimaryButton.primary(
               onPressed: () {
                 context.read<GamePlayCubit>().exitGame();
               },
               text: "OK",
-              fontSize: 18,
+              fontSize: 22.sp,
               fontWeight: FontWeight.w600,
-              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
             )
           ],
         )

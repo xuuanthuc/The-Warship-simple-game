@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:template/src/style/app_colors.dart';
 
 import 'bounce_button.dart';
@@ -56,7 +57,7 @@ class PrimaryButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(radius),
           border: Border.all(
-            width: borderWidth,
+            width: borderWidth.w,
             color: Colors.black,
           ),
           color: underground,
@@ -66,7 +67,7 @@ class PrimaryButton extends StatelessWidget {
             Positioned.fill(
               child: Container(
                 margin: EdgeInsets.only(
-                  bottom: darkSize,
+                  bottom: darkSize.h,
                 ),
                 decoration: BoxDecoration(
                   color: background,
@@ -87,7 +88,7 @@ class PrimaryButton extends StatelessWidget {
                         color: Colors.white.withOpacity(opacity),
                         borderRadius: BorderRadius.circular(radius - 4),
                       ),
-                      margin: EdgeInsets.fromLTRB(8, 8, 8, 0),
+                      margin: EdgeInsets.fromLTRB(8.w, 8.w, 8.w, 0),
                     ),
                   ),
                   Expanded(
@@ -98,7 +99,7 @@ class PrimaryButton extends StatelessWidget {
             ),
             Padding(
               padding: padding ??
-                  EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                  EdgeInsets.symmetric(horizontal: 50.w, vertical: 20.h),
               child: Stack(
                 children: [
                   Text(
@@ -106,11 +107,11 @@ class PrimaryButton extends StatelessWidget {
                     style: TextStyle(
                       fontFamily: "Mitr",
                       fontWeight: fontWeight,
-                      fontSize: fontSize,
+                      fontSize: fontSize.sp,
                       letterSpacing: 2,
                       foreground: Paint()
                         ..style = PaintingStyle.stroke
-                        ..strokeWidth = fontStroke
+                        ..strokeWidth = fontStroke.w
                         ..color = Colors.black,
                     ),
                   ),
@@ -120,7 +121,7 @@ class PrimaryButton extends StatelessWidget {
                       fontFamily: "Mitr",
                       letterSpacing: 2,
                       fontWeight: fontWeight,
-                      fontSize: fontSize,
+                      fontSize: fontSize.sp,
                       color: Colors.white,
                     ),
                   ),

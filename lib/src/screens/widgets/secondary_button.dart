@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:template/src/screens/widgets/primary_button.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:template/src/style/app_colors.dart';
 
 import 'bounce_button.dart';
@@ -69,23 +69,23 @@ class SecondaryButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BounceButton(
       child: SizedBox(
-        width: width,
+        width: width?.w,
         child: Stack(
           alignment: alignment,
           children: [
             Container(
-              height: (iconHeight ?? 1) * 1.2,
+              height: (iconHeight?.w ?? 0) * 1.2,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(radius),
                 border: Border.all(
-                  width: borderWidth,
+                  width: borderWidth.w,
                   color: Colors.black,
                 ),
                 color: underground,
               ),
               child: Container(
                 margin: EdgeInsets.only(
-                  bottom: darkSize,
+                  bottom: darkSize.w,
                 ),
                 decoration: BoxDecoration(
                   color: background,
@@ -96,8 +96,8 @@ class SecondaryButton extends StatelessWidget {
             Column(
               children: [
                 SizedBox(
-                  height: iconWidth,
-                  width: iconHeight,
+                  height: iconWidth?.w,
+                  width: iconHeight?.h,
                   child: Image.asset(icon),
                 ),
                 Container(
@@ -112,11 +112,11 @@ class SecondaryButton extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: "Mitr",
                           fontWeight: fontWeight,
-                          fontSize: fontSize,
+                          fontSize: fontSize.sp,
                           letterSpacing: 2,
                           foreground: Paint()
                             ..style = PaintingStyle.stroke
-                            ..strokeWidth = fontStroke
+                            ..strokeWidth = fontStroke.w
                             ..color = Colors.black,
                         ),
                       ),
@@ -126,7 +126,7 @@ class SecondaryButton extends StatelessWidget {
                           fontFamily: "Mitr",
                           letterSpacing: 2,
                           fontWeight: fontWeight,
-                          fontSize: fontSize,
+                          fontSize: fontSize.sp,
                           color: Colors.white,
                         ),
                       ),

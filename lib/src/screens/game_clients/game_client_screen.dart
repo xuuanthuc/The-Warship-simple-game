@@ -1,6 +1,7 @@
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:template/src/routes/navigation_service.dart';
 import 'package:template/src/routes/route_keys.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
@@ -79,7 +80,7 @@ class _GameClientScreenState extends State<GameClientScreen>
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.all(30).copyWith(bottom: 50),
+                    padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 30.h).copyWith(bottom: 50.h),
                     child: state.room != null
                         ? const RoomScreen()
                         : const LobbyScreen(),

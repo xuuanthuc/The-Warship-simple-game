@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
 import 'package:template/src/screens/game_clients/widgets/join_room_dialog.dart';
 import 'package:template/src/screens/widgets/primary_button.dart';
@@ -46,6 +47,9 @@ class LobbyScreen extends StatelessWidget {
             Expanded(
               child: Center(
                 child: Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.sizeOf(context).width * 0.6
+                  ),
                   child: Image.asset(AppImages.logo),
                 ),
               ),
@@ -65,17 +69,17 @@ class LobbyScreen extends StatelessWidget {
                     );
               },
               text: "CREATE ROOM",
-              fontSize: 30,
-              padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 32),
+              fontSize: 30.sp,
+              padding: EdgeInsets.symmetric(vertical: 25.h, horizontal: 32.w),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: 30.h),
             PrimaryButton.secondary(
               onPressed: () => _enterRoomCodeDialog(context),
               text: "JOIN ROOM",
-              fontSize: 24,
-              padding: const EdgeInsets.symmetric(
-                vertical: 20,
-                horizontal: 30,
+              fontSize: 24.sp,
+              padding: EdgeInsets.symmetric(
+                vertical: 20.h,
+                horizontal: 30.w,
               ),
             ),
           ],
@@ -94,7 +98,7 @@ class LobbyScreen extends StatelessWidget {
                   icon: AppImages.github,
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.h),
               Align(
                 alignment: Alignment.centerRight,
                 child: SecondaryButton(

@@ -3,6 +3,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:template/src/screens/widgets/primary_button.dart';
 import 'package:template/src/screens/widgets/primary_dialog.dart';
 import 'package:template/src/style/app_colors.dart';
@@ -43,28 +44,28 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
                 style: TextStyle(
                   fontFamily: "Mitr",
                   fontWeight: FontWeight.w600,
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   color: message.isEmpty ? Colors.white : Colors.red.shade700,
                 ),
               );
             },
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 50,
-              vertical: 20,
-            ).copyWith(bottom: 10),
+            padding:  EdgeInsets.symmetric(
+              horizontal: 50.w,
+              vertical: 20.h,
+            ).copyWith(bottom: 10.h),
             child: TextField(
               controller: _editingController,
               textAlign: TextAlign.center,
               autofocus: true,
-              cursorWidth: 5,
+              cursorWidth: 5.w,
               maxLength: 6,
               inputFormatters: [
                 UpperCaseTextFormatter(),
               ],
-              style: const TextStyle(
-                fontSize: 20,
+              style:  TextStyle(
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
               ),
               cursorColor: AppColors.grayDark,
@@ -104,10 +105,10 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
               }
             },
             text: "Join",
-            fontSize: 20,
-            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+            fontSize: 20.sp,
+            padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 15.h),
           ),
-          const SizedBox(height: 30),
+          SizedBox(height: 30.h),
         ],
       ),
     );

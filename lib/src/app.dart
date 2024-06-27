@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'di/dependencies.dart';
 import 'routes/app_routes.dart';
 import 'routes/navigation_service.dart';
@@ -19,17 +21,26 @@ class MyApp extends StatelessWidget {
       ],
       child: GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: MaterialApp(
-          theme: ThemeData(
-            useMaterial3: true,
-          ),
-          locale: const Locale('vi', ''),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          navigatorObservers: [MyRouteObserver()],
-          onGenerateRoute: AppRoutes.onGenerateRoutes,
-          onGenerateInitialRoutes: (_) => AppRoutes.onGenerateInitialRoute(),
-          navigatorKey: NavigationService.navigationKey,
+        child: ScreenUtilInit(
+          designSize: const Size(1024, 1366),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          enableScaleWH: () => kIsWeb ? false  : true,
+          enableScaleText: () => kIsWeb ? false  : true,
+          builder: (_, child){
+           return MaterialApp(
+              theme: ThemeData(
+                useMaterial3: true,
+              ),
+              locale: const Locale('vi', ''),
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              navigatorObservers: [MyRouteObserver()],
+              onGenerateRoute: AppRoutes.onGenerateRoutes,
+              onGenerateInitialRoutes: (_) => AppRoutes.onGenerateInitialRoute(),
+              navigatorKey: NavigationService.navigationKey,
+            );
+          },
         ),
       ),
     );

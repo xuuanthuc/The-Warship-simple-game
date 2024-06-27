@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../routes/navigation_service.dart';
 import '../../style/app_colors.dart';
@@ -34,11 +35,11 @@ class _PrimaryDialogState extends State<PrimaryDialog>
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
       child: SingleChildScrollView(
         child: Container(
           width: MediaQuery.sizeOf(context).width * 0.3,
-          constraints: const BoxConstraints(minWidth: 500),
+          constraints: const BoxConstraints(minWidth: 700),
           decoration: BoxDecoration(
             color: AppColors.gray,
             borderRadius: BorderRadius.circular(4),
@@ -66,17 +67,16 @@ class _PrimaryDialogState extends State<PrimaryDialog>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       color: AppColors.grayDark,
                       border: Border(
                         bottom: BorderSide(
-                          width: 4,
+                          width: 4.h,
                           color: Colors.black54,
                         ),
                       ),
                     ),
-                    height: 64,
-                    padding: const EdgeInsets.all(8),
+                    padding: EdgeInsets.all(8.h),
                     child: Stack(
                       children: [
                         Positioned.fill(
@@ -87,7 +87,7 @@ class _PrimaryDialogState extends State<PrimaryDialog>
                               style: TextStyle(
                                 fontFamily: "Mitr",
                                 fontWeight: FontWeight.w600,
-                                fontSize: 22,
+                                fontSize: 22.sp,
                                 color: Colors.white,
                               ),
                             ),
@@ -99,8 +99,8 @@ class _PrimaryDialogState extends State<PrimaryDialog>
                             IconButton(
                               onPressed: () => navService.pop(),
                               icon: SizedBox(
-                                width: 40,
-                                height: 40,
+                                width: 40.w,
+                                height: 40.h,
                                 child: Image.asset(AppImages.close),
                               ),
                             )
@@ -110,7 +110,7 @@ class _PrimaryDialogState extends State<PrimaryDialog>
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(30),
+                    padding: EdgeInsets.all(30.h),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [...widget.children],

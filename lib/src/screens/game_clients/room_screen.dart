@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
 import 'package:template/src/screens/widgets/bounce_button.dart';
 import 'package:template/src/style/app_colors.dart';
@@ -97,7 +99,7 @@ class _RoomScreenState extends State<RoomScreen>
                                           MediaQuery.sizeOf(context).height *
                                               0.4,
                                     ),
-                                    margin: const EdgeInsets.all(20),
+                                    margin: EdgeInsets.all(20.w),
                                     child: Image.asset(state
                                             .room?.ownerPlayer?.skin
                                             ?.preview() ??
@@ -108,11 +110,11 @@ class _RoomScreenState extends State<RoomScreen>
                                     style: TextStyle(
                                       fontFamily: "Mitr",
                                       fontWeight: FontWeight.w700,
-                                      fontSize: 40,
+                                      fontSize: 40.sp,
                                       letterSpacing: 2,
                                       foreground: Paint()
                                         ..style = PaintingStyle.stroke
-                                        ..strokeWidth = 3
+                                        ..strokeWidth = 3.w
                                         ..color = Colors.black,
                                     ),
                                   ),
@@ -122,7 +124,7 @@ class _RoomScreenState extends State<RoomScreen>
                                       fontFamily: "Mitr",
                                       letterSpacing: 2,
                                       fontWeight: FontWeight.w700,
-                                      fontSize: 40,
+                                      fontSize: 40.sp,
                                       color: Colors.white,
                                     ),
                                   ),
@@ -130,7 +132,7 @@ class _RoomScreenState extends State<RoomScreen>
                               ),
                             ),
                           ),
-                          const SizedBox(width: 30),
+                          SizedBox(width: 30.w),
                           Visibility(
                             visible: state.room?.guestPlayer != null,
                             child: SlideTransition(
@@ -160,11 +162,11 @@ class _RoomScreenState extends State<RoomScreen>
                                       style: TextStyle(
                                         fontFamily: "Mitr",
                                         fontWeight: FontWeight.w700,
-                                        fontSize: 40,
+                                        fontSize: 40.sp,
                                         letterSpacing: 2,
                                         foreground: Paint()
                                           ..style = PaintingStyle.stroke
-                                          ..strokeWidth = 3
+                                          ..strokeWidth = 3.w
                                           ..color = Colors.black,
                                       ),
                                     ),
@@ -174,7 +176,7 @@ class _RoomScreenState extends State<RoomScreen>
                                         fontFamily: "Mitr",
                                         letterSpacing: 2,
                                         fontWeight: FontWeight.w700,
-                                        fontSize: 40,
+                                        fontSize: 40.sp,
                                         color: Colors.white,
                                       ),
                                     ),
@@ -187,15 +189,15 @@ class _RoomScreenState extends State<RoomScreen>
                       ),
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                   Center(
                     child: Container(
-                      height: 100,
+                      height: kIsWeb ? 100 : 200.h,
                       child: ListView.separated(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
                         physics: BouncingScrollPhysics(),
-                        separatorBuilder: (_, __) => const SizedBox(width: 30),
+                        separatorBuilder: (_, __) => SizedBox(width: 30.w),
                         itemBuilder: (context, index) {
                           return BounceButton(
                             onPressed: () {
@@ -205,26 +207,27 @@ class _RoomScreenState extends State<RoomScreen>
                                   );
                             },
                             child: Container(
-                              height: 100,
-                              width: 100,
+                              height: kIsWeb ? 100 : 200.h,
+                              width: kIsWeb ? 100 : 200.h,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(100),
                                   border: Border.all(
-                                    width: 5,
+                                    width: kIsWeb ? 5 : 10.h,
                                     color: Colors.white,
                                   ),
                                   boxShadow: [
                                     BoxShadow(
-                                        color: Colors.white30,
-                                        offset: Offset(0, 4),
-                                        blurRadius: 5,
-                                        spreadRadius: 1)
+                                      color: Colors.white30,
+                                      offset: Offset(0, 4),
+                                      blurRadius: 5,
+                                      spreadRadius: 1,
+                                    )
                                   ]),
                               child: AnimatedContainer(
                                 duration: Duration(seconds: 1),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    width: 10,
+                                    width: kIsWeb ? 10 : 20.h,
                                     color: state.skin ==
                                             BattleshipSkin.values[index]
                                         ? AppColors.primaryDark
@@ -265,7 +268,7 @@ class _RoomScreenState extends State<RoomScreen>
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        width: 3,
+                        width: 3.w,
                         color: Colors.black,
                       ),
                       color: AppColors.grayDark,
@@ -275,8 +278,8 @@ class _RoomScreenState extends State<RoomScreen>
                         color: AppColors.gray,
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 50.w, vertical: 15.h),
                       child: Row(
                         children: [
                           Stack(
@@ -287,11 +290,11 @@ class _RoomScreenState extends State<RoomScreen>
                                 style: TextStyle(
                                   fontFamily: "Mitr",
                                   fontWeight: FontWeight.w700,
-                                  fontSize: 24,
+                                  fontSize: 24.sp,
                                   letterSpacing: 2,
                                   foreground: Paint()
                                     ..style = PaintingStyle.stroke
-                                    ..strokeWidth = 3
+                                    ..strokeWidth = 3.w
                                     ..color = Colors.black,
                                 ),
                               ),
@@ -301,15 +304,15 @@ class _RoomScreenState extends State<RoomScreen>
                                   fontFamily: "Mitr",
                                   letterSpacing: 2,
                                   fontWeight: FontWeight.w700,
-                                  fontSize: 24,
+                                  fontSize: 24.sp,
                                   color: Colors.white,
                                 ),
                               ),
                             ],
                           ),
-                          SizedBox(width: 20),
+                          SizedBox(width: 20.w),
                           SizedBox(
-                            height: 30,
+                            height: 30.h,
                             child: Image.asset(
                               AppImages.copy,
                             ),
@@ -320,7 +323,7 @@ class _RoomScreenState extends State<RoomScreen>
                   ),
                 ),
                 if (!iamHost) Spacer(),
-                const SizedBox(width: 30),
+                SizedBox(width: 30.w),
                 PrimaryButton.primary(
                   onPressed: () async {
                     final room = state.room;
@@ -342,7 +345,7 @@ class _RoomScreenState extends State<RoomScreen>
                       : state.room?.guestPlayer?.ready == true
                           ? "CANCEL"
                           : "READY",
-                  fontSize: 30,
+                  fontSize: 30.sp,
                   background: state.room?.guestPlayer?.ready == true
                       ? iamHost
                           ? AppColors.primary
@@ -357,9 +360,9 @@ class _RoomScreenState extends State<RoomScreen>
                       : iamHost
                           ? AppColors.grayDark
                           : AppColors.primaryDark,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 25,
-                    horizontal: 50,
+                  padding: EdgeInsets.symmetric(
+                    vertical: 25.h,
+                    horizontal: 50.w,
                   ),
                 ),
               ],
