@@ -12,6 +12,7 @@ import 'package:template/src/models/room_data.dart';
 import 'package:template/src/routes/route_keys.dart';
 import 'package:template/src/screens/game_play/widget/game_exit.dart';
 import 'package:template/src/screens/game_play/widget/game_over.dart';
+import 'package:template/src/screens/game_play/widget/game_turn_intro.dart';
 import 'package:template/src/style/app_audio.dart';
 import 'package:template/src/screens/game_play/widget/ready_button.dart';
 import 'package:template/src/style/app_colors.dart';
@@ -64,6 +65,18 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           },
           RouteKey.readyButton: (_, BattleGameFlame game) {
             return GameReadyButton(game: game);
+          },
+          RouteKey.yourTurn: (_, BattleGameFlame game) {
+            return TurnIntro(
+              game: game,
+              isOpponent: false,
+            );
+          },
+          RouteKey.opponentTurn: (_, BattleGameFlame game) {
+            return TurnIntro(
+              game: game,
+              isOpponent: true,
+            );
           }
         },
         backgroundBuilder: (context) =>

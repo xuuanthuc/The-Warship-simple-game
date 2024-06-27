@@ -4,6 +4,8 @@ abstract class AppImages {
   static const String blueSea = "blue_sea2.png";
   static const String nonShip = "non_ship.png";
   static const String hasShip = "has_ship.png";
+  static const String yourTurn = "your_turn.png";
+  static const String opponentTurn = "opponent_turn.png";
   static const String invisibleShip = "invisible_ship.png";
   static const String background = "background2.png";
   static const String ruler = "background_ruler.png";

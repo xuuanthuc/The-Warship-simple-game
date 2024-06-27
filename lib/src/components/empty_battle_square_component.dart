@@ -27,18 +27,18 @@ class EmptyBattleSquareComponent extends SpriteComponent
     anchor = Anchor.center;
     priority = 2;
     size = Vector2.all(GameData.instance.blockSize);
-    if (battle.type == BattleSquareType.occupied) {
-      add(
-        TextComponent(
-          text: "${battle.block.coordinates?.join(" - ")}",
-          anchor: Anchor.center,
-          position: Vector2.all(GameData.instance.blockSize / 2),
-          textRenderer: TextPaint(
-            style: TextStyle(color: Colors.black),
-          ),
-        ),
-      );
-    }
+    // if (battle.type == BattleSquareType.occupied) {
+    //   add(
+    //     TextComponent(
+    //       text: "${battle.block.coordinates?.join(" - ")}",
+    //       anchor: Anchor.center,
+    //       position: Vector2.all(GameData.instance.blockSize / 2),
+    //       textRenderer: TextPaint(
+    //         style: TextStyle(color: Colors.black),
+    //       ),
+    //     ),
+    //   );
+    // }
     add(ShootPointSprite(battle: battle));
     return super.onLoad();
   }

@@ -313,7 +313,7 @@ class GamePlayCubit extends Cubit<GamePlayState> {
         //do some thing
         emit(state.copyWith(action: GameAction.continueTurn));
       } else {
-        await Future.delayed(const Duration(seconds: 3)).then((_) {
+        await Future.delayed(const Duration(seconds: 2)).then((_) {
           emit(state.copyWith(
             action: GameAction.nextTurn,
             status: ReadyStatus.playing,
