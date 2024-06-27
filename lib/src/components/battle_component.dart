@@ -17,12 +17,24 @@ class GuestBattleWorld extends PositionComponent
     required this.occupiedSquares,
   });
 
+  Vector2 setBlockVector2(int xIndex, int yIndex) {
+    final size = GameData.instance.blockSize;
+    return Vector2(
+      (xIndex.toDouble() * size) -
+          (size * GameData.blockLength / 2) +
+          (size / 2),
+      (yIndex.toDouble() * size) -
+          (size * GameData.blockLength / 2) +
+          (size / 2),
+    );
+  }
+
   @override
   FutureOr<void> onLoad() async {
     size = Vector2.all(GameData.instance.blockSize * GameData.blockLength);
     for (var i = 0; i < emptySquares.length; i++) {
       EmptyBattleSquare block = emptySquares[i];
-      block.block.vector2 = GameData.instance.setBlockVector2(
+      block.block.vector2 = setBlockVector2(
         block.block.coordinates!.last,
         block.block.coordinates!.first,
       );
@@ -32,6 +44,7 @@ class GuestBattleWorld extends PositionComponent
         ),
       );
     }
+    await Future.delayed(Duration(milliseconds: 300));
     for (var i = 0; i < occupiedSquares.length; i++) {
       final ship = occupiedSquares[i];
       await add(
@@ -39,9 +52,9 @@ class GuestBattleWorld extends PositionComponent
           key: ComponentKey.unique(),
           square: ship,
           index: i,
-          isGuest: true,
           initialAngle: ship.angle.toDouble(),
-          initialPosition: GameData.instance.setBlockVector2(
+          vectors: emptySquares,
+          initialPosition: setBlockVector2(
             ship.targetPoint!.coordinates!.last,
             ship.targetPoint!.coordinates!.first,
           ),
@@ -62,12 +75,23 @@ class OwnerBattleWorld extends PositionComponent
     required this.occupiedSquares,
   });
 
+  Vector2 setBlockVector2(int xIndex, int yIndex) {
+    return Vector2(
+      (xIndex.toDouble() * GameData.instance.blockSize) -
+          (GameData.instance.blockSize * GameData.blockLength / 2) +
+          (GameData.instance.blockSize / 2),
+      (yIndex.toDouble() * GameData.instance.blockSize) -
+          (GameData.instance.blockSize * GameData.blockLength / 2) +
+          (GameData.instance.blockSize / 2),
+    );
+  }
+
   @override
   FutureOr<void> onLoad() async {
     size = Vector2.all(GameData.instance.blockSize * GameData.blockLength);
     for (var i = 0; i < emptySquares.length; i++) {
       EmptyBattleSquare block = emptySquares[i];
-      block.block.vector2 = GameData.instance.setBlockVector2(
+      block.block.vector2 = setBlockVector2(
         block.block.coordinates!.last,
         block.block.coordinates!.first,
       );
@@ -77,6 +101,7 @@ class OwnerBattleWorld extends PositionComponent
         ),
       );
     }
+    await Future.delayed(Duration(milliseconds: 300));
     for (var i = 0; i < occupiedSquares.length; i++) {
       final ship = occupiedSquares[i];
       await add(
@@ -85,8 +110,8 @@ class OwnerBattleWorld extends PositionComponent
           square: ship,
           index: i,
           initialAngle: ship.angle.toDouble(),
-          isGuest: false,
-          initialPosition: GameData.instance.setBlockVector2(
+          vectors: emptySquares,
+          initialPosition: setBlockVector2(
             ship.targetPoint!.coordinates!.last,
             ship.targetPoint!.coordinates!.first,
           ),

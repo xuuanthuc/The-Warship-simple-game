@@ -163,17 +163,6 @@ class GameData {
     }
   }
 
-  Vector2 setBlockVector2(int xIndex, int yIndex) {
-    return Vector2(
-      (xIndex.toDouble() * blockSize) -
-          (blockSize * GameData.blockLength / 2) +
-          (blockSize / 2),
-      (yIndex.toDouble() * blockSize) -
-          (blockSize * GameData.blockLength / 2) +
-          (blockSize / 2),
-    );
-  }
-
   // New method to get the boundaries
   Rect getEmptyBlocksBoundary() {
     if (emptyBlocks.isEmpty) return Rect.zero;
