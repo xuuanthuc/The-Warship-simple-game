@@ -107,10 +107,10 @@ class OccupiedBattleSquare {
       ${targetPoint?.vector2},
     },
     "angle": {
-      ${angle},
+      $angle,
     },
     "positions": {
-      ${overlappingPositions},
+      $overlappingPositions,
     },
     """;
   }

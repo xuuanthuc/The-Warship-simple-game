@@ -44,7 +44,7 @@ class GuestBattleWorld extends PositionComponent
         ),
       );
     }
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
     for (var i = 0; i < occupiedSquares.length; i++) {
       final ship = occupiedSquares[i];
       await add(
@@ -101,7 +101,7 @@ class OwnerBattleWorld extends PositionComponent
         ),
       );
     }
-    await Future.delayed(Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
     for (var i = 0; i < occupiedSquares.length; i++) {
       final ship = occupiedSquares[i];
       await add(

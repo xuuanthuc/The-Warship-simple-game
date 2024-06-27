@@ -1,7 +1,6 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/screens/game_play/game_play.dart';
 import 'package:template/src/screens/widgets/primary_button.dart';
@@ -39,7 +38,7 @@ class _GameReadyButtonState extends State<GameReadyButton> {
           return Align(
             alignment: Alignment.bottomRight,
             child: Container(
-              margin: EdgeInsets.all(30),
+              margin: EdgeInsets.all(30.w),
               child: PrimaryButton.primary(
                 background: _backgroundColor,
                 underground: _undergroundColor,
@@ -66,7 +65,7 @@ class _GameReadyButtonState extends State<GameReadyButton> {
             ),
           );
         } else {
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         }
       },
     );

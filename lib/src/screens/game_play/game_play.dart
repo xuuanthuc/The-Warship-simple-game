@@ -5,6 +5,7 @@ import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:template/src/components/how_to_setting_component.dart';
 import 'package:template/src/components/occupied_component.dart';
 import 'package:template/src/components/empty_square_component.dart';
 import 'package:template/src/models/player.dart';
@@ -60,10 +61,10 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         game: game,
         overlayBuilderMap: {
           RouteKey.gameOver: (_, BattleGameFlame game) {
-            return GameOverOverlay();
+            return const GameOverOverlay();
           },
           RouteKey.gameExit: (_, BattleGameFlame game) {
-            return GameExitButton();
+            return const GameExitButton();
           },
           RouteKey.readyButton: (_, BattleGameFlame game) {
             return GameReadyButton(game: game);
@@ -86,7 +87,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           buildWhen: (_, cur) => cur.action == GameAction.nextTurn,
           builder: (context, state) {
             return AnimatedContainer(
-              duration: Duration(seconds: 1),
+              duration: const Duration(seconds: 1),
               curve: Curves.ease,
               decoration: BoxDecoration(
                 gradient: state.room.nextPlayer?.skin?.background() ??
@@ -147,7 +148,6 @@ class BattlegroundWorld extends World
 
   @override
   void onNewState(GamePlayState state) async {
-    print("Game plat world changed state");
     if (state.action == GameAction.ready) {
       if (ready.isLoaded && ready.isMounted) {
         remove(ready);
@@ -161,7 +161,7 @@ class BattlegroundWorld extends World
         occupiedSquares: bloc.state.room.ownerPlayingData?.occupiedBlocks ?? [],
       );
       await add(TurnInfoComponent());
-      await Future.delayed(Duration(seconds: 2)).then((_) => bloc.startGame());
+      await Future.delayed(const Duration(seconds: 2)).then((_) => bloc.startGame());
     }
     if (state.action == GameAction.nextTurn) {
       if (state.room.nextPlayer?.id == state.room.ownerPlayer?.id) {
@@ -218,7 +218,8 @@ class ReadyBattleWorld extends PositionComponent
         ),
       );
     }
-    Future.delayed(Duration(milliseconds: 300)).then((onValue) {
+    await add(HowToSettingComponent());
+    Future.delayed(const Duration(milliseconds: 300)).then((onValue) {
       bloc.shuffleOccupiedPosition(children.query<OccupiedComponent>());
     });
     return super.onLoad();

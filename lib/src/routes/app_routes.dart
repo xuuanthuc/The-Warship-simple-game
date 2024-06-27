@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/bloc/game_play/game_play_cubit.dart';
 import 'package:template/src/di/dependencies.dart';
 import 'package:template/src/screens/game_clients/bloc/game_client_cubit.dart';
-import 'package:template/src/screens/game_clients/lobby_screen.dart';
 import '../screens/game_clients/game_client_screen.dart';
 import '../screens/game_play/game_play.dart';
 import '../screens/splash/splash_screen.dart';
@@ -32,7 +31,7 @@ class AppRoutes {
           routeSettings,
           BlocProvider(
             create: (_) => getIt.get<GameClientCubit>(),
-            child: GameClientScreen(),
+            child: const GameClientScreen(),
           ),
         );
       default:

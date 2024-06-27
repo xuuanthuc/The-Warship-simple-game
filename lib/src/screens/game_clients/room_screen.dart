@@ -190,12 +190,12 @@ class _RoomScreenState extends State<RoomScreen>
                   ),
                   SizedBox(height: 10.h),
                   Center(
-                    child: Container(
+                    child: SizedBox(
                       height: 150.h,
                       child: ListView.separated(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
-                        physics: BouncingScrollPhysics(),
+                        physics: const BouncingScrollPhysics(),
                         separatorBuilder: (_, __) => SizedBox(width: 30.w),
                         itemBuilder: (context, index) {
                           return BounceButton(
@@ -214,7 +214,7 @@ class _RoomScreenState extends State<RoomScreen>
                                     width: 5.h,
                                     color: Colors.white,
                                   ),
-                                  boxShadow: [
+                                  boxShadow: const [
                                     BoxShadow(
                                       color: Colors.white30,
                                       offset: Offset(0, 4),
@@ -223,7 +223,7 @@ class _RoomScreenState extends State<RoomScreen>
                                     )
                                   ]),
                               child: AnimatedContainer(
-                                duration: Duration(seconds: 1),
+                                duration: const Duration(seconds: 1),
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     width: 10.h,
@@ -321,7 +321,7 @@ class _RoomScreenState extends State<RoomScreen>
                     ),
                   ),
                 ),
-                if (!iamHost) Spacer(),
+                if (!iamHost) const Spacer(),
                 SizedBox(width: 30.w),
                 PrimaryButton.primary(
                   onPressed: () async {

@@ -27,7 +27,6 @@ class EmptyBlock {
 
   @override
   String toString() {
-    // TODO: implement toString
     return """
     {   
         "vector2": $vector2,

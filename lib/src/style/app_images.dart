@@ -9,6 +9,7 @@ abstract class AppImages {
   static const String invisibleShip = "invisible_ship.png";
   static const String background = "background2.png";
   static const String ruler = "background_ruler.png";
+  static const String setting = "how_to_setting.png";
   static const String parallax = "lobby.png";
   static const String lobby = "assets/images/lobby.png";
   static const String github = "assets/images/github.png";

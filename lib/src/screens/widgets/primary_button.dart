@@ -73,7 +73,7 @@ class PrimaryButton extends StatelessWidget {
                   color: background,
                   borderRadius: BorderRadius.circular(radius - 4),
                 ),
-                child: Column(
+                child: const Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [],
                 ),

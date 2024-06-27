@@ -136,7 +136,7 @@ class OccupiedComponent extends SpriteComponent
   void onCollisionStart(
       Set<Vector2> intersectionPoints, PositionComponent other) {
     if (other is OccupiedComponent) {
-      if (other.hashCode != this.hashCode) {
+      if (other.hashCode != hashCode) {
         collisions.add(other);
       }
       _hitBox.paint.color = Colors.red.withOpacity(0.5);
@@ -147,7 +147,7 @@ class OccupiedComponent extends SpriteComponent
 
   @override
   void onCollisionEnd(PositionComponent other) {
-    if (other.hashCode != this.hashCode) {
+    if (other.hashCode != hashCode) {
       collisions.remove(other);
     }
     if (collisions.isEmpty) {

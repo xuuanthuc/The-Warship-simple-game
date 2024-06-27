@@ -9,9 +9,7 @@ import 'package:template/src/screens/game_clients/lobby_screen.dart';
 import 'package:template/src/screens/game_clients/room_screen.dart';
 import 'package:template/src/style/app_audio.dart';
 import 'package:template/src/utilities/game_data.dart';
-
 import '../../style/app_images.dart';
-import '../widgets/secondary_button.dart';
 
 class GameClientScreen extends StatefulWidget {
   const GameClientScreen({super.key});

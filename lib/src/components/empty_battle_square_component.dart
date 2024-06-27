@@ -1,9 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
-import 'package:flame/text.dart';
 import 'package:flame_bloc/flame_bloc.dart';
 import 'package:flame_lottie/flame_lottie.dart';
-import 'package:flutter/material.dart';
 import 'package:template/src/models/battle.dart';
 import '../bloc/game_play/game_play_cubit.dart';
 import '../style/app_images.dart';
@@ -87,7 +85,7 @@ class ShootPointSprite extends SpriteComponent
         ),
       );
 
-      Future.delayed(Duration(seconds: 1)).then(
+      Future.delayed(const Duration(seconds: 1)).then(
         (_) async => sprite = await Sprite.load(
           battle.type == BattleSquareType.occupied
               ? AppImages.hasShip

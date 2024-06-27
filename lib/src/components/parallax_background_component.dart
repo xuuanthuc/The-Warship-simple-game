@@ -1,10 +1,7 @@
 import 'dart:async';
-import 'dart:ui';
-
 import 'package:flame/components.dart';
 import 'package:flame/parallax.dart';
 import 'package:flutter/cupertino.dart';
-
 import '../screens/game_play/game_play.dart';
 import '../style/app_images.dart';
 

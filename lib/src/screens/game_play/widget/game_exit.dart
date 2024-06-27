@@ -52,8 +52,9 @@ class ConfirmExitGameDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PrimaryDialog(
+      title: "CONFIRM EXIT",
       children: [
-        Container(
+        SizedBox(
           height: 150.h,
           child: Center(
             child: Text(
@@ -92,7 +93,6 @@ class ConfirmExitGameDialog extends StatelessWidget {
           ],
         )
       ],
-      title: "CONFIRM EXIT",
     );
   }
 }

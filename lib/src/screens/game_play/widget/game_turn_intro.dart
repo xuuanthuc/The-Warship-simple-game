@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:template/src/screens/game_play/game_play.dart';
-import 'package:template/src/style/app_colors.dart';
 import 'package:template/src/style/app_images.dart';
 import 'package:template/src/utilities/game_data.dart';
 
@@ -55,7 +54,7 @@ class _TurnIntroState extends State<TurnIntro>
     return BlocBuilder<GamePlayCubit, GamePlayState>(
       buildWhen: (_, cur) => cur.action == GameAction.nextTurn,
       builder: (context, state) {
-        return Container(
+        return SizedBox(
           width: double.infinity,
           height: double.infinity,
           child: Stack(
