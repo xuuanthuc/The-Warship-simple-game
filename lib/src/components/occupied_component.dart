@@ -180,7 +180,6 @@ class OccupiedComponent extends SpriteComponent
 
       if (battleshipRect.overlaps(r)) {
         overlappingEmptyBlocks.add(b);
-        print(b.coordinates);
       }
     }
     return overlappingEmptyBlocks;

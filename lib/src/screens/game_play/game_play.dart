@@ -45,14 +45,16 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           widget.room,
           widget.player,
         );
+    game = BattleGameFlame(
+      cubit: context.read<GamePlayCubit>(),
+    );
     super.initState();
   }
 
+  late final BattleGameFlame game;
+
   @override
   Widget build(BuildContext context) {
-    final game = BattleGameFlame(
-      cubit: context.read<GamePlayCubit>(),
-    );
     return Scaffold(
       body: GameWidget(
         game: game,

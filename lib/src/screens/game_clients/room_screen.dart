@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -192,7 +191,7 @@ class _RoomScreenState extends State<RoomScreen>
                   SizedBox(height: 10.h),
                   Center(
                     child: Container(
-                      height: kIsWeb ? 100 : 200.h,
+                      height: 150.h,
                       child: ListView.separated(
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
@@ -207,12 +206,12 @@ class _RoomScreenState extends State<RoomScreen>
                                   );
                             },
                             child: Container(
-                              height: kIsWeb ? 100 : 200.h,
-                              width: kIsWeb ? 100 : 200.h,
+                              height: 150.h,
+                              width: 150.h,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(100),
                                   border: Border.all(
-                                    width: kIsWeb ? 5 : 10.h,
+                                    width: 5.h,
                                     color: Colors.white,
                                   ),
                                   boxShadow: [
@@ -227,7 +226,7 @@ class _RoomScreenState extends State<RoomScreen>
                                 duration: Duration(seconds: 1),
                                 decoration: BoxDecoration(
                                   border: Border.all(
-                                    width: kIsWeb ? 10 : 20.h,
+                                    width: 10.h,
                                     color: state.skin ==
                                             BattleshipSkin.values[index]
                                         ? AppColors.primaryDark

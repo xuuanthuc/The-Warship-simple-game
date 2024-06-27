@@ -49,7 +49,7 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Center(
           child: Container(
             constraints: BoxConstraints(
-              maxWidth: MediaQuery.sizeOf(context).width * 0.8
+              maxWidth: MediaQuery.sizeOf(context).width * 0.5
             ),
             child: Image.asset(
               AppImages.logo,
