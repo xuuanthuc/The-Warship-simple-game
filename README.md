@@ -1,28 +1,47 @@
-# Flutter code base
+# Battleship game 🛳️ ⛴️ 🚢
 
-My flutter code base
+## Visit my [game](https://battleground-bd225.web.app/)
 
-## Technical
+## Gameplay 
 
-- [Dependencies injection](https://pub.dev/packages/injectable)
-- [State management Bloc/Cubit](https://pub.dev/packages/flutter_bloc)
-- [Flavor development/product](https://medium.com/@animeshjain/build-flavors-in-flutter-android-and-ios-with-different-firebase-projects-per-flavor-27c5c5dac10b)
-- [Internationalizing i18n](https://docs.flutter.dev/development/accessibility-and-localization/internationalization)
+<img src="readme/lobby-min.png" width="45%"> <img src="readme/ready-min.png" width="45%">
+<img src="readme/game_play-min.png" width="45%"> <img src="readme/victory-min.png" width="45%">
 
-## Architect
+## How to install ⚒️
 
-## Note 
-There are 2 different type of bloc we can use. I want to choose to use the different bloc for different purpose:
+#### Clone source code
 
-- for global bloc: use Bloc
-- for local bloc: use Cubit
+```Bash
+git clone https://github.com/xuuanthuc/battleship.git
+```
+#### Open Battleship project and run terminal
 
-Why? Because global state change can be from anywhere in the app, any screen, so it makes sense to trigger an event from 1 screen, and state is updated in all related screens in the app.
-However, as for local bloc, the event and state are in the same screen, so it really doesn’t matter if the trigger is an event or a function call. Therefore, to simplify the code, I think cubit is better choice.
+```Bash
+fvm flutter pub get
+fvm flutter gen-l10n
+fvm flutter packages pub run build_runner build --delete-conflicting-outputs
+```
+
+Note: If you have error ```Undefined name 'AppLocalizations'.```:
+
+-   Go to **File** -> **Invalidate Caches** -> **Invalidate and Restart**
+- Run ```flutter pub get``` again
+
+#### Config firebase project
+
+-   Create a project in [Firebase console](https://console.firebase.google.com/) ([how to create firebase project](https://docs.appmachine.com/app-details/firebase/create-firebase-project))
+
+-   In firebase console, Go to Project Overview and add new flutter platform
+
+- Config flutter app according to firebase instructions
+
+- Gen `firebase_options.dart` file
+
+```bash
+flutterfire configure --project=PROJECT_NAME
+```
+
+####  Run app
 
 
-##terminal
-- flutter build android flavor dev -t lib/main_dev.dart
-- flutter gen-l10n
-- flutter packages pub run build_runner build
-- flutter build web --release -t lib/main.dart
+# Thank for viewing ❤️‍🔥
