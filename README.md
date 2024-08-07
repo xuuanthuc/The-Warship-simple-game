@@ -1,4 +1,4 @@
-# Battleship game 🛳️ ⛴️ 🚢
+# The warship game 🛳️ ⛴️ 🚢
 
 ## Visit my [game](https://battleground-bd225.web.app/)
 
@@ -14,7 +14,7 @@
 ```Bash
 git clone https://github.com/xuuanthuc/battleship.git
 ```
-#### Open Battleship project and run terminal
+#### Open Warship project and run terminal
 
 ```Bash
 fvm flutter pub get
